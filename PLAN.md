@@ -278,6 +278,20 @@ trustworthy, not just impressive — do steps 3–7 whenever you're ready to tru
 - **One generator pattern per layer:** read the layer's data from the working model → resolve anchors (explicit or centroid) → emit orthogonal tubes/lines source→node → group under one toggleable `Object3D` tagged with the layer name.
 - **Flows through existing plumbing:** new data arrays live on `HOUSE`, so `JSON.stringify(model)` already exports them. Every edit mutates the model, triggers `refreshAll()`, and writes the localStorage overlay — same as tasks and circuits. The sync pill and Export just work.
 
+### Shared Phase 7 Additions: Honesty & Field Capture
+
+**SHARED — "% verified" indicator (all infra layers):**
+- Standardize a `verified: bool` field across `circuits[]`, `fixtures[]`, `registers[]` (for circuits, `verified == !placeholder`). Default false on new nodes.
+- Near the schematic badge, each active layer shows "N/M verified (X%)".
+- The badge covers ROUTING honesty ("not where it runs"); this covers EXISTENCE honesty ("how much of this map is confirmed vs guessed"). Both must be visible.
+
+**SHARED — Click-to-place nodes (place what you can see; generate what you can't):**
+- A "Place [vent/fixture]" mode toggle. In that mode, a 3D click raycasts onto the current level's floor, creates a node with anchor `{x,y,z}` at the hit point.
+- Auto-assign `room` by point-in-polygon against room points; respect main vs basement level.
+- New node defaults `verified: false`; edit its attributes in the layer's table (or a popover).
+- Click an existing node to select/delete; drag-to-reposition is a nice-to-have, not required.
+- Paths are NEVER hand-drawn — only node ENDPOINTS are placed; runs stay generated/orthogonal.
+
 ### 7a — Electrical (do first: data already exists, proves the pattern cheaply)
 Source = panel anchor (basement mech). Nodes = the rooms in each `circuits[].rooms[]`, at junction height. Generate one path per circuit, colored by panel/amps, toggled per circuit through the circuit table you already built. New data is minimal: a `meta.panelAnchor {x,y,z}` and an optional per-circuit color.
 
@@ -293,7 +307,7 @@ Source = water-heater/softener manifold. Generate cold (blue) to every fixture, 
 ### 7c — HVAC (new `registers[]` layer)
 ```
 registers: [
-  { id, room, kind: "supply|return", size: "4x10"|…, cfm: number|null, anchor: {x,y,z}|null }
+  { id, room, kind: "supply|return", size: "4x10"|…, cfm: number|null, anchor: {x,y,z}|null, verified: bool }
 ]
 ```
 Source = furnace/air handler. Generate a main trunk → branches to each supply register → return trunk from returns. Schematic trunk-and-branch, not modeled duct.
@@ -335,13 +349,23 @@ Add a plumbing layer, same schematic pattern as electrical.
   Reuse roomAnchor for defaults. Keep the schematic badge.
 ```
 
-**Phase 7c — HVAC routing**
+**Phase 7c — HVAC registers (with shared Phase-7 additions)**
 ```
-Add an HVAC layer, same schematic pattern.
+Phase 7c — HVAC registers, with the two shared Phase-7 additions.
 
-- New HOUSE.registers[]: { id, room, kind (supply|return), size, cfm:number|null, anchor:{x,y,z}|null }.
-- Table editor: room dropdown (valid ids only), kind dropdown, size, cfm, delete.
-- Generator: source = furnace/air-handler anchor (meta.furnaceAnchor). Main trunk → branches to each
-  supply register → return trunk from returns. Orthogonal trunk-and-branch, not modeled duct.
-  Toggleable group, roomAnchor defaults, schematic badge.
+FIRST, shared pieces (used by all infra layers):
+1. Add `verified:bool` to circuits[]/fixtures[]/registers[] (circuits: verified == !placeholder),
+   default false. Show "N/M verified (X%)" next to the schematic badge for each active layer.
+2. Click-to-place: a "Place vent" mode; a 3D click raycasts onto the current level's floor and
+   creates a register at that point. Auto-set room by point-in-polygon; respect main/basement level.
+   Click a placed node to select/delete. Do NOT let paths be hand-drawn — only endpoints are placed.
+
+THEN HVAC:
+- HOUSE.registers[]: { id, room, kind (supply|return), size, cfm:number|null,
+  anchor:{x,y,z}|null, verified:bool }. anchor null -> room centroid.
+- Table editor like circuits: room dropdown (valid ids only), kind, size, cfm, verified, delete.
+- Generator: furnace/air-handler anchor (meta.furnaceAnchor) -> main trunk -> branch to each
+  supply register -> return trunk from returns. Orthogonal, schematic, toggleable group, schematic badge.
+- Set meta.panelAnchor to the basement-mech room centroid (the panel sits mid-mechanical-room);
+  if that room has no 2D footprint, leave the current value and note it's a manual placeholder.
 ```
