@@ -2638,7 +2638,7 @@ window.MODEL_3D_DATA = {
       "x": 1.3322,
       "y": 0,
       "z": 11.6462,
-      "width": 0.9144,
+      "width": 1.651,
       "height": 1.8034,
       "depth": 0.2301,
       "rotY": 0,
