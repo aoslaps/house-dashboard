@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  <!-- House Outline & Roof -->
+  <path d="M 256 96 L 112 216 L 144 216 L 144 384 C 144 396 154 406 166 406 L 346 406 C 358 406 368 396 368 384 L 368 216 L 400 216 Z" fill="none" stroke="url(#accentGrad)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Chimney -->
+  <path d="M 324 152 L 324 116 C 324 112 328 108 332 108 L 356 108 C 360 108 364 112 364 116 L 364 186" fill="none" stroke="url(#accentGrad)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Doorway -->
+  <rect x="220" y="276" width="72" height="130" rx="10" fill="url(#accentGrad)" />
+  <!-- Dashboard Graph / Plan Lines -->
+  <circle cx="256" cy="220" r="18" fill="#38BDF8" />
+</svg>

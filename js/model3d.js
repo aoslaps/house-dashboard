@@ -33,6 +33,18 @@
   let activeLevel = "all"; // "all" | "main" | "basement"
   let wallHeightMode = "cutaway"; // "cutaway" | "full"
   let labelsVisible = true;
+  let lightingEnv = "day"; // "day" | "sunset" | "night"
+
+  let ambientLight = null, sunLight = null, skyFillLight = null, hemiLight = null;
+  let interiorLightsGroup = null, coachLightsGroup = null;
+  let electricalLayerGroup = null, hvacLayerGroup = null, plumbingLayerGroup = null;
+  let isFirstPerson = false;
+  let fpYaw = 0, fpPitch = 0;
+  let fpKeys = {};
+  let savedCameraPos = new THREE.Vector3();
+  let savedControlsTarget = new THREE.Vector3();
+  let fpLastTime = performance.now();
+  let windowGlassMat = null;
 
   const STATUS_COLORS = {
     "not-started": 0x9AA4AE,
@@ -156,10 +168,13 @@
     }
 
     // 5. Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.72);
+    ambientLight = new THREE.AmbientLight(0xffffff, 0.72);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.DirectionalLight(0xfff8ee, 0.85);
+    hemiLight = new THREE.HemisphereLight(0xE2E8F0, 0x334155, 0.45);
+    scene.add(hemiLight);
+
+    sunLight = new THREE.DirectionalLight(0xfff8ee, 0.95);
     sunLight.position.set(25, 45, 20);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
@@ -173,9 +188,51 @@
     sunLight.shadow.bias = -0.0005;
     scene.add(sunLight);
 
-    const skyFillLight = new THREE.DirectionalLight(0xb0d0ff, 0.35);
+    skyFillLight = new THREE.DirectionalLight(0xb0d0ff, 0.35);
     skyFillLight.position.set(-25, 25, -20);
     scene.add(skyFillLight);
+
+    // Interior Warm Lights Group (for Sunset & Night mode)
+    interiorLightsGroup = new THREE.Group();
+    const interiorLightSpecs = [
+      { x:  1.3, y: 2.1, z: 9.0, color: 0xFFEDD5, intensity: 1.4, dist: 9 }, // Great Room
+      { x:  1.3, y: 2.1, z: 4.3, color: 0xFEF08A, intensity: 1.2, dist: 7 }, // Kitchen
+      { x: -4.2, y: 2.1, z: 7.0, color: 0xFFEDD5, intensity: 1.2, dist: 8 }, // Living Room
+      { x: -3.5, y: 2.1, z: 0.0, color: 0xFDE68A, intensity: 1.0, dist: 6 }, // Front Hall
+      { x:  1.0, y: 2.1, z: 0.8, color: 0xFFEDD5, intensity: 1.0, dist: 7 }, // Flex 1
+      { x:  5.5, y: 2.1, z: 0.0, color: 0xFFEDD5, intensity: 0.9, dist: 7 }, // Bed 2
+      { x: 10.0, y: 2.1, z: 3.5, color: 0xFFEDD5, intensity: 0.9, dist: 7 }, // Bed 4
+      { x:-11.5, y: 2.2, z:-5.5, color: 0xFEF3C7, intensity: 1.4, dist: 9 }  // Garage (Mustang)
+    ];
+    interiorLightSpecs.forEach((spec) => {
+      const pl = new THREE.PointLight(spec.color, spec.intensity, spec.dist, 1.6);
+      pl.position.set(spec.x, spec.y, spec.z);
+      interiorLightsGroup.add(pl);
+    });
+    interiorLightsGroup.visible = false;
+    scene.add(interiorLightsGroup);
+
+    // Exterior Coach Lights (Carriage lanterns above garage & entry)
+    coachLightsGroup = new THREE.Group();
+    const coachPositions = [
+      { x: -11.0, y: 2.35, z: -0.9 },
+      { x: -13.1, y: 2.35, z: -4.5 },
+      { x: -15.1, y: 2.35, z: -8.0 },
+      { x: -6.15, y: 2.35, z:  0.0 } // Front Entry
+    ];
+    const coachLanternMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, metalness: 0.9, roughness: 0.2 });
+    const coachBulbMat = new THREE.MeshStandardMaterial({ color: 0xFEF08A, emissive: 0xF59E0B, emissiveIntensity: 0.8 });
+    coachPositions.forEach((cp) => {
+      const lantern = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.22, 0.12), coachLanternMat);
+      lantern.position.set(cp.x, cp.y, cp.z);
+      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 8), coachBulbMat);
+      bulb.position.set(cp.x, cp.y - 0.02, cp.z);
+      const pl = new THREE.PointLight(0xFDE68A, 0.9, 5, 1.8);
+      pl.position.set(cp.x, cp.y - 0.05, cp.z);
+      coachLightsGroup.add(lantern, bulb, pl);
+    });
+    coachLightsGroup.visible = false;
+    scene.add(coachLightsGroup);
 
     // 6. Raycasting
     raycaster = new THREE.Raycaster();
@@ -203,6 +260,9 @@
     vehicleMeshes.forEach((m) => scene.remove(m));
     labelSprites.forEach((m) => scene.remove(m));
     if (environmentGroup) scene.remove(environmentGroup);
+    if (electricalLayerGroup) scene.remove(electricalLayerGroup);
+    if (hvacLayerGroup) scene.remove(hvacLayerGroup);
+    if (plumbingLayerGroup) scene.remove(plumbingLayerGroup);
 
     roomMeshes = [];
     wallMeshes = [];
@@ -213,6 +273,9 @@
     vehicleMeshes = [];
     labelSprites = [];
     environmentGroup = null;
+    electricalLayerGroup = null;
+    hvacLayerGroup = null;
+    plumbingLayerGroup = null;
 
     const H = window.HOUSE || { rooms: [] };
     const byId = (id) => H.rooms.find((r) => r.id === id);
@@ -294,8 +357,11 @@
     // 7. Build Accurate 3D Basement Mechanical Equipment
     buildEquipment();
 
-    // 8. Build 1965 Ford Mustang in Northern Garage Bay
+    // 8. Build 1965 Ford Mustang in Southern Garage Bay
     buildVehicles();
+
+    // 9. Build 3D Infrastructure Layers (Conduit, HVAC, Plumbing)
+    buildInfrastructureLayers();
 
     updateVisibility();
   }
@@ -802,7 +868,7 @@
     if (!modelData.windows) return;
 
     const frameMat = new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.35, metalness: 0.15 });
-    const glassMat = new THREE.MeshStandardMaterial({
+    windowGlassMat = new THREE.MeshStandardMaterial({
       color: 0x93C5FD,
       roughness: 0.04,
       metalness: 0.9,
@@ -810,6 +876,7 @@
       opacity: 0.35, // Clear see-through glass
       side: THREE.DoubleSide
     });
+    const glassMat = windowGlassMat;
     const sillMat = new THREE.MeshStandardMaterial({ color: 0xCBD5E1, roughness: 0.5, metalness: 0.1 });
 
     modelData.windows.forEach((w) => {
@@ -1492,9 +1559,418 @@
     renderer.setSize(width, height);
   }
 
+  // --- 3D Lighting Environments (Day / Sunset / Night) ---
+
+  function setLightingEnvironment(env) {
+    lightingEnv = env;
+    if (!scene || !sunLight) return;
+
+    if (env === "sunset") {
+      scene.background = new THREE.Color(0x38283E);
+      sunLight.color.setHex(0xF59E0B);
+      sunLight.intensity = 1.7;
+      sunLight.position.set(38, 12, -22);
+      if (skyFillLight) {
+        skyFillLight.color.setHex(0x818CF8);
+        skyFillLight.intensity = 0.4;
+      }
+      if (hemiLight) {
+        hemiLight.color.setHex(0xFDBA74);
+        hemiLight.groundColor.setHex(0x431407);
+        hemiLight.intensity = 0.5;
+      }
+      if (interiorLightsGroup) interiorLightsGroup.visible = true;
+      if (coachLightsGroup) coachLightsGroup.visible = true;
+      if (windowGlassMat) {
+        windowGlassMat.emissive.setHex(0xFDE68A);
+        windowGlassMat.emissiveIntensity = 0.35;
+      }
+    } else if (env === "night") {
+      scene.background = new THREE.Color(0x090D16);
+      sunLight.color.setHex(0x818CF8);
+      sunLight.intensity = 0.22;
+      sunLight.position.set(-15, 25, -15);
+      if (skyFillLight) {
+        skyFillLight.color.setHex(0x312E81);
+        skyFillLight.intensity = 0.15;
+      }
+      if (hemiLight) {
+        hemiLight.color.setHex(0x1E1B4B);
+        hemiLight.groundColor.setHex(0x0F172A);
+        hemiLight.intensity = 0.2;
+      }
+      if (interiorLightsGroup) interiorLightsGroup.visible = true;
+      if (coachLightsGroup) coachLightsGroup.visible = true;
+      if (windowGlassMat) {
+        windowGlassMat.emissive.setHex(0xFEF3C7);
+        windowGlassMat.emissiveIntensity = 0.75;
+      }
+    } else {
+      // Day (default)
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      scene.background = new THREE.Color(isDark ? 0x0F172A : 0xF1F5F9);
+      sunLight.color.setHex(0xFFF8EE);
+      sunLight.intensity = 0.95;
+      sunLight.position.set(25, 45, 20);
+      if (skyFillLight) {
+        skyFillLight.color.setHex(0xB0D0FF);
+        skyFillLight.intensity = 0.35;
+      }
+      if (hemiLight) {
+        hemiLight.color.setHex(0xE2E8F0);
+        hemiLight.groundColor.setHex(0x334155);
+        hemiLight.intensity = 0.55;
+      }
+      if (interiorLightsGroup) interiorLightsGroup.visible = false;
+      if (coachLightsGroup) coachLightsGroup.visible = false;
+      if (windowGlassMat) {
+        windowGlassMat.emissive.setHex(0x000000);
+        windowGlassMat.emissiveIntensity = 0;
+      }
+    }
+  }
+
+  // --- 3D Infrastructure Layers (Conduit, HVAC, Plumbing) ---
+
+  function buildInfrastructureLayers() {
+    // 1. Electrical Conduit Layer
+    electricalLayerGroup = new THREE.Group();
+    const conduitMat = new THREE.MeshStandardMaterial({
+      color: 0x00E5FF,
+      emissive: 0x00B4D8,
+      emissiveIntensity: 0.65,
+      roughness: 0.2,
+      metalness: 0.8
+    });
+    const jboxMat = new THREE.MeshStandardMaterial({
+      color: 0x0284C7,
+      metalness: 0.7,
+      roughness: 0.3
+    });
+
+    function addConduit(x1, y1, z1, x2, y2, z2) {
+      const dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
+      const len = Math.hypot(dx, dy, dz);
+      if (len < 0.01) return;
+      const geom = new THREE.CylinderGeometry(0.022, 0.022, len, 8);
+      const mesh = new THREE.Mesh(geom, conduitMat);
+      mesh.position.set((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
+      mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(dx, dy, dz).normalize());
+      electricalLayerGroup.add(mesh);
+    }
+
+    function addJBox(x, y, z) {
+      const jbox = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.10, 0.08), jboxMat);
+      jbox.position.set(x, y, z);
+      electricalLayerGroup.add(jbox);
+    }
+
+    // Main riser from basement panel (0.6, -0.9, 2.25) up to ceiling
+    addConduit(0.6, -0.9, 2.25, 0.6, 2.38, 2.25);
+    addJBox(0.6, 2.38, 2.25);
+
+    // Branch 1: Kitchen circuit
+    addConduit(0.6, 2.38, 2.25, 1.5, 2.38, 4.3);
+    addJBox(1.5, 2.38, 4.3);
+    addConduit(1.5, 2.38, 4.3, 1.5, 1.1, 4.3); // drop to counter outlet
+
+    // Branch 2: Living room circuit
+    addConduit(0.6, 2.38, 2.25, -4.2, 2.38, 2.25);
+    addConduit(-4.2, 2.38, 2.25, -4.2, 2.38, 7.0);
+    addJBox(-4.2, 2.38, 7.0);
+
+    // Branch 3: Great Room circuit
+    addConduit(0.6, 2.38, 2.25, 1.5, 2.38, 9.0);
+    addJBox(1.5, 2.38, 9.0);
+
+    // Branch 4: Bedrooms circuit
+    addConduit(0.6, 2.38, 2.25, 6.0, 2.38, 2.25);
+    addConduit(6.0, 2.38, 2.25, 6.0, 2.38, -0.5);
+    addJBox(6.0, 2.38, -0.5);
+    addConduit(6.0, 2.38, 2.25, 10.5, 2.38, 2.25);
+    addJBox(10.5, 2.38, 2.25);
+
+    // Branch 5: Garage circuit (powering bay with Mustang)
+    addConduit(0.6, 2.38, 2.25, -3.5, 2.38, -1.0);
+    addConduit(-3.5, 2.38, -1.0, -8.5, 2.38, -4.0);
+    addConduit(-8.5, 2.38, -4.0, -11.5, 2.38, -7.5);
+    addJBox(-11.5, 2.38, -7.5);
+
+    electricalLayerGroup.visible = false;
+    scene.add(electricalLayerGroup);
+
+    // 2. HVAC Ductwork Layer
+    hvacLayerGroup = new THREE.Group();
+    const ductMat = new THREE.MeshStandardMaterial({
+      color: 0x94A3B8,
+      metalness: 0.85,
+      roughness: 0.25
+    });
+    const registerMat = new THREE.MeshStandardMaterial({
+      color: 0x475569,
+      metalness: 0.6,
+      roughness: 0.4
+    });
+
+    // Main supply trunk along basement ceiling (y = -0.28m)
+    const supplyTrunk = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.28, 11.5), ductMat);
+    supplyTrunk.position.set(1.55, -0.28, 5.5);
+    hvacLayerGroup.add(supplyTrunk);
+
+    // Vertical riser from basement furnace (1.55, -2.13, 3.27) to supply trunk
+    const furnaceRiser = new THREE.Mesh(new THREE.BoxGeometry(0.48, 1.8, 0.48), ductMat);
+    furnaceRiser.position.set(1.55, -1.18, 3.27);
+    hvacLayerGroup.add(furnaceRiser);
+
+    // Branch ducts and floor supply registers in main-floor rooms
+    const supplyRegisters = [
+      { x:  2.8, z:  9.5 }, // Great Room
+      { x: -0.2, z:  8.5 }, // Great Room W
+      { x: -3.5, z:  8.0 }, // Living Room
+      { x: -6.0, z:  5.5 }, // Living Room W
+      { x:  2.5, z:  3.5 }, // Kitchen
+      { x:  2.5, z:  0.8 }, // Flex 1
+      { x:  5.5, z:  1.0 }, // Bed 2
+      { x: 10.0, z:  4.5 }, // Bed 4
+    ];
+
+    supplyRegisters.forEach((reg) => {
+      const dx = reg.x - 1.55;
+      const branchLen = Math.abs(dx);
+      if (branchLen > 0.1) {
+        const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, branchLen, 10), ductMat);
+        branch.rotation.z = Math.PI / 2;
+        branch.position.set(1.55 + dx / 2, -0.28, reg.z);
+        hvacLayerGroup.add(branch);
+      }
+      const boot = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.32, 10), ductMat);
+      boot.position.set(reg.x, -0.12, reg.z);
+      const grille = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.015, 0.14), registerMat);
+      grille.position.set(reg.x, 0.02, reg.z);
+      hvacLayerGroup.add(boot, grille);
+    });
+
+    // Return air trunk & drop
+    const returnTrunk = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.26, 8.0), ductMat);
+    returnTrunk.position.set(0.65, -0.28, 4.0);
+    const returnDrop = new THREE.Mesh(new THREE.BoxGeometry(0.38, 1.8, 0.38), ductMat);
+    returnDrop.position.set(0.65, -1.18, 3.27);
+    hvacLayerGroup.add(returnTrunk, returnDrop);
+
+    hvacLayerGroup.visible = false;
+    scene.add(hvacLayerGroup);
+
+    // 3. Plumbing Layer (PEX Hot Red & Cold Blue)
+    plumbingLayerGroup = new THREE.Group();
+    const pexHotMat = new THREE.MeshStandardMaterial({
+      color: 0xEF4444,
+      emissive: 0xB91C1C,
+      emissiveIntensity: 0.35,
+      roughness: 0.35
+    });
+    const pexColdMat = new THREE.MeshStandardMaterial({
+      color: 0x3B82F6,
+      emissive: 0x1D4ED8,
+      emissiveIntensity: 0.35,
+      roughness: 0.35
+    });
+
+    function addPipe(x1, y1, z1, x2, y2, z2, mat) {
+      const dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
+      const len = Math.hypot(dx, dy, dz);
+      if (len < 0.01) return;
+      const geom = new THREE.CylinderGeometry(0.016, 0.016, len, 8);
+      const mesh = new THREE.Mesh(geom, mat);
+      mesh.position.set((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
+      mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(dx, dy, dz).normalize());
+      plumbingLayerGroup.add(mesh);
+    }
+
+    // Risers from water heater and softener
+    addPipe(-0.41, -0.9, 2.48, -0.41, -0.15, 2.48, pexHotMat);
+    addPipe(-0.57, -0.9, 3.25, -0.57, -0.15, 3.25, pexColdMat);
+
+    // Main header runs along ceiling
+    addPipe(-0.41, -0.15, 2.48, 4.0, -0.15, 2.48, pexHotMat);
+    addPipe(-0.57, -0.15, 3.25, 4.0, -0.15, 3.25, pexColdMat);
+    addPipe(4.0, -0.15, 2.48, 4.0, -0.15, 6.5, pexHotMat);
+    addPipe(4.0, -0.15, 3.25, 4.0, -0.15, 6.5, pexColdMat);
+    addPipe(4.0, -0.15, 2.48, 9.5, -0.15, 2.48, pexHotMat);
+    addPipe(4.0, -0.15, 3.25, 9.5, -0.15, 3.25, pexColdMat);
+
+    // Wet fixture locations
+    const wetFixtures = [
+      { x:  3.2, z:  4.5 }, // Kitchen sink
+      { x:  5.0, z:  4.0 }, // Laundry
+      { x:  6.0, z:  6.5 }, // Bath 1
+      { x:  9.5, z:  4.5 }, // Bath 2
+      { x: -6.0, z: -0.5 }  // Outdoor hose bib
+    ];
+
+    wetFixtures.forEach((fix) => {
+      addPipe(fix.x, -0.15, fix.z, fix.x, 0.45, fix.z, pexHotMat);
+      addPipe(fix.x + 0.05, -0.15, fix.z, fix.x + 0.05, 0.45, fix.z, pexColdMat);
+    });
+
+    plumbingLayerGroup.visible = false;
+    scene.add(plumbingLayerGroup);
+  }
+
+  function toggleInfrastructureLayer(name, visible) {
+    if (name === "conduit" && electricalLayerGroup) electricalLayerGroup.visible = visible;
+    if (name === "hvac" && hvacLayerGroup) hvacLayerGroup.visible = visible;
+    if (name === "plumbing" && plumbingLayerGroup) plumbingLayerGroup.visible = visible;
+  }
+
+  // --- First-Person Walkthrough Mode ("Walk Inside") ---
+
+  let isFPDagging = false;
+  let fpLastMouseX = 0, fpLastMouseY = 0;
+
+  function enterFirstPersonMode(roomId) {
+    if (isFirstPerson || !camera || !renderer) return;
+
+    isFirstPerson = true;
+    savedCameraPos.copy(camera.position);
+    savedControlsTarget.copy(controls.target);
+    controls.enabled = false;
+
+    // Determine start position
+    let startX = -3.5, startZ = 0.0; // Default Front Hall
+    let eyeY = (activeLevel === "basement") ? -0.48 : 1.65;
+
+    if (roomId && modelData && modelData.rooms) {
+      const r = modelData.rooms.find((rm) => rm.id === roomId);
+      if (r && r.points && r.points.length > 0) {
+        let sx = 0, sz = 0;
+        r.points.forEach((p) => { sx += p[0]; sz += p[1]; });
+        startX = sx / r.points.length;
+        startZ = sz / r.points.length;
+        eyeY = (r.elevation || 0) + 1.65;
+      }
+    }
+
+    camera.position.set(startX, eyeY, startZ);
+    fpYaw = 0;
+    fpPitch = 0;
+    fpKeys = {};
+    fpLastTime = performance.now();
+
+    // Create HUD overlay
+    let hud = document.getElementById("fpWalkthroughHUD");
+    if (!hud) {
+      hud = document.createElement("div");
+      hud.id = "fpWalkthroughHUD";
+      hud.className = "fp-hud-overlay";
+      hud.innerHTML = `
+        <div class="fp-hud-card">
+          <div class="fp-hud-title">🚶 Walkthrough Mode</div>
+          <div class="fp-hud-sub">WASD / Arrows: Walk · Drag Mouse: Look around</div>
+          <button class="fp-btn-exit" id="btnExitFP" title="Exit Walkthrough (Esc)">✕ Exit Walkthrough</button>
+        </div>
+      `;
+      renderer.domElement.parentElement.appendChild(hud);
+      document.getElementById("btnExitFP").onclick = exitFirstPersonMode;
+    }
+    hud.hidden = false;
+
+    window.addEventListener("keydown", onFPKeyDown);
+    window.addEventListener("keyup", onFPKeyUp);
+    renderer.domElement.addEventListener("mousedown", onFPMouseDown);
+    window.addEventListener("mousemove", onFPMouseMove);
+    window.addEventListener("mouseup", onFPMouseUp);
+  }
+
+  function onFPKeyDown(e) {
+    if (e.key === "Escape") {
+      exitFirstPersonMode();
+      return;
+    }
+    fpKeys[e.key.toLowerCase()] = true;
+    fpKeys[e.code] = true;
+  }
+
+  function onFPKeyUp(e) {
+    fpKeys[e.key.toLowerCase()] = false;
+    fpKeys[e.code] = false;
+  }
+
+  function onFPMouseDown(e) {
+    if (!isFirstPerson) return;
+    isFPDagging = true;
+    fpLastMouseX = e.clientX;
+    fpLastMouseY = e.clientY;
+  }
+
+  function onFPMouseMove(e) {
+    if (!isFirstPerson || !isFPDagging) return;
+    const dx = e.clientX - fpLastMouseX;
+    const dy = e.clientY - fpLastMouseY;
+    fpLastMouseX = e.clientX;
+    fpLastMouseY = e.clientY;
+
+    fpYaw -= dx * 0.0035;
+    fpPitch -= dy * 0.0035;
+    fpPitch = Math.max(-1.3, Math.min(1.3, fpPitch));
+  }
+
+  function onFPMouseUp() {
+    isFPDagging = false;
+  }
+
+  function exitFirstPersonMode() {
+    if (!isFirstPerson) return;
+    isFirstPerson = false;
+    isFPDagging = false;
+
+    const hud = document.getElementById("fpWalkthroughHUD");
+    if (hud) hud.hidden = true;
+
+    window.removeEventListener("keydown", onFPKeyDown);
+    window.removeEventListener("keyup", onFPKeyUp);
+    if (renderer) renderer.domElement.removeEventListener("mousedown", onFPMouseDown);
+    window.removeEventListener("mousemove", onFPMouseMove);
+    window.removeEventListener("mouseup", onFPMouseUp);
+
+    camera.position.copy(savedCameraPos);
+    controls.target.copy(savedControlsTarget);
+    controls.enabled = true;
+  }
+
   function animate() {
     requestAnimationFrame(animate);
-    if (controls) controls.update();
+
+    const now = performance.now();
+    const dt = Math.min((now - fpLastTime) / 1000, 0.1);
+    fpLastTime = now;
+
+    if (isFirstPerson && camera) {
+      const speed = 3.4; // m/s
+      const forward = new THREE.Vector3(-Math.sin(fpYaw), 0, -Math.cos(fpYaw));
+      const right = new THREE.Vector3(Math.cos(fpYaw), 0, -Math.sin(fpYaw));
+      const move = new THREE.Vector3();
+
+      if (fpKeys["w"] || fpKeys["arrowup"] || fpKeys["KeyW"]) move.add(forward);
+      if (fpKeys["s"] || fpKeys["arrowdown"] || fpKeys["KeyS"]) move.sub(forward);
+      if (fpKeys["d"] || fpKeys["arrowright"] || fpKeys["KeyD"]) move.add(right);
+      if (fpKeys["a"] || fpKeys["arrowleft"] || fpKeys["KeyA"]) move.sub(right);
+
+      if (move.lengthSq() > 0) {
+        move.normalize().multiplyScalar(speed * dt);
+        camera.position.add(move);
+      }
+
+      // Maintain eye level height
+      const targetEyeY = (activeLevel === "basement") ? -0.48 : 1.65;
+      camera.position.y = targetEyeY;
+
+      // Apply camera rotation
+      const euler = new THREE.Euler(fpPitch, fpYaw, 0, "YXZ");
+      camera.quaternion.setFromEuler(euler);
+    } else if (controls) {
+      controls.update();
+    }
+
     if (renderer && scene && camera) {
       renderer.render(scene, camera);
     }
@@ -1507,6 +1983,11 @@
     setLevel,
     setWallHeight,
     setLabelsVisible,
+    setLightingEnvironment,
+    enterFirstPersonMode,
+    exitFirstPersonMode,
+    toggleInfrastructureLayer,
+    isFirstPersonMode: () => isFirstPerson,
     updateRoomTints,
     highlightRoom,
     highlightCircuit

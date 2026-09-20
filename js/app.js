@@ -99,14 +99,33 @@
       <div class="photo-modal-content">
         <div class="photo-modal-head">
           <span style="font-size:14px;font-weight:600;color:#fff;">${title || "Photo"}</span>
-          <button class="modal-close" id="btnClosePhotoModal" style="color:#fff;">✕</button>
+          <button class="modal-close" id="btnClosePhotoModal" title="Close (Esc)">✕</button>
         </div>
         <img src="${imgSrc}" class="photo-modal-img" alt="${title || "Photo"}" />
       </div>
     `;
     modal.hidden = false;
-    $("#btnClosePhotoModal").onclick = () => (modal.hidden = true);
-    modal.onclick = (e) => { if (e.target === modal) modal.hidden = true; };
+    modal.classList.remove("hidden");
+    modal.style.display = "flex";
+
+    function closeModal() {
+      modal.hidden = true;
+      modal.classList.add("hidden");
+      modal.style.display = "none";
+      document.removeEventListener("keydown", onKeyDown);
+    }
+
+    function onKeyDown(e) {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    $("#btnClosePhotoModal").onclick = closeModal;
+    modal.onclick = (e) => {
+      if (e.target === modal) closeModal();
+    };
   }
 
   function roomsForPhase(phase) {
@@ -765,12 +784,18 @@
     const model3dWrap = $("#model3dWrap");
     const wallHeightToggle = $("#wallHeightToggle");
     const btnToggle3DLabels = $("#btnToggle3DLabels");
+    const lightingToggle = $("#lightingToggle");
+    const btnWalkthrough = $("#btnWalkthrough");
+    const infraToggle = $("#infraToggle");
 
     if (view === "3d") {
       if (planScroll) planScroll.hidden = true;
       if (model3dWrap) model3dWrap.hidden = false;
       if (wallHeightToggle) wallHeightToggle.hidden = false;
       if (btnToggle3DLabels) btnToggle3DLabels.hidden = false;
+      if (lightingToggle) lightingToggle.hidden = false;
+      if (btnWalkthrough) btnWalkthrough.hidden = false;
+      if (infraToggle) infraToggle.hidden = false;
 
       // Initialize Three.js 3D model
       if (window.Model3D) {
@@ -789,6 +814,12 @@
       if (model3dWrap) model3dWrap.hidden = true;
       if (wallHeightToggle) wallHeightToggle.hidden = true;
       if (btnToggle3DLabels) btnToggle3DLabels.hidden = true;
+      if (lightingToggle) lightingToggle.hidden = true;
+      if (btnWalkthrough) btnWalkthrough.hidden = true;
+      if (infraToggle) infraToggle.hidden = true;
+      if (window.Model3D && window.Model3D.isFirstPersonMode && window.Model3D.isFirstPersonMode()) {
+        window.Model3D.exitFirstPersonMode();
+      }
       paintPlan();
     }
   }
@@ -1139,6 +1170,55 @@
         btnLabels.classList.toggle("is-active", labelsOn);
         btnLabels.textContent = labelsOn ? "🏷️ Labels: ON" : "🏷️ Labels: OFF";
         if (window.Model3D) window.Model3D.setLabelsVisible(labelsOn);
+      });
+    }
+
+    // 3D Lighting Environment Toggle (Day / Sunset / Night)
+    $$("#lightingToggle button").forEach((b) => {
+      b.addEventListener("click", () => {
+        $$("#lightingToggle button").forEach((btn) => btn.classList.toggle("is-active", btn === b));
+        if (window.Model3D) window.Model3D.setLightingEnvironment(b.dataset.light);
+      });
+    });
+
+    // 3D Walkthrough Mode ("Walk Inside")
+    const btnWalkthrough = $("#btnWalkthrough");
+    if (btnWalkthrough) {
+      btnWalkthrough.addEventListener("click", () => {
+        if (window.Model3D) {
+          window.Model3D.enterFirstPersonMode(state.selected || null);
+        }
+      });
+    }
+
+    // 3D Infrastructure Layers (Conduit, HVAC, Plumbing)
+    const btnConduit = $("#btnToggleConduit");
+    if (btnConduit) {
+      let conduitOn = false;
+      btnConduit.addEventListener("click", () => {
+        conduitOn = !conduitOn;
+        btnConduit.classList.toggle("is-active", conduitOn);
+        if (window.Model3D) window.Model3D.toggleInfrastructureLayer("conduit", conduitOn);
+      });
+    }
+
+    const btnHVAC = $("#btnToggleHVAC");
+    if (btnHVAC) {
+      let hvacOn = false;
+      btnHVAC.addEventListener("click", () => {
+        hvacOn = !hvacOn;
+        btnHVAC.classList.toggle("is-active", hvacOn);
+        if (window.Model3D) window.Model3D.toggleInfrastructureLayer("hvac", hvacOn);
+      });
+    }
+
+    const btnPlumbing = $("#btnTogglePlumbing");
+    if (btnPlumbing) {
+      let plumbingOn = false;
+      btnPlumbing.addEventListener("click", () => {
+        plumbingOn = !plumbingOn;
+        btnPlumbing.classList.toggle("is-active", plumbingOn);
+        if (window.Model3D) window.Model3D.toggleInfrastructureLayer("plumbing", plumbingOn);
       });
     }
 

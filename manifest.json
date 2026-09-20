@@ -1,0 +1,19 @@
+{
+  "name": "House Renovation & Property Dashboard",
+  "short_name": "HouseDash",
+  "description": "Interactive 2D/3D floor plan and renovation tracking command center",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0F172A",
+  "theme_color": "#0284C7",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

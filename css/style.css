@@ -165,27 +165,27 @@ body {
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
   padding: 10px 14px; background: var(--paper-2); border-bottom: 1px solid var(--line);
 }
-.view-toggle, .level-toggle, .wall-height-toggle {
+.view-toggle, .level-toggle, .wall-height-toggle, .lighting-toggle, .infra-toggle {
   display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; background: var(--surface);
 }
-.view-toggle button, .level-toggle button, .wall-height-toggle button {
+.view-toggle button, .level-toggle button, .wall-height-toggle button, .lighting-toggle button, .infra-toggle button {
   font-family: var(--font-ui); font-size: 12px; font-weight: 600;
   padding: 6px 12px; border: 0; background: transparent; color: var(--graphite);
   cursor: pointer; border-right: 1px solid var(--line); transition: background .12s ease, color .12s ease;
 }
-.view-toggle button:last-child, .level-toggle button:last-child, .wall-height-toggle button:last-child { border-right: 0; }
-.view-toggle button.is-active, .level-toggle button.is-active, .wall-height-toggle button.is-active {
+.view-toggle button:last-child, .level-toggle button:last-child, .wall-height-toggle button:last-child, .lighting-toggle button:last-child, .infra-toggle button:last-child { border-right: 0; }
+.view-toggle button.is-active, .level-toggle button.is-active, .wall-height-toggle button.is-active, .lighting-toggle button.is-active, .infra-toggle button.is-active {
   background: var(--blue); color: #fff;
 }
 
-.btn-toggle-labels {
+.btn-toggle-labels, .btn-walkthrough {
   font-family: var(--font-ui); font-size: 12px; font-weight: 600;
   padding: 6px 12px; border-radius: 7px; border: 1px solid var(--line);
   background: var(--surface); color: var(--graphite); cursor: pointer;
   transition: all .12s ease; display: inline-flex; align-items: center; gap: 4px;
 }
-.btn-toggle-labels:hover { background: var(--paper-2); color: var(--ink); }
-.btn-toggle-labels.is-active { background: var(--blue-wash); color: var(--blue-deep); border-color: var(--blue); }
+.btn-toggle-labels:hover, .btn-walkthrough:hover { background: var(--paper-2); color: var(--ink); }
+.btn-toggle-labels.is-active, .btn-walkthrough.is-active { background: var(--blue-wash); color: var(--blue-deep); border-color: var(--blue); }
 
 /* 3D model container */
 .model3d-wrap {
@@ -200,6 +200,30 @@ body {
   font-family: var(--font-ui); font-size: 11.5px; padding: 5px 14px; border-radius: 999px;
   pointer-events: none; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
+
+/* First-Person Walkthrough HUD */
+.fp-hud-overlay {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 10; pointer-events: auto;
+}
+.fp-hud-card {
+  display: flex; align-items: center; gap: 16px;
+  background: rgba(18, 23, 29, 0.88); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 10px 18px; border-radius: 999px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.fp-hud-title {
+  font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: #fff;
+}
+.fp-hud-sub {
+  font-family: var(--font-body); font-size: 11.5px; color: #9AA6B2;
+}
+.fp-btn-exit {
+  background: #EF4444; border: 0; border-radius: 999px; color: #fff;
+  font-family: var(--font-ui); font-size: 11.5px; font-weight: 700;
+  padding: 5px 14px; cursor: pointer; transition: background .12s ease;
+}
+.fp-btn-exit:hover { background: #DC2626; }
 
 .plan-scroll { overflow-x: auto; padding: 14px; }
 #floorplan { width: 100%; height: auto; display: block; }
@@ -382,10 +406,21 @@ body {
 .btn-upload-photos:hover { background: var(--blue-wash); }
 .upload-hint { font-size: 11.5px; color: var(--graphite); }
 
-.photo-lightbox { background: rgba(10, 14, 20, 0.88); backdrop-filter: blur(6px); z-index: 200; }
-.photo-modal-content { max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column; align-items: center; }
-.photo-modal-head { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.photo-modal-img { max-width: 100%; max-height: 82vh; object-fit: contain; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+.photo-lightbox { background: rgba(10, 14, 20, 0.92); backdrop-filter: blur(8px); z-index: 200; }
+.photo-modal-content { max-width: 92vw; max-height: 92vh; display: flex; flex-direction: column; align-items: center; position: relative; }
+.photo-modal-head { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.photo-modal-head .modal-close {
+  background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.28); border-radius: 50%;
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  color: #fff; cursor: pointer; font-size: 16px; transition: background .15s ease, transform .15s ease;
+}
+.photo-modal-head .modal-close:hover { background: rgba(239, 68, 68, 0.85); border-color: rgba(239, 68, 68, 1); transform: scale(1.08); }
+.photo-modal-img { max-width: 100%; max-height: 82vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 35px rgba(0,0,0,0.7); }
+
+.modal-overlay[hidden],
+.modal-overlay.hidden {
+  display: none !important;
+}
 
 .circuit-chip { font-family: var(--font-mono); font-size: 12px; background: var(--blue-wash); color: var(--blue-deep); border: 1px solid var(--line); padding: 2px 8px; border-radius: 6px; margin: 0 6px 6px 0; display: inline-block; cursor: pointer; transition: background .12s ease; }
 .circuit-chip:hover { background: var(--blue); color: #fff; }
