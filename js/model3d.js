@@ -104,34 +104,6 @@
     return texture;
   }
 
-  function createGravelTexture() {
-    const canvas = document.createElement("canvas");
-    canvas.width = 128;
-    canvas.height = 128;
-    const ctx = canvas.getContext("2d");
-
-    // Warm gray crushed gravel base
-    ctx.fillStyle = "#C8C4BC";
-    ctx.fillRect(0, 0, 128, 128);
-
-    // Procedural pebbles and aggregate specks
-    const colors = ["#9E988F", "#B5B0A6", "#7D776E", "#E2DFD9", "#5A544C", "#D9D5CD"];
-    for (let i = 0; i < 700; i++) {
-      const px = Math.random() * 128;
-      const py = Math.random() * 128;
-      const pr = Math.random() * 2.2 + 0.8;
-      ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
-      ctx.beginPath();
-      ctx.arc(px, py, pr, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(6, 6);
-    return texture;
-  }
 
   function init(container) {
     if (!container) return;
@@ -344,65 +316,7 @@
     groundMesh.receiveShadow = true;
     environmentGroup.add(groundMesh);
 
-    // 2. Gravel Driveway (exact alignment with Wall 42 / garage doors)
-    const gravelTex = createGravelTexture();
-    gravelTex.repeat.set(4, 5);
-
-    const D = 8.5; // distance extending out in front of garage
-    const nx = -0.866;
-    const nz = 0.500;
-    const p1 = [-11.06, -0.96];
-    const p2 = [-15.19, -8.11];
-    const p3 = [p2[0] + nx * D, p2[1] + nz * D];
-    const p4 = [p1[0] + nx * D, p1[1] + nz * D];
-
-    const yLevel = -0.04;
-    const vertices = new Float32Array([
-      p1[0], yLevel, p1[1],
-      p2[0], yLevel, p2[1],
-      p3[0], yLevel, p3[1],
-
-      p1[0], yLevel, p1[1],
-      p3[0], yLevel, p3[1],
-      p4[0], yLevel, p4[1],
-    ]);
-    const uvs = new Float32Array([
-      0, 0,
-      1, 0,
-      1, 1,
-      0, 0,
-      1, 1,
-      0, 1,
-    ]);
-    const driveGeom = new THREE.BufferGeometry();
-    driveGeom.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
-    driveGeom.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
-    driveGeom.computeVertexNormals();
-
-    const driveMat = new THREE.MeshStandardMaterial({
-      color: 0xCDC8BF,
-      map: gravelTex,
-      roughness: 0.92,
-      metalness: 0.02
-    });
-    const driveMesh = new THREE.Mesh(driveGeom, driveMat);
-    driveMesh.receiveShadow = true;
-    environmentGroup.add(driveMesh);
-
-    // 3. Front Walkway (leading towards front entrance at -6.14, 0.02)
-    const walkGeom = new THREE.PlaneGeometry(1.5, 11);
-    walkGeom.rotateX(-Math.PI / 2);
-    const walkMat = new THREE.MeshStandardMaterial({
-      color: 0x94A3B8, // Concrete / flagstone
-      roughness: 0.75,
-      metalness: 0.04
-    });
-    const walkMesh = new THREE.Mesh(walkGeom, walkMat);
-    walkMesh.position.set(-6.14, -0.035, -5.5);
-    walkMesh.receiveShadow = true;
-    environmentGroup.add(walkMesh);
-
-    // 4. Spaced Out 3D Trees & Shrubs (open front yard, perimeter placement)
+    // 2. Spaced Out 3D Trees & Shrubs (open front yard, perimeter placement)
     const treePositions = [
       // Front yard: pushed wide to perimeter and street curb for open view
       { x: -22.0, z: 10.0,  h: 5.6, r: 1.8 },
