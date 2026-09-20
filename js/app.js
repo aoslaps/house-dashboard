@@ -593,6 +593,132 @@
     });
   }
 
+  /* ---------- render: HVAC Registers Table Editor ---------- */
+  function renderRegistersTable() {
+    const wrap = $("#registersTableWrap");
+    if (!wrap) return;
+
+    if (!H.registers) H.registers = [];
+
+    wrap.innerHTML = `
+      <table class="registers-table">
+        <thead>
+          <tr>
+            <th style="width:70px;">ID</th>
+            <th style="width:160px;">Room</th>
+            <th style="width:100px;">Kind</th>
+            <th style="width:90px;">Size</th>
+            <th style="width:80px;">CFM</th>
+            <th>3D Anchor (Location)</th>
+            <th style="width:110px;">Status</th>
+            <th style="width:50px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${H.registers.map((reg) => {
+            const anchorText = reg.anchor
+              ? `X: ${reg.anchor.x}, Z: ${reg.anchor.z}`
+              : `<span style="color:var(--graphite);font-style:italic;">Room Centroid</span>`;
+            return `
+              <tr data-register="${reg.id}">
+                <td><span class="circuit-chip" style="margin:0;background:rgba(148,163,184,0.2);border-color:rgba(148,163,184,0.4);">${reg.id}</span></td>
+                <td>
+                  <select class="table-select register-field" data-id="${reg.id}" data-field="room">
+                    ${H.rooms.map((rm) => `<option value="${rm.id}" ${reg.room === rm.id ? "selected" : ""}>${rm.name}</option>`).join("")}
+                  </select>
+                </td>
+                <td>
+                  <select class="table-select register-field" data-id="${reg.id}" data-field="kind">
+                    <option value="supply" ${reg.kind === "supply" ? "selected" : ""}>Supply</option>
+                    <option value="return" ${reg.kind === "return" ? "selected" : ""}>Return</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="text" class="table-input register-field" data-id="${reg.id}" data-field="size" value="${reg.size || "4x10"}" style="width:75px;" />
+                </td>
+                <td>
+                  <input type="number" class="table-input register-field" data-id="${reg.id}" data-field="cfm" value="${reg.cfm || ""}" placeholder="CFM" style="width:65px;" />
+                </td>
+                <td style="font-family:var(--font-mono);font-size:11.5px;">
+                  ${anchorText}
+                  ${reg.anchor ? `<button class="btn-remove-room btn-reset-anchor" data-id="${reg.id}" title="Reset to room centroid" style="margin-left:6px;">✕ Centroid</button>` : ``}
+                </td>
+                <td>
+                  <label style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;cursor:pointer;">
+                    <input type="checkbox" class="cb-register-verified" data-id="${reg.id}" ${reg.verified ? "checked" : ""} />
+                    <span class="${reg.verified ? "verified-badge" : "placeholder-badge"}">${reg.verified ? "Verified" : "Unverified"}</span>
+                  </label>
+                </td>
+                <td>
+                  <button class="btn-del-register" data-id="${reg.id}" title="Delete register ${reg.id}">🗑️</button>
+                </td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    `;
+
+    // Field edit listeners
+    $$(".register-field", wrap).forEach((el) => {
+      el.addEventListener("change", (e) => {
+        const id = el.dataset.id;
+        const field = el.dataset.field;
+        const reg = (H.registers || []).find((r) => r.id === id);
+        if (!reg) return;
+        if (field === "cfm") {
+          reg.cfm = e.target.value ? parseInt(e.target.value, 10) : null;
+        } else {
+          reg[field] = e.target.value;
+        }
+        SS.save(H);
+        flashSaved();
+        refreshAll();
+      });
+    });
+
+    // Verified toggle
+    $$(".cb-register-verified", wrap).forEach((cb) => {
+      cb.addEventListener("change", (e) => {
+        const id = cb.dataset.id;
+        const reg = (H.registers || []).find((r) => r.id === id);
+        if (reg) {
+          reg.verified = e.target.checked;
+          SS.save(H);
+          flashSaved();
+          refreshAll();
+        }
+      });
+    });
+
+    // Reset anchor to centroid
+    $$(".btn-reset-anchor", wrap).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        const reg = (H.registers || []).find((r) => r.id === id);
+        if (reg) {
+          reg.anchor = null;
+          SS.save(H);
+          flashSaved();
+          refreshAll();
+        }
+      });
+    });
+
+    // Delete register
+    $$(".btn-del-register", wrap).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        if (confirm(`Delete register ${id}?`)) {
+          H.registers = (H.registers || []).filter((r) => r.id !== id);
+          SS.save(H);
+          flashSaved();
+          refreshAll();
+        }
+      });
+    });
+  }
+
   /* ---------- live update helper ---------- */
   function refreshAll() {
     const rooms = roomsForPhase(state.phase);
@@ -601,9 +727,12 @@
     renderList();
     paintPlan();
     if (state.mode === "electrical") renderBreakerBox();
+    renderRegistersTable();
     if (window.Charts) window.Charts.render(rooms, STATUS);
-    if (window.Model3D && window.Model3D.generateElectricalSchematic) {
-      window.Model3D.generateElectricalSchematic();
+    if (window.Model3D) {
+      if (window.Model3D.generateElectricalSchematic) window.Model3D.generateElectricalSchematic();
+      if (window.Model3D.generateHVACSchematic) window.Model3D.generateHVACSchematic();
+      if (window.Model3D.updateSchematicBadge) window.Model3D.updateSchematicBadge();
     }
     updateSyncPill();
   }
@@ -1542,11 +1671,72 @@
       });
     });
 
+    // Place Vent toggle button
+    const btnPlaceVent = $("#btnPlaceVent");
+    if (btnPlaceVent) {
+      btnPlaceVent.addEventListener("click", () => {
+        if (window.Model3D) {
+          const cur = window.Model3D.isPlaceVentMode();
+          window.Model3D.setPlaceVentMode(!cur);
+          if (!cur) {
+            // Auto turn on HVAC layer if turning on place vent mode
+            window.Model3D.toggleInfrastructureLayer("hvac", true);
+            const btnHvac = $("#btnToggleHVAC");
+            if (btnHvac) btnHvac.classList.add("is-active");
+          }
+        }
+      });
+    }
+
+    // Add Register button
+    const btnAddRegister = $("#btnAddRegister");
+    if (btnAddRegister) {
+      btnAddRegister.addEventListener("click", () => {
+        addRegisterFrom3D({
+          room: state.selected || (H.rooms[0] ? H.rooms[0].id : "livingroom"),
+          anchor: null
+        });
+      });
+    }
+
     renderLegend();
     setPhase("existing");
     setLevel("main");
     setMode("renovation");
     updateSyncPill();
+  }
+
+  function addRegisterFrom3D({ room, anchor }) {
+    if (!H.registers) H.registers = [];
+    const id = "reg-" + (H.registers.length + 1);
+    const newReg = {
+      id,
+      room: room || (state.selected || (H.rooms[0] ? H.rooms[0].id : "livingroom")),
+      kind: "supply",
+      size: "4x10",
+      cfm: null,
+      anchor: anchor || null,
+      verified: false
+    };
+    H.registers.push(newReg);
+    SS.save(H);
+    flashSaved();
+    refreshAll();
+    const sec = $("#registersSection");
+    if (sec) sec.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function selectRegister(regId) {
+    const reg = (H.registers || []).find((r) => r.id === regId);
+    if (!reg) return;
+    if (reg.room) selectRoom(reg.room);
+    const sec = $("#registersSection");
+    if (sec) sec.scrollIntoView({ behavior: "smooth" });
+    const row = $(`tr[data-register="${regId}"]`);
+    if (row) {
+      row.style.background = "rgba(56, 189, 248, 0.15)";
+      setTimeout(() => { row.style.background = ""; }, 2000);
+    }
   }
 
   function checkElectricalSchematic() {
@@ -1585,13 +1775,51 @@
     };
   }
 
+  function checkHVACSchematic() {
+    const regs = H.registers || [];
+    const verified = regs.filter((r) => r.verified);
+    const unverified = regs.filter((r) => !r.verified);
+    const supplies = regs.filter((r) => r.kind === "supply");
+    const returns = regs.filter((r) => r.kind === "return");
+
+    console.group("%c❄️ 3D HVAC Schematic Integrity Check", "font-weight:bold;color:#38BDF8;font-size:13px;");
+    console.log(`Total registers: ${regs.length} | Verified: ${verified.length} | Unverified: ${unverified.length} | Supplies: ${supplies.length} | Returns: ${returns.length}`);
+
+    console.table(regs.map((r) => ({
+      ID: r.id,
+      Room: r.room,
+      Kind: r.kind.toUpperCase(),
+      Size: r.size,
+      CFM: r.cfm || "-",
+      Status: r.verified ? "✅ VERIFIED" : "⚠️ UNVERIFIED",
+      Anchor: r.anchor ? `(${r.anchor.x}, ${r.anchor.y}, ${r.anchor.z})` : "Centroid"
+    })));
+
+    if (unverified.length > 0) {
+      console.warn("Registers needing field observation/verification:", unverified.map((r) => r.id));
+    }
+    console.groupEnd();
+
+    return {
+      total: regs.length,
+      verified: verified.length,
+      unverified: unverified.length,
+      supplies: supplies.length,
+      returns: returns.length,
+      registers: regs
+    };
+  }
+
   // Expose selectRoom for 3D raycaster
   window.App = {
     selectRoom,
     setMode,
     setLevel,
     setView,
-    checkElectricalSchematic
+    checkElectricalSchematic,
+    checkHVACSchematic,
+    addRegisterFrom3D,
+    selectRegister
   };
 
   document.addEventListener("DOMContentLoaded", init);

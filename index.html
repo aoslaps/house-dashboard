@@ -71,6 +71,7 @@
           <button id="btnToggleConduit" title="Toggle 3D Electrical Conduit">⚡ Conduit</button>
           <button id="btnToggleHVAC" title="Toggle 3D HVAC Ductwork">❄️ HVAC</button>
           <button id="btnTogglePlumbing" title="Toggle 3D Plumbing Lines">💧 Plumbing</button>
+          <button id="btnPlaceVent" class="btn-place-mode" title="Click on floor in 3D to place a vent">📍 Place Vent</button>
         </div>
       </div>
       <div class="model3d-wrap" id="model3dWrap" hidden>
@@ -3240,6 +3241,21 @@ lFYM/45SC/+ITwv/iE8L/4hPC/8BAAD//3AHFsS4Cd1sAAAAAElFTkSuQmCC"/>
         <!-- filled by app.js -->
       </div>
       <div class="circuits-table-wrap" id="circuitsTableWrap" hidden>
+        <!-- filled by app.js -->
+      </div>
+    </section>
+
+    <section class="registers-section" id="registersSection">
+      <div class="registers-head">
+        <div>
+          <h2>❄️ HVAC Registers & Ventilation</h2>
+          <p>Click "📍 Place Vent" in the 3D model to drop observed registers, or edit them below. Duct runs are dynamically generated.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <button class="btn-add-breaker" id="btnAddRegister">+ Add Register</button>
+        </div>
+      </div>
+      <div class="registers-table-wrap" id="registersTableWrap">
         <!-- filled by app.js -->
       </div>
     </section>

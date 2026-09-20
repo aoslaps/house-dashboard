@@ -18,7 +18,8 @@ window.HOUSE = {
     //   "equal"  -> every room counts the same (easy, but misleading)
     progressWeighting: "area",
     areaAccuracyNote: "Areas are approximate from architectural model ('somewhat accurate.sh3d'). Verify in the field before ordering materials.",
-    panelAnchor: { x: 0.6, y: -0.9, z: 2.25 }, // Approximate placeholder from 3D model (basement mechanical). Calibrate in field.
+    panelAnchor: { x: 1.291, y: -0.9, z: 6.855 }, // Sited at centroid of basement-mech room.
+    furnaceAnchor: { x: 1.55, y: -1.18, z: 3.27 }, // Approximate furnace equipment location in basement.
   },
 
   /* -------------------------------------------------------------------------
@@ -232,15 +233,31 @@ window.HOUSE = {
    * Circuits reference rooms by id.
    * ------------------------------------------------------------------------- */
   circuits: [
-    { id: "A02", breaker: 2,  panel: "main", amps: 15, description: "Hall + front lighting",     rooms: ["fronthall", "hall1", "flex1"], placeholder: true },
-    { id: "A08", breaker: 8,  panel: "main", amps: 30, description: "Garage / shop",              rooms: ["garage"], placeholder: false },
-    { id: "A12", breaker: 12, panel: "main", amps: 20, description: "Living room receptacles",     rooms: ["livingroom", "flex1", "office"], placeholder: true },
-    { id: "A14", breaker: 14, panel: "main", amps: 20, description: "Kitchen small appliance",    rooms: ["kitchen"], placeholder: true },
-    { id: "A16", breaker: 16, panel: "main", amps: 20, description: "Kitchen small appliance",    rooms: ["kitchen"], placeholder: true },
-    { id: "B02", breaker: 2,  panel: "sub",  amps: 15, description: "Great room",                 rooms: ["greatroom"], placeholder: true },
-    { id: "B04", breaker: 4,  panel: "sub",  amps: 15, description: "Bedrooms 1 & 2",             rooms: ["bed1", "bed2"], placeholder: true },
-    { id: "B06", breaker: 6,  panel: "sub",  amps: 15, description: "Bedrooms 3 & 4",             rooms: ["bed3", "bed4"], placeholder: true },
-    { id: "B08", breaker: 8,  panel: "sub",  amps: 20, description: "Laundry",                     rooms: ["laundry"], placeholder: true },
-    { id: "B10", breaker: 10, panel: "sub",  amps: 20, description: "Bath GFCI",                   rooms: ["ba1", "ba2"], placeholder: true },
+    { id: "A02", breaker: 2,  panel: "main", amps: 15, description: "Hall + front lighting",     rooms: ["fronthall", "hall1", "flex1"], placeholder: true,  verified: false },
+    { id: "A08", breaker: 8,  panel: "main", amps: 30, description: "Garage / shop",              rooms: ["garage"],                       placeholder: false, verified: true },
+    { id: "A12", breaker: 12, panel: "main", amps: 20, description: "Living room receptacles",     rooms: ["livingroom", "flex1", "office"], placeholder: true,  verified: false },
+    { id: "A14", breaker: 14, panel: "main", amps: 20, description: "Kitchen small appliance",    rooms: ["kitchen"],                      placeholder: true,  verified: false },
+    { id: "A16", breaker: 16, panel: "main", amps: 20, description: "Kitchen small appliance",    rooms: ["kitchen"],                      placeholder: true,  verified: false },
+    { id: "B02", breaker: 2,  panel: "sub",  amps: 15, description: "Great room",                 rooms: ["greatroom"],                    placeholder: true,  verified: false },
+    { id: "B04", breaker: 4,  panel: "sub",  amps: 15, description: "Bedrooms 1 & 2",             rooms: ["bed1", "bed2"],                 placeholder: true,  verified: false },
+    { id: "B06", breaker: 6,  panel: "sub",  amps: 15, description: "Bedrooms 3 & 4",             rooms: ["bed3", "bed4"],                 placeholder: true,  verified: false },
+    { id: "B08", breaker: 8,  panel: "sub",  amps: 20, description: "Laundry",                     rooms: ["laundry"],                      placeholder: true,  verified: false },
+    { id: "B10", breaker: 10, panel: "sub",  amps: 20, description: "Bath GFCI",                   rooms: ["ba1", "ba2"],                   placeholder: true,  verified: false },
+  ],
+
+  /* -------------------------------------------------------------------------
+   * REGISTERS  —  the HVAC layer (Phase 7c).
+   * Supply and return registers reference rooms by id.
+   * anchor: { x, y, z } in 3D space, or null to default to room centroid.
+   * ------------------------------------------------------------------------- */
+  registers: [
+    { id: "reg-1", room: "greatroom",  kind: "supply", size: "4x10", cfm: 100,  anchor: { x:  2.8, y: 0.02, z: 9.5 }, verified: false },
+    { id: "reg-2", room: "greatroom",  kind: "supply", size: "4x10", cfm: 100,  anchor: { x: -0.2, y: 0.02, z: 8.5 }, verified: false },
+    { id: "reg-3", room: "livingroom", kind: "supply", size: "4x10", cfm: 120,  anchor: { x: -3.5, y: 0.02, z: 8.0 }, verified: false },
+    { id: "reg-4", room: "livingroom", kind: "supply", size: "4x10", cfm: 120,  anchor: { x: -6.0, y: 0.02, z: 5.5 }, verified: false },
+    { id: "reg-5", room: "kitchen",    kind: "supply", size: "4x10", cfm: 90,   anchor: { x:  2.5, y: 0.02, z: 3.5 }, verified: false },
+    { id: "reg-6", room: "flex1",      kind: "supply", size: "4x10", cfm: 80,   anchor: { x:  2.5, y: 0.02, z: 0.8 }, verified: false },
+    { id: "reg-7", room: "bed2",       kind: "supply", size: "4x10", cfm: 75,   anchor: { x:  5.5, y: 0.02, z: 1.0 }, verified: false },
+    { id: "reg-8", room: "bed4",       kind: "supply", size: "4x10", cfm: 75,   anchor: { x: 10.0, y: 0.02, z: 4.5 }, verified: false },
   ],
 };

@@ -1563,7 +1563,41 @@
     }
   }
 
-  function onClick() {
+  function onClick(e) {
+    if (isPlaceVentMode) {
+      // Raycast against visible room floors
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(roomMeshes.filter((m) => m.visible));
+      if (intersects.length > 0) {
+        const hit = intersects[0];
+        const hitX = Math.round(hit.point.x * 100) / 100;
+        const hitY = Math.round(hit.point.y * 100) / 100;
+        const hitZ = Math.round(hit.point.z * 100) / 100;
+        const detectedRoom = detectRoomAtPoint(hitX, hitZ, activeLevel) || (hit.object.userData && hit.object.userData.id) || "livingroom";
+
+        if (window.App && typeof window.App.addRegisterFrom3D === "function") {
+          window.App.addRegisterFrom3D({
+            room: detectedRoom,
+            anchor: { x: hitX, y: hitY + 0.02, z: hitZ }
+          });
+        }
+      }
+      return;
+    }
+
+    // Check if clicked an existing register in normal mode
+    if (hvacLayerGroup && hvacLayerGroup.visible) {
+      raycaster.setFromCamera(mouse, camera);
+      const regIntersects = raycaster.intersectObjects(hvacLayerGroup.children.filter((c) => c.userData && c.userData.isRegister));
+      if (regIntersects.length > 0) {
+        const regObj = regIntersects[0].object;
+        if (window.App && typeof window.App.selectRegister === "function") {
+          window.App.selectRegister(regObj.userData.registerId);
+          return;
+        }
+      }
+    }
+
     if (hoveredMesh && hoveredMesh.userData.id) {
       if (window.App && typeof window.App.selectRoom === "function") {
         window.App.selectRoom(hoveredMesh.userData.id);
@@ -1808,66 +1842,172 @@
   function buildInfrastructureLayers() {
     // 1. Electrical Conduit Layer (Data-Driven Generator)
     generateElectricalSchematic();
-    electricalLayerGroup.visible = false;
+  // --- Point-in-Polygon & Field Capture Helpers ---
 
-    // 2. HVAC Ductwork Layer
-    hvacLayerGroup = new THREE.Group();
+  function pointInPolygon(pt, poly) {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const xi = poly[i][0], zi = poly[i][1];
+      const xj = poly[j][0], zj = poly[j][1];
+      const intersect = ((zi > pt[1]) !== (zj > pt[1])) &&
+        (pt[0] < (xj - xi) * (pt[1] - zi) / (zj - zi) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
+
+  function detectRoomAtPoint(x, z, level) {
+    if (!modelData || !modelData.rooms) return null;
+    const targetLevel = level || activeLevel;
+    const candidateRooms = modelData.rooms.filter((r) => {
+      if (targetLevel === "all") return true;
+      return (r.level || "main") === targetLevel;
+    });
+
+    for (let i = 0; i < candidateRooms.length; i++) {
+      const rm = candidateRooms[i];
+      if (rm.points && rm.points.length >= 3) {
+        if (pointInPolygon([x, z], rm.points)) {
+          return rm.id;
+        }
+      }
+    }
+    return null;
+  }
+
+  let isPlaceVentMode = false;
+
+  function setPlaceVentMode(active) {
+    isPlaceVentMode = !!active;
+    if (renderer && renderer.domElement) {
+      renderer.domElement.style.cursor = isPlaceVentMode ? "crosshair" : "default";
+    }
+    const btn = document.getElementById("btnPlaceVent");
+    if (btn) btn.classList.toggle("is-active", isPlaceVentMode);
+  }
+
+  function generateHVACSchematic() {
+    if (!hvacLayerGroup) {
+      hvacLayerGroup = new THREE.Group();
+      scene.add(hvacLayerGroup);
+    }
+
+    // Dispose & clear existing geometry
+    while (hvacLayerGroup.children.length > 0) {
+      const child = hvacLayerGroup.children[0];
+      if (child.geometry) child.geometry.dispose();
+      if (child.material) {
+        if (Array.isArray(child.material)) child.material.forEach((m) => m.dispose());
+        else child.material.dispose();
+      }
+      hvacLayerGroup.remove(child);
+    }
+
+    const H = window.HOUSE || { registers: [] };
+    const meta = H.meta || {};
+    const fAnchor = meta.furnaceAnchor || { x: 1.55, y: -1.18, z: 3.27 };
+    const basementCeilingY = -0.28;
+
     const ductMat = new THREE.MeshStandardMaterial({
       color: 0x94A3B8,
       metalness: 0.85,
       roughness: 0.25
     });
+
     const registerMat = new THREE.MeshStandardMaterial({
       color: 0x475569,
       metalness: 0.6,
       roughness: 0.4
     });
 
-    // Main supply trunk along basement ceiling (y = -0.28m)
-    const supplyTrunk = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.28, 11.5), ductMat);
-    supplyTrunk.position.set(1.55, -0.28, 5.5);
-    hvacLayerGroup.add(supplyTrunk);
-
-    // Vertical riser from basement furnace (1.55, -2.13, 3.27) to supply trunk
-    const furnaceRiser = new THREE.Mesh(new THREE.BoxGeometry(0.48, 1.8, 0.48), ductMat);
-    furnaceRiser.position.set(1.55, -1.18, 3.27);
-    hvacLayerGroup.add(furnaceRiser);
-
-    // Branch ducts and floor supply registers in main-floor rooms
-    const supplyRegisters = [
-      { x:  2.8, z:  9.5 }, // Great Room
-      { x: -0.2, z:  8.5 }, // Great Room W
-      { x: -3.5, z:  8.0 }, // Living Room
-      { x: -6.0, z:  5.5 }, // Living Room W
-      { x:  2.5, z:  3.5 }, // Kitchen
-      { x:  2.5, z:  0.8 }, // Flex 1
-      { x:  5.5, z:  1.0 }, // Bed 2
-      { x: 10.0, z:  4.5 }, // Bed 4
-    ];
-
-    supplyRegisters.forEach((reg) => {
-      const dx = reg.x - 1.55;
-      const branchLen = Math.abs(dx);
-      if (branchLen > 0.1) {
-        const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, branchLen, 10), ductMat);
-        branch.rotation.z = Math.PI / 2;
-        branch.position.set(1.55 + dx / 2, -0.28, reg.z);
-        hvacLayerGroup.add(branch);
-      }
-      const boot = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.32, 10), ductMat);
-      boot.position.set(reg.x, -0.12, reg.z);
-      const grille = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.015, 0.14), registerMat);
-      grille.position.set(reg.x, 0.02, reg.z);
-      hvacLayerGroup.add(boot, grille);
+    const verifiedRegisterMat = new THREE.MeshStandardMaterial({
+      color: 0x3E8E5A,
+      emissive: 0x2B6946,
+      emissiveIntensity: 0.25,
+      metalness: 0.6,
+      roughness: 0.35
     });
 
+    // Furnace Equipment Box
+    const furnaceBox = new THREE.Mesh(new THREE.BoxGeometry(0.65, 1.2, 0.65), ductMat);
+    furnaceBox.position.set(fAnchor.x, fAnchor.y, fAnchor.z);
+    furnaceBox.userData = { isFurnace: true };
+    hvacLayerGroup.add(furnaceBox);
+
+    // Vertical riser from furnace to supply trunk
+    const riserHeight = basementCeilingY - fAnchor.y;
+    if (riserHeight > 0.1) {
+      const riser = new THREE.Mesh(new THREE.BoxGeometry(0.48, riserHeight, 0.48), ductMat);
+      riser.position.set(fAnchor.x, fAnchor.y + riserHeight / 2, fAnchor.z);
+      hvacLayerGroup.add(riser);
+    }
+
+    // Calculate trunk Z range from registers
+    const registers = H.registers || [];
+    let minZ = fAnchor.z - 2, maxZ = fAnchor.z + 6;
+    registers.forEach((reg) => {
+      const a = reg.anchor || roomAnchor(reg.room);
+      if (a) {
+        if (a.z < minZ) minZ = a.z - 0.5;
+        if (a.z > maxZ) maxZ = a.z + 0.5;
+      }
+    });
+
+    const trunkLen = Math.max(maxZ - minZ, 4.0);
+    const trunkCenterZ = (minZ + maxZ) / 2;
+    const supplyTrunk = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.28, trunkLen), ductMat);
+    supplyTrunk.position.set(fAnchor.x, basementCeilingY, trunkCenterZ);
+    hvacLayerGroup.add(supplyTrunk);
+
     // Return air trunk & drop
-    const returnTrunk = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.26, 8.0), ductMat);
-    returnTrunk.position.set(0.65, -0.28, 4.0);
+    const returnTrunk = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.26, Math.max(trunkLen * 0.7, 5.0)), ductMat);
+    returnTrunk.position.set(fAnchor.x - 0.9, basementCeilingY, trunkCenterZ);
     const returnDrop = new THREE.Mesh(new THREE.BoxGeometry(0.38, 1.8, 0.38), ductMat);
-    returnDrop.position.set(0.65, -1.18, 3.27);
+    returnDrop.position.set(fAnchor.x - 0.9, fAnchor.y, fAnchor.z);
     hvacLayerGroup.add(returnTrunk, returnDrop);
 
+    // Registers and branches
+    registers.forEach((reg) => {
+      const anchor = reg.anchor || roomAnchor(reg.room);
+      if (!anchor) return;
+
+      const isReturn = (reg.kind === "return");
+      const trunkX = isReturn ? (fAnchor.x - 0.9) : fAnchor.x;
+      const dx = anchor.x - trunkX;
+      const branchLen = Math.abs(dx);
+
+      if (branchLen > 0.05) {
+        const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, branchLen, 10), ductMat);
+        branch.rotation.z = Math.PI / 2;
+        branch.position.set(trunkX + dx / 2, basementCeilingY, anchor.z);
+        branch.userData = { registerId: reg.id, isBranch: true };
+        hvacLayerGroup.add(branch);
+      }
+
+      // Vertical boot from ceiling up to floor (or register height)
+      const targetY = (typeof anchor.y === "number") ? anchor.y : 0.02;
+      const bootHeight = Math.max(targetY - basementCeilingY, 0.2);
+      const boot = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, bootHeight, 10), ductMat);
+      boot.position.set(anchor.x, basementCeilingY + bootHeight / 2, anchor.z);
+      boot.userData = { registerId: reg.id, isBoot: true };
+      hvacLayerGroup.add(boot);
+
+      // Floor / Wall Grille
+      const gMat = reg.verified ? verifiedRegisterMat : registerMat;
+      const grille = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.02, 0.14), gMat);
+      grille.position.set(anchor.x, targetY, anchor.z);
+      grille.userData = { registerId: reg.id, isRegister: true, registerData: reg };
+      hvacLayerGroup.add(grille);
+    });
+  }
+
+  function buildInfrastructureLayers() {
+    // 1. Electrical Conduit Layer (Data-Driven Generator)
+    generateElectricalSchematic();
+    electricalLayerGroup.visible = false;
+
+    // 2. HVAC Ductwork Layer (Data-Driven Generator)
+    generateHVACSchematic();
     hvacLayerGroup.visible = false;
     scene.add(hvacLayerGroup);
 
@@ -1928,20 +2068,51 @@
   }
 
   function updateSchematicBadge() {
-    const isAnyVisible = (electricalLayerGroup && electricalLayerGroup.visible) ||
-                         (hvacLayerGroup && hvacLayerGroup.visible) ||
-                         (plumbingLayerGroup && plumbingLayerGroup.visible);
+    const isConduitOn = !!(electricalLayerGroup && electricalLayerGroup.visible);
+    const isHvacOn = !!(hvacLayerGroup && hvacLayerGroup.visible);
+    const isPlumbingOn = !!(plumbingLayerGroup && plumbingLayerGroup.visible);
+    const isAnyVisible = isConduitOn || isHvacOn || isPlumbingOn;
 
     let badge = document.getElementById("schematicHonestyBadge");
     if (!badge && renderer && renderer.domElement && renderer.domElement.parentElement) {
       badge = document.createElement("div");
       badge.id = "schematicHonestyBadge";
       badge.className = "schematic-honesty-badge";
-      badge.innerHTML = `<span>⚡ Schematic — shows what connects to what, not where it runs. Not as-built.</span>`;
       renderer.domElement.parentElement.appendChild(badge);
     }
     if (badge) {
       badge.hidden = !isAnyVisible;
+      if (isAnyVisible) {
+        const H = window.HOUSE || {};
+        const stats = [];
+
+        if (isConduitOn) {
+          const circs = H.circuits || [];
+          const vCircs = circs.filter((c) => c.verified).length;
+          const pct = circs.length ? Math.round((vCircs / circs.length) * 100) : 0;
+          stats.push(`⚡ Electrical: ${vCircs}/${circs.length} verified (${pct}%)`);
+        }
+
+        if (isHvacOn) {
+          const regs = H.registers || [];
+          const vRegs = regs.filter((r) => r.verified).length;
+          const pct = regs.length ? Math.round((vRegs / regs.length) * 100) : 0;
+          stats.push(`❄️ HVAC: ${vRegs}/${regs.length} verified (${pct}%)`);
+        }
+
+        if (isPlumbingOn) {
+          const fixes = H.fixtures || [];
+          const vFixes = fixes.filter((f) => f.verified).length;
+          const pct = fixes.length ? Math.round((vFixes / fixes.length) * 100) : 0;
+          stats.push(`💧 Plumbing: ${vFixes}/${fixes.length} verified (${pct}%)`);
+        }
+
+        const statsHtml = stats.length
+          ? `<span class="badge-stats-divider">·</span><span class="badge-stats">${stats.join(" · ")}</span>`
+          : "";
+
+        badge.innerHTML = `<span class="badge-routing">⚡ Schematic — shows what connects to what, not where it runs. Not as-built.</span>${statsHtml}`;
+      }
     }
   }
 
@@ -2122,6 +2293,11 @@
     highlightRoom,
     highlightCircuit,
     generateElectricalSchematic,
-    roomAnchor
+    generateHVACSchematic,
+    roomAnchor,
+    detectRoomAtPoint,
+    setPlaceVentMode,
+    isPlaceVentMode: () => isPlaceVentMode,
+    updateSchematicBadge
   };
 })();
