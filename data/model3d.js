@@ -1,3 +1,4 @@
+/* Auto-generated 3D Model Data for Offline file:// compatibility */
 window.MODEL_3D_DATA = {
   "levels": [
     {
@@ -2399,6 +2400,23 @@ window.MODEL_3D_DATA = {
       "isGarage": false,
       "isCased": false,
       "isExterior": true
+    },
+    {
+      "id": "door_bedroom4",
+      "name": "Bedroom 4 Door",
+      "catalogId": "eTeks#door",
+      "level": "main",
+      "x": 11.209,
+      "y": 0.0,
+      "z": 2.5465,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.17,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
     }
   ],
   "windows": [

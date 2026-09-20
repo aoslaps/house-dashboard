@@ -123,6 +123,25 @@ for i, dw in enumerate(doors_windows_xml):
         item['sill'] = round(sill, 4)
         windows.append(item)
 
+# Bedroom 4 Door (at the end of Hall 2 into Bedroom 4)
+doors.append({
+    'id': 'door_bedroom4',
+    'name': 'Bedroom 4 Door',
+    'catalogId': 'eTeks#door',
+    'level': 'main',
+    'x': 11.209,
+    'y': 0.0,
+    'z': 2.5465,
+    'width': 0.9144,
+    'height': 2.0828,
+    'depth': 0.17,
+    'rotY': -1.5708,
+    'angleDeg': 90.0,
+    'isGarage': False,
+    'isCased': False,
+    'isExterior': False
+})
+
 # 4. Staircase: Exact from Home.xml
 # Staircase in Home.xml: x=4312.195, y=1836.4584, width=72.39, depth=222.25, height=361.95
 # In 3D: x=7.122, z=4.365. Runs along Z from Z=3.254 (top, main floor 0.0) to Z=5.477 (bottom, basement -2.13)
