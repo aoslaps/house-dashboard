@@ -2638,12 +2638,12 @@ window.MODEL_3D_DATA = {
       "x": 1.3322,
       "y": 0,
       "z": 11.6462,
-      "width": 1.651,
-      "height": 1.9812,
+      "width": 0.9144,
+      "height": 1.8034,
       "depth": 0.2301,
       "rotY": 0,
       "angleDeg": 0,
-      "sill": 0.2286
+      "sill": 0.4064
     },
     {
       "id": "doorOrWindow-9a9c55e8-c7ee-4764-bfb2-2652137b4711",
@@ -2654,11 +2654,11 @@ window.MODEL_3D_DATA = {
       "y": 0,
       "z": 11.6462,
       "width": 0.9144,
-      "height": 2.0987,
+      "height": 1.8034,
       "depth": 0.2301,
       "rotY": 0,
       "angleDeg": 0,
-      "sill": 0.108
+      "sill": 0.4064
     },
     {
       "id": "doorOrWindow-336ac452-01c4-409a-be34-c8ab25e4d013",
@@ -2669,11 +2669,11 @@ window.MODEL_3D_DATA = {
       "y": 0,
       "z": 11.6462,
       "width": 0.9144,
-      "height": 2.0987,
+      "height": 1.8034,
       "depth": 0.2301,
       "rotY": 0,
       "angleDeg": 0,
-      "sill": 0.108
+      "sill": 0.4064
     },
     {
       "id": "doorOrWindow-dab02cdb-e2c0-4ba7-bf5f-2e2fcd14545e",
