@@ -18,6 +18,7 @@ window.HOUSE = {
     //   "equal"  -> every room counts the same (easy, but misleading)
     progressWeighting: "area",
     areaAccuracyNote: "Areas are approximate from architectural model ('somewhat accurate.sh3d'). Verify in the field before ordering materials.",
+    panelAnchor: { x: 0.6, y: -0.9, z: 2.25 }, // Approximate placeholder from 3D model (basement mechanical). Calibrate in field.
   },
 
   /* -------------------------------------------------------------------------

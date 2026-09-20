@@ -1510,6 +1510,29 @@
         mesh.material.opacity = 0.85;
       }
     });
+
+    if (electricalLayerGroup) {
+      electricalLayerGroup.traverse((obj) => {
+        if (obj.userData && obj.userData.circuitId) {
+          if (!circuitId) {
+            if (obj.material && obj.material.emissiveIntensity !== undefined) {
+              obj.material.emissiveIntensity = 0.55;
+              obj.material.opacity = 0.9;
+            }
+          } else if (obj.userData.circuitId === circuitId) {
+            if (obj.material && obj.material.emissiveIntensity !== undefined) {
+              obj.material.emissiveIntensity = 1.0;
+              obj.material.opacity = 1.0;
+            }
+          } else {
+            if (obj.material && obj.material.emissiveIntensity !== undefined) {
+              obj.material.emissiveIntensity = 0.08;
+              obj.material.opacity = 0.15;
+            }
+          }
+        }
+      });
+    }
   }
 
   function onMouseMove(e) {
@@ -1632,72 +1655,160 @@
 
   // --- 3D Infrastructure Layers (Conduit, HVAC, Plumbing) ---
 
-  function buildInfrastructureLayers() {
-    // 1. Electrical Conduit Layer
-    electricalLayerGroup = new THREE.Group();
-    const conduitMat = new THREE.MeshStandardMaterial({
-      color: 0x00E5FF,
-      emissive: 0x00B4D8,
-      emissiveIntensity: 0.65,
-      roughness: 0.2,
-      metalness: 0.8
-    });
+  function roomAnchor(roomId, targetHeight) {
+    if (!modelData || !modelData.rooms) return null;
+    const r = modelData.rooms.find((rm) => rm.id === roomId);
+    if (!r) return null;
+
+    let cx = 0, cz = 0;
+    if (r.points && r.points.length > 0) {
+      r.points.forEach((p) => { cx += p[0]; cz += p[1]; });
+      cx /= r.points.length;
+      cz /= r.points.length;
+    }
+
+    const isBasement = (r.level === "basement" || (r.elevation !== undefined && r.elevation < -0.5));
+    const defaultH = isBasement ? -0.28 : 2.38;
+    const y = (typeof targetHeight === "number") ? targetHeight : defaultH;
+
+    return {
+      x: Math.round(cx * 1000) / 1000,
+      y,
+      z: Math.round(cz * 1000) / 1000,
+      level: r.level || (isBasement ? "basement" : "main"),
+      elevation: r.elevation || (isBasement ? -2.13 : 0)
+    };
+  }
+
+  function generateElectricalSchematic() {
+    if (!electricalLayerGroup) {
+      electricalLayerGroup = new THREE.Group();
+      scene.add(electricalLayerGroup);
+    }
+
+    // Dispose & clear existing geometry
+    while (electricalLayerGroup.children.length > 0) {
+      const child = electricalLayerGroup.children[0];
+      if (child.geometry) child.geometry.dispose();
+      if (child.material) {
+        if (Array.isArray(child.material)) child.material.forEach((m) => m.dispose());
+        else child.material.dispose();
+      }
+      electricalLayerGroup.remove(child);
+    }
+
+    const H = window.HOUSE || { circuits: [] };
+    const meta = H.meta || {};
+    const pAnchor = meta.panelAnchor || { x: 0.6, y: -0.9, z: 2.25 };
+    const ceilingY = 2.38;
+
     const jboxMat = new THREE.MeshStandardMaterial({
       color: 0x0284C7,
       metalness: 0.7,
       roughness: 0.3
     });
 
-    function addConduit(x1, y1, z1, x2, y2, z2) {
+    const panelEnclosureMat = new THREE.MeshStandardMaterial({
+      color: 0x334155,
+      metalness: 0.85,
+      roughness: 0.25
+    });
+
+    // Main Service Panel Enclosure at panelAnchor
+    const panelBox = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.52, 0.14), panelEnclosureMat);
+    panelBox.position.set(pAnchor.x, pAnchor.y, pAnchor.z);
+    panelBox.userData = { isPanel: true };
+    electricalLayerGroup.add(panelBox);
+
+    // Main Riser from panelAnchor up to ceiling
+    const riserHeight = ceilingY - pAnchor.y;
+    if (riserHeight > 0.1) {
+      const riserGeom = new THREE.CylinderGeometry(0.035, 0.035, riserHeight, 8);
+      const riserMat = new THREE.MeshStandardMaterial({
+        color: 0x94A3B8,
+        metalness: 0.8,
+        roughness: 0.3
+      });
+      const riserMesh = new THREE.Mesh(riserGeom, riserMat);
+      riserMesh.position.set(pAnchor.x, pAnchor.y + riserHeight / 2, pAnchor.z);
+      electricalLayerGroup.add(riserMesh);
+    }
+
+    // Main junction box at ceiling
+    const mainJBox = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.10), jboxMat);
+    mainJBox.position.set(pAnchor.x, ceilingY, pAnchor.z);
+    electricalLayerGroup.add(mainJBox);
+
+    // Amperage color map (standard NEC / wire jacket styling)
+    const AMP_COLORS = {
+      15: 0x38BDF8, // Cyan / Sky blue (14 AWG)
+      20: 0xFACC15, // Yellow (12 AWG)
+      30: 0xFB923C, // Orange (10 AWG)
+      50: 0xEF4444  // Red (Heavy feed)
+    };
+
+    function addSchematicRun(x1, y1, z1, x2, y2, z2, mat, circuitId) {
       const dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
       const len = Math.hypot(dx, dy, dz);
       if (len < 0.01) return;
-      const geom = new THREE.CylinderGeometry(0.022, 0.022, len, 8);
-      const mesh = new THREE.Mesh(geom, conduitMat);
+      const geom = new THREE.CylinderGeometry(0.02, 0.02, len, 8);
+      const mesh = new THREE.Mesh(geom, mat);
       mesh.position.set((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
       mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(dx, dy, dz).normalize());
+      mesh.userData = { circuitId, isConduit: true };
       electricalLayerGroup.add(mesh);
     }
 
-    function addJBox(x, y, z) {
-      const jbox = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.10, 0.08), jboxMat);
-      jbox.position.set(x, y, z);
-      electricalLayerGroup.add(jbox);
-    }
+    // Generate runs for each circuit
+    const circuits = H.circuits || [];
+    circuits.forEach((c) => {
+      const colorHex = (c.color && parseInt(c.color.replace("#", "0x"), 16)) || AMP_COLORS[c.amps] || 0x38BDF8;
+      const mat = new THREE.MeshStandardMaterial({
+        color: colorHex,
+        emissive: colorHex,
+        emissiveIntensity: 0.55,
+        roughness: 0.25,
+        metalness: 0.75,
+        transparent: true,
+        opacity: 0.9
+      });
 
-    // Main riser from basement panel (0.6, -0.9, 2.25) up to ceiling
-    addConduit(0.6, -0.9, 2.25, 0.6, 2.38, 2.25);
-    addJBox(0.6, 2.38, 2.25);
+      const rooms = c.rooms || [];
+      rooms.forEach((roomId) => {
+        const anchor = roomAnchor(roomId);
+        if (!anchor) return;
 
-    // Branch 1: Kitchen circuit
-    addConduit(0.6, 2.38, 2.25, 1.5, 2.38, 4.3);
-    addJBox(1.5, 2.38, 4.3);
-    addConduit(1.5, 2.38, 4.3, 1.5, 1.1, 4.3); // drop to counter outlet
+        const targetY = (anchor.level === "basement") ? -0.28 : ceilingY;
 
-    // Branch 2: Living room circuit
-    addConduit(0.6, 2.38, 2.25, -4.2, 2.38, 2.25);
-    addConduit(-4.2, 2.38, 2.25, -4.2, 2.38, 7.0);
-    addJBox(-4.2, 2.38, 7.0);
+        // Orthogonal routing:
+        // Run 1: from panel riser along X to room centroid X at ceiling height
+        addSchematicRun(pAnchor.x, targetY, pAnchor.z, anchor.x, targetY, pAnchor.z, mat, c.id);
+        // Run 2: from (anchor.x, targetY, pAnchor.z) along Z to (anchor.x, targetY, anchor.z)
+        addSchematicRun(anchor.x, targetY, pAnchor.z, anchor.x, targetY, anchor.z, mat, c.id);
 
-    // Branch 3: Great Room circuit
-    addConduit(0.6, 2.38, 2.25, 1.5, 2.38, 9.0);
-    addJBox(1.5, 2.38, 9.0);
+        // Ceiling junction box in room
+        const roomJBox = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.10, 0.08), jboxMat);
+        roomJBox.position.set(anchor.x, targetY, anchor.z);
+        roomJBox.userData = { circuitId: c.id };
+        electricalLayerGroup.add(roomJBox);
 
-    // Branch 4: Bedrooms circuit
-    addConduit(0.6, 2.38, 2.25, 6.0, 2.38, 2.25);
-    addConduit(6.0, 2.38, 2.25, 6.0, 2.38, -0.5);
-    addJBox(6.0, 2.38, -0.5);
-    addConduit(6.0, 2.38, 2.25, 10.5, 2.38, 2.25);
-    addJBox(10.5, 2.38, 2.25);
+        // Vertical drop to switch/outlet height
+        const dropBottomY = anchor.elevation + 0.6;
+        addSchematicRun(anchor.x, targetY, anchor.z, anchor.x, dropBottomY, anchor.z, mat, c.id);
 
-    // Branch 5: Garage circuit (powering bay with Mustang)
-    addConduit(0.6, 2.38, 2.25, -3.5, 2.38, -1.0);
-    addConduit(-3.5, 2.38, -1.0, -8.5, 2.38, -4.0);
-    addConduit(-8.5, 2.38, -4.0, -11.5, 2.38, -7.5);
-    addJBox(-11.5, 2.38, -7.5);
+        // Receptacle box at drop bottom
+        const outletBox = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.05), jboxMat);
+        outletBox.position.set(anchor.x, dropBottomY, anchor.z);
+        outletBox.userData = { circuitId: c.id };
+        electricalLayerGroup.add(outletBox);
+      });
+    });
+  }
 
+  function buildInfrastructureLayers() {
+    // 1. Electrical Conduit Layer (Data-Driven Generator)
+    generateElectricalSchematic();
     electricalLayerGroup.visible = false;
-    scene.add(electricalLayerGroup);
 
     // 2. HVAC Ductwork Layer
     hvacLayerGroup = new THREE.Group();
@@ -1816,10 +1927,29 @@
     scene.add(plumbingLayerGroup);
   }
 
+  function updateSchematicBadge() {
+    const isAnyVisible = (electricalLayerGroup && electricalLayerGroup.visible) ||
+                         (hvacLayerGroup && hvacLayerGroup.visible) ||
+                         (plumbingLayerGroup && plumbingLayerGroup.visible);
+
+    let badge = document.getElementById("schematicHonestyBadge");
+    if (!badge && renderer && renderer.domElement && renderer.domElement.parentElement) {
+      badge = document.createElement("div");
+      badge.id = "schematicHonestyBadge";
+      badge.className = "schematic-honesty-badge";
+      badge.innerHTML = `<span>⚡ Schematic — shows what connects to what, not where it runs. Not as-built.</span>`;
+      renderer.domElement.parentElement.appendChild(badge);
+    }
+    if (badge) {
+      badge.hidden = !isAnyVisible;
+    }
+  }
+
   function toggleInfrastructureLayer(name, visible) {
     if (name === "conduit" && electricalLayerGroup) electricalLayerGroup.visible = visible;
     if (name === "hvac" && hvacLayerGroup) hvacLayerGroup.visible = visible;
     if (name === "plumbing" && plumbingLayerGroup) plumbingLayerGroup.visible = visible;
+    updateSchematicBadge();
   }
 
   // --- First-Person Walkthrough Mode ("Walk Inside") ---
@@ -1990,6 +2120,8 @@
     isFirstPersonMode: () => isFirstPerson,
     updateRoomTints,
     highlightRoom,
-    highlightCircuit
+    highlightCircuit,
+    generateElectricalSchematic,
+    roomAnchor
   };
 })();

@@ -602,6 +602,9 @@
     paintPlan();
     if (state.mode === "electrical") renderBreakerBox();
     if (window.Charts) window.Charts.render(rooms, STATUS);
+    if (window.Model3D && window.Model3D.generateElectricalSchematic) {
+      window.Model3D.generateElectricalSchematic();
+    }
     updateSyncPill();
   }
 
@@ -1513,6 +1516,32 @@
       });
     }
 
+    // 3D Panel Anchor calibration inputs
+    const pAnchor = (H.meta && H.meta.panelAnchor) || { x: 0.6, y: -0.9, z: 2.25 };
+    const inX = $("#anchorX");
+    const inY = $("#anchorY");
+    const inZ = $("#anchorZ");
+    if (inX) inX.value = pAnchor.x;
+    if (inY) inY.value = pAnchor.y;
+    if (inZ) inZ.value = pAnchor.z;
+
+    [inX, inY, inZ].forEach((input) => {
+      if (!input) return;
+      input.addEventListener("change", () => {
+        if (!H.meta) H.meta = {};
+        if (!H.meta.panelAnchor) H.meta.panelAnchor = {};
+        H.meta.panelAnchor.x = parseFloat(inX.value) || 0;
+        H.meta.panelAnchor.y = parseFloat(inY.value) || 0;
+        H.meta.panelAnchor.z = parseFloat(inZ.value) || 0;
+        SS.save(H);
+        flashSaved();
+        if (window.Model3D && window.Model3D.generateElectricalSchematic) {
+          window.Model3D.generateElectricalSchematic();
+        }
+        updateSyncPill();
+      });
+    });
+
     renderLegend();
     setPhase("existing");
     setLevel("main");
@@ -1520,12 +1549,49 @@
     updateSyncPill();
   }
 
+  function checkElectricalSchematic() {
+    const circuits = H.circuits || [];
+    const verified = circuits.filter((c) => !c.placeholder);
+    const placeholders = circuits.filter((c) => !!c.placeholder);
+    const unmapped = circuits.filter((c) => !(c.rooms && c.rooms.length > 0));
+
+    console.group("%c⚡ 3D Electrical Schematic Integrity Check", "font-weight:bold;color:#38BDF8;font-size:13px;");
+    console.log(`Total circuits: ${circuits.length}  |  Verified: ${verified.length}  |  Placeholder: ${placeholders.length}  |  Unmapped: ${unmapped.length}`);
+
+    console.table(circuits.map((c) => ({
+      ID: c.id,
+      Breaker: "#" + (c.breaker || "?"),
+      Panel: c.panel || "main",
+      Amps: (c.amps || 15) + "A",
+      Status: c.placeholder ? "⚠️ PLACEHOLDER" : "✅ VERIFIED",
+      Rooms: (c.rooms || []).join(", ") || "(NONE)",
+      Description: c.description || ""
+    })));
+
+    if (placeholders.length > 0) {
+      console.warn("Circuits needing breaker tracer field verification:", placeholders.map((c) => c.id));
+    }
+    if (unmapped.length > 0) {
+      console.warn("Circuits with no connected rooms (no 3D runs generated):", unmapped.map((c) => c.id));
+    }
+    console.groupEnd();
+
+    return {
+      total: circuits.length,
+      verified: verified.length,
+      placeholder: placeholders.length,
+      unmapped: unmapped.length,
+      circuits
+    };
+  }
+
   // Expose selectRoom for 3D raycaster
   window.App = {
     selectRoom,
     setMode,
     setLevel,
-    setView
+    setView,
+    checkElectricalSchematic
   };
 
   document.addEventListener("DOMContentLoaded", init);
