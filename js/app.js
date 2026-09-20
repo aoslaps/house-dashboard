@@ -1953,6 +1953,15 @@
       });
     }
 
+    
+    const btnPrintReport = $("#btnPrintReport");
+    if (btnPrintReport) {
+      btnPrintReport.addEventListener("click", () => {
+        generatePrintReport();
+        window.print();
+      });
+    }
+
     const btnReset = $("#btnReset");
     if (btnReset) {
       btnReset.addEventListener("click", () => {
