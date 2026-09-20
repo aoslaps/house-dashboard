@@ -1795,40 +1795,43 @@
 
     // Generate runs for each circuit
     const circuits = H.circuits || [];
-    circuits.forEach((c) => {
+    circuits.forEach((c, i) => {
       const colorHex = (c.color && parseInt(c.color.replace("#", "0x"), 16)) || AMP_COLORS[c.amps] || 0x38BDF8;
       const mat = new THREE.MeshStandardMaterial({
         color: colorHex,
         emissive: colorHex,
-        emissiveIntensity: 0.55,
-        roughness: 0.25,
-        metalness: 0.75,
-        transparent: true,
-        opacity: 0.9
+        emissiveIntensity: 0.15,
+        roughness: 0.5,
+        metalness: 0.5
       });
 
       const rooms = c.rooms || [];
-      rooms.forEach((roomId) => {
+      rooms.forEach((roomId, roomIdx) => {
         const anchor = roomAnchor(roomId);
         if (!anchor) return;
+
+        // Spread wires slightly to avoid perfect Z-fighting in bundles
+        const spread = 0.015;
+        const ox = ((i + roomIdx) % 6 - 2.5) * spread;
+        const oz = ((i * 2 + roomIdx) % 6 - 2.5) * spread;
 
         const targetY = (anchor.level === "basement") ? -0.28 : ceilingY;
 
         // Orthogonal routing:
         // Run 1: from panel riser along X to room centroid X at ceiling height
-        addSchematicRun(pAnchor.x, targetY, pAnchor.z, anchor.x, targetY, pAnchor.z, mat, c.id);
+        addSchematicRun(pAnchor.x + ox, targetY, pAnchor.z + oz, anchor.x + ox, targetY, pAnchor.z + oz, mat, c.id);
         // Run 2: from (anchor.x, targetY, pAnchor.z) along Z to (anchor.x, targetY, anchor.z)
-        addSchematicRun(anchor.x, targetY, pAnchor.z, anchor.x, targetY, anchor.z, mat, c.id);
+        addSchematicRun(anchor.x + ox, targetY, pAnchor.z + oz, anchor.x + ox, targetY, anchor.z + oz, mat, c.id);
 
         // Ceiling junction box in room
         const roomJBox = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.10, 0.08), jboxMat);
-        roomJBox.position.set(anchor.x, targetY, anchor.z);
+        roomJBox.position.set(anchor.x + ox, targetY, anchor.z + oz);
         roomJBox.userData = { circuitId: c.id };
         electricalLayerGroup.add(roomJBox);
 
         // Vertical drop to switch/outlet height
         const dropBottomY = anchor.elevation + 0.6;
-        addSchematicRun(anchor.x, targetY, anchor.z, anchor.x, dropBottomY, anchor.z, mat, c.id);
+        addSchematicRun(anchor.x + ox, targetY, anchor.z + oz, anchor.x + ox, dropBottomY, anchor.z + oz, mat, c.id);
 
         // Receptacle box at drop bottom
         const outletBox = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.05), jboxMat);
@@ -1839,9 +1842,6 @@
     });
   }
 
-  function buildInfrastructureLayers() {
-    // 1. Electrical Conduit Layer (Data-Driven Generator)
-    generateElectricalSchematic();
   // --- Point-in-Polygon & Field Capture Helpers ---
 
   function pointInPolygon(pt, poly) {
@@ -2012,57 +2012,8 @@
     scene.add(hvacLayerGroup);
 
     // 3. Plumbing Layer (PEX Hot Red & Cold Blue)
+    // Plumbing layer generation pending Phase 7b (data-driven schema)
     plumbingLayerGroup = new THREE.Group();
-    const pexHotMat = new THREE.MeshStandardMaterial({
-      color: 0xEF4444,
-      emissive: 0xB91C1C,
-      emissiveIntensity: 0.35,
-      roughness: 0.35
-    });
-    const pexColdMat = new THREE.MeshStandardMaterial({
-      color: 0x3B82F6,
-      emissive: 0x1D4ED8,
-      emissiveIntensity: 0.35,
-      roughness: 0.35
-    });
-
-    function addPipe(x1, y1, z1, x2, y2, z2, mat) {
-      const dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
-      const len = Math.hypot(dx, dy, dz);
-      if (len < 0.01) return;
-      const geom = new THREE.CylinderGeometry(0.016, 0.016, len, 8);
-      const mesh = new THREE.Mesh(geom, mat);
-      mesh.position.set((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
-      mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(dx, dy, dz).normalize());
-      plumbingLayerGroup.add(mesh);
-    }
-
-    // Risers from water heater and softener
-    addPipe(-0.41, -0.9, 2.48, -0.41, -0.15, 2.48, pexHotMat);
-    addPipe(-0.57, -0.9, 3.25, -0.57, -0.15, 3.25, pexColdMat);
-
-    // Main header runs along ceiling
-    addPipe(-0.41, -0.15, 2.48, 4.0, -0.15, 2.48, pexHotMat);
-    addPipe(-0.57, -0.15, 3.25, 4.0, -0.15, 3.25, pexColdMat);
-    addPipe(4.0, -0.15, 2.48, 4.0, -0.15, 6.5, pexHotMat);
-    addPipe(4.0, -0.15, 3.25, 4.0, -0.15, 6.5, pexColdMat);
-    addPipe(4.0, -0.15, 2.48, 9.5, -0.15, 2.48, pexHotMat);
-    addPipe(4.0, -0.15, 3.25, 9.5, -0.15, 3.25, pexColdMat);
-
-    // Wet fixture locations
-    const wetFixtures = [
-      { x:  3.2, z:  4.5 }, // Kitchen sink
-      { x:  5.0, z:  4.0 }, // Laundry
-      { x:  6.0, z:  6.5 }, // Bath 1
-      { x:  9.5, z:  4.5 }, // Bath 2
-      { x: -6.0, z: -0.5 }  // Outdoor hose bib
-    ];
-
-    wetFixtures.forEach((fix) => {
-      addPipe(fix.x, -0.15, fix.z, fix.x, 0.45, fix.z, pexHotMat);
-      addPipe(fix.x + 0.05, -0.15, fix.z, fix.x + 0.05, 0.45, fix.z, pexColdMat);
-    });
-
     plumbingLayerGroup.visible = false;
     scene.add(plumbingLayerGroup);
   }
@@ -2088,30 +2039,30 @@
 
         if (isConduitOn) {
           const circs = H.circuits || [];
-          const vCircs = circs.filter((c) => c.verified).length;
+          const vCircs = circs.filter((c) => !c.placeholder).length;
           const pct = circs.length ? Math.round((vCircs / circs.length) * 100) : 0;
-          stats.push(`⚡ Electrical: ${vCircs}/${circs.length} verified (${pct}%)`);
+          stats.push(`Electrical: ${vCircs}/${circs.length} verified (${pct}%)`);
         }
 
         if (isHvacOn) {
           const regs = H.registers || [];
           const vRegs = regs.filter((r) => r.verified).length;
           const pct = regs.length ? Math.round((vRegs / regs.length) * 100) : 0;
-          stats.push(`❄️ HVAC: ${vRegs}/${regs.length} verified (${pct}%)`);
+          stats.push(`HVAC: ${vRegs}/${regs.length} verified (${pct}%)`);
         }
 
         if (isPlumbingOn) {
           const fixes = H.fixtures || [];
           const vFixes = fixes.filter((f) => f.verified).length;
           const pct = fixes.length ? Math.round((vFixes / fixes.length) * 100) : 0;
-          stats.push(`💧 Plumbing: ${vFixes}/${fixes.length} verified (${pct}%)`);
+          stats.push(`Plumbing: ${vFixes}/${fixes.length} verified (${pct}%)`);
         }
 
         const statsHtml = stats.length
           ? `<span class="badge-stats-divider">·</span><span class="badge-stats">${stats.join(" · ")}</span>`
           : "";
 
-        badge.innerHTML = `<span class="badge-routing">⚡ Schematic — shows what connects to what, not where it runs. Not as-built.</span>${statsHtml}`;
+        badge.innerHTML = `<span class="badge-routing">Schematic — shows what connects to what, not where it runs. Not as-built.</span>${statsHtml}`;
       }
     }
   }

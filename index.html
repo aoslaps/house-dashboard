@@ -61,17 +61,21 @@
           <button role="tab" data-height="full" title="Full 2.44m ceiling-height walls">Full Walls (2.4m)</button>
         </div>
         <div class="lighting-toggle" id="lightingToggle" role="tablist" aria-label="Lighting environment" hidden>
-          <button role="tab" data-light="day" class="is-active" title="Crisp natural daylight">☀️ Day</button>
-          <button role="tab" data-light="sunset" title="Warm golden hour sunset">🌅 Sunset</button>
-          <button role="tab" data-light="night" title="Cozy night mode with warm window glow">🌙 Night</button>
+          <button role="tab" data-light="day" class="is-active" title="Crisp natural daylight">Day</button>
+          <button role="tab" data-light="sunset" title="Warm golden hour sunset">Sunset</button>
+          <button role="tab" data-light="night" title="Cozy night mode with warm window glow">Night</button>
         </div>
-        <button class="btn-walkthrough" id="btnWalkthrough" title="Walk inside at eye level (WASD + Mouse)" hidden>🚶 Walk Inside</button>
-        <button class="btn-toggle-labels is-active" id="btnToggle3DLabels" title="Toggle 3D room name badges" hidden>🏷️ Labels: ON</button>
-        <div class="infra-toggle" id="infraToggle" role="group" aria-label="Infrastructure layers" hidden>
-          <button id="btnToggleConduit" title="Toggle 3D Electrical Conduit">⚡ Conduit</button>
-          <button id="btnToggleHVAC" title="Toggle 3D HVAC Ductwork">❄️ HVAC</button>
-          <button id="btnTogglePlumbing" title="Toggle 3D Plumbing Lines">💧 Plumbing</button>
-          <button id="btnPlaceVent" class="btn-place-mode" title="Click on floor in 3D to place a vent">📍 Place Vent</button>
+        <div class="toolbar-dropdown" id="optionsDropdown" hidden>
+          <button class="dropdown-btn">More Options ▾</button>
+          <div class="dropdown-content">
+            <button class="btn-walkthrough" id="btnWalkthrough" title="Walk inside at eye level (WASD + Mouse)">Walk Inside</button>
+            <button class="btn-toggle-labels is-active" id="btnToggle3DLabels" title="Toggle 3D room name badges">Labels: ON</button>
+            <div class="dropdown-sep">Infrastructure</div>
+            <button id="btnToggleConduit" title="Toggle 3D Electrical Conduit">Conduit</button>
+            <button id="btnToggleHVAC" title="Toggle 3D HVAC Ductwork">HVAC</button>
+            <button id="btnTogglePlumbing" title="Toggle 3D Plumbing Lines">Plumbing</button>
+            <button id="btnPlaceVent" class="btn-place-mode" title="Click on floor in 3D to place a vent">Place Vent</button>
+          </div>
         </div>
       </div>
       <div class="model3d-wrap" id="model3dWrap" hidden>

@@ -1591,7 +1591,7 @@
       btnLabels.addEventListener("click", () => {
         labelsOn = !labelsOn;
         btnLabels.classList.toggle("is-active", labelsOn);
-        btnLabels.textContent = labelsOn ? "🏷️ Labels: ON" : "🏷️ Labels: OFF";
+        btnLabels.textContent = labelsOn ? "Labels: ON" : "Labels: OFF";
         if (window.Model3D) window.Model3D.setLabelsVisible(labelsOn);
       });
     }
