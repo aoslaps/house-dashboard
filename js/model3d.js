@@ -426,6 +426,12 @@
       metalness: 0.04
     });
 
+    const concreteWallMat = new THREE.MeshStandardMaterial({
+      color: 0x8E99A4, // Architectural poured concrete foundation grey
+      roughness: 0.92,
+      metalness: 0.04
+    });
+
     const interiorWallMat = new THREE.MeshStandardMaterial({
       color: 0xE8ECF0, // Clean interior drywall off-white
       roughness: 0.78,
@@ -446,19 +452,19 @@
 
     // Returns array of 6 materials for BoxGeometry:
     // [0:+X, 1:-X, 2:+Y (top), 3:-Y (bottom), 4:+Z, 5:-Z]
-    function getWallMaterials(extSide, isCutaway) {
+    function getWallMaterials(extSide, isCutaway, isBasement) {
       const intMat = isCutaway ? cutawayInteriorMat : interiorWallMat;
-      const extMat = exteriorWallMat;
-      const capMat = isCutaway ? cutawayInteriorMat : wallCapMat;
+      const extMat = isBasement ? concreteWallMat : exteriorWallMat;
+      const capMat = isCutaway ? cutawayInteriorMat : (isBasement ? concreteWallMat : wallCapMat);
 
       if (extSide === "+x") {
-        // +X faces outside (vinyl siding), -X faces inside (drywall)
+        // +X faces outside (siding/concrete), -X faces inside (drywall)
         return [extMat, intMat, capMat, intMat, intMat, intMat];
       } else if (extSide === "-x") {
-        // -X faces outside (vinyl siding), +X faces inside (drywall)
+        // -X faces outside (siding/concrete), +X faces inside (drywall)
         return [intMat, extMat, capMat, intMat, intMat, intMat];
       } else if (extSide === "both") {
-        // Both sides exterior (e.g. freestanding porch wall)
+        // Both sides exterior
         return [extMat, extMat, capMat, extMat, extMat, extMat];
       } else {
         // Pure interior wall: drywall on all faces
@@ -538,7 +544,7 @@
       const origH = w.height || 2.44;
       const thickness = w.thickness || 0.17;
       const extSide = w.extSide || (w.isExterior ? "+x" : "none");
-      const mats = getWallMaterials(extSide, wallHeightMode === "cutaway");
+      const mats = getWallMaterials(extSide, wallHeightMode === "cutaway", w.level === "basement");
 
       const wallGroup = new THREE.Group();
       wallGroup.position.set(w.x1, w.elevation, w.y1);
