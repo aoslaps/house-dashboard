@@ -30,6 +30,7 @@
   let environmentGroup = null;
   let hoveredMesh = null;
   let isInitialized = false;
+  let isShowStatusColors = false;
   let activeLevel = "all"; // "all" | "main" | "basement"
   let wallHeightMode = "cutaway"; // "cutaway" | "full"
   let labelsVisible = true;
@@ -328,7 +329,7 @@
 
       const rmData = byId(r.id);
       const status = rmData ? rmData.status : "not-started";
-      const colorHex = STATUS_COLORS[status] || 0x9AA4AE;
+      const colorHex = isShowStatusColors ? (STATUS_COLORS[status] || 0x9AA4AE) : 0x9AA4AE;
 
       const mat = new THREE.MeshStandardMaterial({
         color: colorHex,
@@ -1533,7 +1534,7 @@
     roomMeshes.forEach((mesh) => {
       const r = byId(mesh.userData.id);
       if (r) {
-        const hex = STATUS_COLORS[r.status] || 0x9AA4AE;
+        const hex = isShowStatusColors ? (STATUS_COLORS[r.status] || 0x9AA4AE) : 0x9AA4AE;
         mesh.userData.baseColor = hex;
         mesh.material.color.setHex(hex);
       }
@@ -2510,6 +2511,11 @@
   }
 
   window.Model3D = {
+    toggleStatusColors: (val) => {
+      isShowStatusColors = val !== undefined ? val : !isShowStatusColors;
+      updateRoomTints();
+      return isShowStatusColors;
+    },
     loadModelData,
     init,
     resize,

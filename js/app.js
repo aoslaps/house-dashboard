@@ -2015,6 +2015,20 @@
         if (window.Model3D) window.Model3D.setLabelsVisible(labelsOn);
       });
     }
+    
+    // Status Colors Toggle
+    const btnStatusColors = $("#btnToggleStatusColors");
+    if (btnStatusColors) {
+      let statusOn = false;
+      btnStatusColors.addEventListener("click", () => {
+        statusOn = !statusOn;
+        btnStatusColors.classList.toggle("is-active", statusOn);
+        btnStatusColors.textContent = statusOn ? "Status Colors: ON" : "Status Colors: OFF";
+        if (window.Model3D) window.Model3D.toggleStatusColors(statusOn);
+        const legend = $("#statusLegend3D");
+        if (legend) legend.style.display = statusOn ? "block" : "none";
+      });
+    }
 
     // 3D Lighting Environment Toggle (Day / Sunset / Night)
     $$("#lightingToggle button").forEach((b) => {

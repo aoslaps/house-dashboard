@@ -93,6 +93,7 @@
           <div class="dropdown-content">
             <button class="btn-walkthrough" id="btnWalkthrough" title="Walk inside at eye level (WASD + Mouse)">Walk Inside</button>
             <button class="btn-toggle-labels is-active" id="btnToggle3DLabels" title="Toggle 3D room name badges">Labels: ON</button>
+            <button id="btnToggleStatusColors" title="Color rooms by completion status">Status Colors: OFF</button>
             <div class="dropdown-sep">Infrastructure</div>
             <button id="btnToggleConduit" title="Toggle 3D Electrical Conduit">Conduit</button>
             <button id="btnToggleHVAC" title="Toggle 3D HVAC Ductwork">HVAC</button>
@@ -121,6 +122,13 @@
         </div>
         <div class="model3d-canvas-container" id="model3dContainer"></div>
         <div class="model3d-hint">Left drag: Orbit 360° · Right drag: Pan · Scroll: Zoom · Click room to inspect</div>
+        <div id="statusLegend3D" style="display:none; position:absolute; bottom:20px; left:20px; background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:8px 12px; font-size:11px; z-index:20; box-shadow:var(--shadow);">
+          <div style="font-weight:bold;margin-bottom:6px;">Status</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><span style="display:inline-block;width:10px;height:10px;background:#aaaaaa;border-radius:2px;"></span> Not Started</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><span style="display:inline-block;width:10px;height:10px;background:#F5A623;border-radius:2px;"></span> In Progress</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><span style="display:inline-block;width:10px;height:10px;background:#D0021B;border-radius:2px;"></span> Blocked</div>
+          <div style="display:flex;align-items:center;gap:6px;"><span style="display:inline-block;width:10px;height:10px;background:#7ED321;border-radius:2px;"></span> Complete</div>
+        </div>
       </div>
       <div class="plan-scroll" id="planScroll">
           <svg id="floorplan" 
