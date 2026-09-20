@@ -1062,16 +1062,16 @@
     });
   }
 
-  // --- 1965 Ford Mustang in Northern Garage Bay ---
+  // --- 1965 Ford Mustang in Southern Garage Bay ---
 
   function buildVehicles() {
     const mustang = new THREE.Group();
-    // Northern garage bay center, aligned with Door 21
-    mustang.position.set(-9.90, 0.0, -4.35);
+    // Southern garage bay center, aligned with Door 22
+    mustang.position.set(-11.73, 0.0, -7.53);
     mustang.rotation.y = -1.0472; // -60 degrees, facing out towards garage door and driveway
 
     // 1. Materials
-    const bodyColor = 0xC41E3A; // Classic 1965 Poppy / Candyapple Red
+    const bodyColor = 0xF5F5F0; // Classic 1965 Wimbledon White
     const bodyMat = new THREE.MeshStandardMaterial({
       color: bodyColor,
       roughness: 0.28,
@@ -1079,7 +1079,7 @@
     });
 
     const stripeMat = new THREE.MeshStandardMaterial({
-      color: 0xF8FAFC, // Wimbledon White Le Mans racing stripes
+      color: 0x1E40AF, // Guardsman Blue Le Mans racing stripes
       roughness: 0.35,
       metalness: 0.1
     });
@@ -1442,14 +1442,15 @@
     });
 
     // License Plate
-    const plateMesh = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.12, 0.015), stripeMat);
+    const plateMat = new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.4 });
+    const plateMesh = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.12, 0.015), plateMat);
     plateMesh.position.set(0, 0.27, -2.06);
     mustang.add(plateMesh);
 
     mustang.userData = {
       type: "vehicle",
       name: "1965 Ford Mustang",
-      description: "1965 Ford Mustang Coupe in Northern Garage Bay",
+      description: "1965 Ford Mustang in Southern Garage Bay",
       level: "main"
     };
 
