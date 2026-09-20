@@ -1197,19 +1197,15 @@
     const planScroll = $("#planScroll");
     const model3dWrap = $("#model3dWrap");
     const wallHeightToggle = $("#wallHeightToggle");
-    const btnToggle3DLabels = $("#btnToggle3DLabels");
     const lightingToggle = $("#lightingToggle");
-    const btnWalkthrough = $("#btnWalkthrough");
-    const infraToggle = $("#infraToggle");
+    const optionsDropdown = $("#optionsDropdown");
 
     if (view === "3d") {
       if (planScroll) planScroll.hidden = true;
       if (model3dWrap) model3dWrap.hidden = false;
       if (wallHeightToggle) wallHeightToggle.hidden = false;
-      if (btnToggle3DLabels) btnToggle3DLabels.hidden = false;
       if (lightingToggle) lightingToggle.hidden = false;
-      if (btnWalkthrough) btnWalkthrough.hidden = false;
-      if (infraToggle) infraToggle.hidden = false;
+      if (optionsDropdown) optionsDropdown.hidden = false;
 
       // Initialize Three.js 3D model
       if (window.Model3D) {
@@ -1227,10 +1223,8 @@
       if (planScroll) planScroll.hidden = false;
       if (model3dWrap) model3dWrap.hidden = true;
       if (wallHeightToggle) wallHeightToggle.hidden = true;
-      if (btnToggle3DLabels) btnToggle3DLabels.hidden = true;
       if (lightingToggle) lightingToggle.hidden = true;
-      if (btnWalkthrough) btnWalkthrough.hidden = true;
-      if (infraToggle) infraToggle.hidden = true;
+      if (optionsDropdown) optionsDropdown.hidden = true;
       if (window.Model3D && window.Model3D.isFirstPersonMode && window.Model3D.isFirstPersonMode()) {
         window.Model3D.exitFirstPersonMode();
       }

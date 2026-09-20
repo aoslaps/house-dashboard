@@ -188,10 +188,10 @@ body {
 .toolbar-dropdown:hover .dropdown-btn { background: var(--paper-2); color: var(--ink); }
 
 .dropdown-content {
-  display: none; position: absolute; right: 0; top: 100%; margin-top: 4px;
+  display: none; position: absolute; right: 0; top: 100%;
   background-color: var(--surface); min-width: 160px;
   box-shadow: var(--shadow); border: 1px solid var(--line); border-radius: 8px;
-  z-index: 100; overflow: hidden;
+  z-index: 100; overflow: hidden; padding-top: 4px; padding-bottom: 4px;
 }
 .toolbar-dropdown:hover .dropdown-content { display: flex; flex-direction: column; }
 
