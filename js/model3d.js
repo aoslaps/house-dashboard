@@ -25,6 +25,7 @@
   let windowMeshes = [];
   let stairMeshes = [];
   let equipmentMeshes = [];
+  let vehicleMeshes = [];
   let labelSprites = [];
   let environmentGroup = null;
   let hoveredMesh = null;
@@ -227,6 +228,7 @@
     windowMeshes.forEach((m) => scene.remove(m));
     stairMeshes.forEach((m) => scene.remove(m));
     equipmentMeshes.forEach((m) => scene.remove(m));
+    vehicleMeshes.forEach((m) => scene.remove(m));
     labelSprites.forEach((m) => scene.remove(m));
     if (environmentGroup) scene.remove(environmentGroup);
 
@@ -236,6 +238,7 @@
     windowMeshes = [];
     stairMeshes = [];
     equipmentMeshes = [];
+    vehicleMeshes = [];
     labelSprites = [];
     environmentGroup = null;
 
@@ -318,6 +321,9 @@
 
     // 7. Build Accurate 3D Basement Mechanical Equipment
     buildEquipment();
+
+    // 8. Build 1965 Ford Mustang in Northern Garage Bay
+    buildVehicles();
 
     updateVisibility();
   }
@@ -1056,6 +1062,401 @@
     });
   }
 
+  // --- 1965 Ford Mustang in Northern Garage Bay ---
+
+  function buildVehicles() {
+    const mustang = new THREE.Group();
+    // Northern garage bay center, aligned with Door 21
+    mustang.position.set(-9.90, 0.0, -4.35);
+    mustang.rotation.y = -1.0472; // -60 degrees, facing out towards garage door and driveway
+
+    // 1. Materials
+    const bodyColor = 0xC41E3A; // Classic 1965 Poppy / Candyapple Red
+    const bodyMat = new THREE.MeshStandardMaterial({
+      color: bodyColor,
+      roughness: 0.28,
+      metalness: 0.35,
+    });
+
+    const stripeMat = new THREE.MeshStandardMaterial({
+      color: 0xF8FAFC, // Wimbledon White Le Mans racing stripes
+      roughness: 0.35,
+      metalness: 0.1
+    });
+
+    const chromeMat = new THREE.MeshStandardMaterial({
+      color: 0xF1F5F9,
+      roughness: 0.12,
+      metalness: 0.95
+    });
+
+    const glassMat = new THREE.MeshStandardMaterial({
+      color: 0x1E293B,
+      roughness: 0.1,
+      metalness: 0.2,
+      transparent: true,
+      opacity: 0.55
+    });
+
+    const interiorMat = new THREE.MeshStandardMaterial({
+      color: 0x1E1E24,
+      roughness: 0.85,
+      metalness: 0.1
+    });
+
+    const grilleMat = new THREE.MeshStandardMaterial({
+      color: 0x111827,
+      roughness: 0.9,
+      metalness: 0.1
+    });
+
+    const tireMat = new THREE.MeshStandardMaterial({
+      color: 0x1F2428,
+      roughness: 0.88,
+      metalness: 0.04
+    });
+
+    const headlightMat = new THREE.MeshStandardMaterial({
+      color: 0xFFFBEB,
+      roughness: 0.1,
+      metalness: 0.1,
+      emissive: 0xFEF08A,
+      emissiveIntensity: 0.35
+    });
+
+    const amberMat = new THREE.MeshStandardMaterial({
+      color: 0xF59E0B,
+      roughness: 0.2,
+      metalness: 0.1,
+      emissive: 0xD97706,
+      emissiveIntensity: 0.25
+    });
+
+    const tailLightMat = new THREE.MeshStandardMaterial({
+      color: 0xDC2626,
+      roughness: 0.2,
+      metalness: 0.1,
+      emissive: 0x991B1B,
+      emissiveIntensity: 0.45
+    });
+
+    // 2. Chassis & Undercarriage
+    const underbody = new THREE.Mesh(new THREE.BoxGeometry(1.54, 0.08, 3.90), interiorMat);
+    underbody.position.set(0, 0.18, 0);
+    mustang.add(underbody);
+
+    // Dual chrome exhaust pipes at rear
+    [-0.42, 0.42].forEach((xPos) => {
+      const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.35, 12), chromeMat);
+      pipe.rotation.x = Math.PI / 2;
+      pipe.position.set(xPos, 0.16, -2.02);
+      mustang.add(pipe);
+    });
+
+    // 3. Wheels (4x Styled Steel Wheels with Chrome Rim & Hubcap)
+    const wheelPositions = [
+      { x: -0.78, z:  1.30 }, // Front Driver
+      { x:  0.78, z:  1.30 }, // Front Passenger
+      { x: -0.78, z: -1.35 }, // Rear Driver
+      { x:  0.78, z: -1.35 }, // Rear Passenger
+    ];
+
+    wheelPositions.forEach((wp) => {
+      const wheelGroup = new THREE.Group();
+      wheelGroup.position.set(wp.x, 0.30, wp.z);
+
+      // Rubber tire
+      const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.30, 0.30, 0.18, 24), tireMat);
+      tire.rotation.z = Math.PI / 2;
+      tire.castShadow = true;
+      wheelGroup.add(tire);
+
+      // Chrome outer rim lip
+      const rimLip = new THREE.Mesh(new THREE.CylinderGeometry(0.20, 0.20, 0.184, 16), chromeMat);
+      rimLip.rotation.z = Math.PI / 2;
+      wheelGroup.add(rimLip);
+
+      // Chrome center hubcap
+      const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.19, 12), chromeMat);
+      hub.rotation.z = Math.PI / 2;
+      wheelGroup.add(hub);
+
+      // 5 chrome spokes
+      for (let s = 0; s < 5; s++) {
+        const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.186, 0.024, 0.18), chromeMat);
+        spoke.rotation.x = (s * Math.PI * 2) / 5;
+        wheelGroup.add(spoke);
+      }
+
+      mustang.add(wheelGroup);
+    });
+
+    // 4. Main Body Lower Shell (Fenders, Doors, Quarter Panels)
+    const lowerBody = new THREE.Mesh(new THREE.BoxGeometry(1.68, 0.32, 4.10), bodyMat);
+    lowerBody.position.set(0, 0.34, 0);
+    lowerBody.castShadow = true;
+    mustang.add(lowerBody);
+
+    // Chrome rocker panel moldings along bottom sides
+    [-0.85, 0.85].forEach((xPos) => {
+      const rocker = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.03, 2.50), chromeMat);
+      rocker.position.set(xPos, 0.20, -0.02);
+      mustang.add(rocker);
+    });
+
+    // Iconic 1965 Mustang Side Scoops / C-Scallops (in front of rear wheels)
+    [-0.85, 0.85].forEach((xPos) => {
+      const scoop = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.12, 0.22), chromeMat);
+      scoop.position.set(xPos, 0.36, -0.80);
+      mustang.add(scoop);
+    });
+
+    // Chrome door handles
+    [-0.85, 0.85].forEach((xPos) => {
+      const handle = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, 0.10), chromeMat);
+      handle.position.set(xPos, 0.46, -0.20);
+      mustang.add(handle);
+    });
+
+    // Chrome side mirror (driver door)
+    const mirrorStem = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.06), chromeMat);
+    mirrorStem.position.set(-0.76, 0.60, 0.35);
+    mirrorStem.rotation.z = -0.4;
+    const mirrorHead = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.02, 12), chromeMat);
+    mirrorHead.rotation.z = Math.PI / 2;
+    mirrorHead.position.set(-0.80, 0.63, 0.35);
+    mustang.add(mirrorStem, mirrorHead);
+
+    // 5. Hood & Front Nose (Classic Long Hood)
+    const hood = new THREE.Mesh(new THREE.BoxGeometry(1.64, 0.08, 1.65), bodyMat);
+    hood.position.set(0, 0.52, 1.15);
+    hood.castShadow = true;
+    mustang.add(hood);
+
+    // Hood power bulge / center ridge
+    const hoodBulge = new THREE.Mesh(new THREE.BoxGeometry(0.40, 0.03, 1.55), bodyMat);
+    hoodBulge.position.set(0, 0.56, 1.15);
+    mustang.add(hoodBulge);
+
+    // Dual Le Mans racing stripes on hood
+    [-0.11, 0.11].forEach((xPos) => {
+      const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.006, 1.66), stripeMat);
+      stripe.position.set(xPos, 0.565, 1.15);
+      mustang.add(stripe);
+    });
+
+    // 6. Trunk / Rear Deck (Classic Short Deck)
+    const trunk = new THREE.Mesh(new THREE.BoxGeometry(1.62, 0.08, 0.90), bodyMat);
+    trunk.position.set(0, 0.52, -1.55);
+    trunk.castShadow = true;
+    mustang.add(trunk);
+
+    // Dual Le Mans racing stripes on trunk
+    [-0.11, 0.11].forEach((xPos) => {
+      const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.006, 0.91), stripeMat);
+      stripe.position.set(xPos, 0.565, -1.55);
+      mustang.add(stripe);
+    });
+
+    // 7. Cabin / Greenhouse (1965 Notchback Coupe)
+    // Roof Panel
+    const roof = new THREE.Mesh(new THREE.BoxGeometry(1.36, 0.04, 1.38), bodyMat);
+    roof.position.set(0, 1.02, -0.32);
+    roof.castShadow = true;
+    mustang.add(roof);
+
+    // Dual Le Mans racing stripes on roof
+    [-0.11, 0.11].forEach((xPos) => {
+      const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.006, 1.39), stripeMat);
+      stripe.position.set(xPos, 1.045, -0.32);
+      mustang.add(stripe);
+    });
+
+    // Sloped Windshield
+    const windshield = new THREE.Mesh(new THREE.BoxGeometry(1.32, 0.50, 0.02), glassMat);
+    windshield.position.set(0, 0.77, 0.44);
+    windshield.rotation.x = -0.62; // ~35 degree rake
+    mustang.add(windshield);
+
+    // Chrome A-Pillars
+    [-0.66, 0.66].forEach((xPos) => {
+      const aPillar = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.52, 0.03), chromeMat);
+      aPillar.position.set(xPos, 0.77, 0.44);
+      aPillar.rotation.x = -0.62;
+      mustang.add(aPillar);
+    });
+
+    // Sloped Rear Window
+    const rearWindow = new THREE.Mesh(new THREE.BoxGeometry(1.28, 0.48, 0.02), glassMat);
+    rearWindow.position.set(0, 0.76, -1.06);
+    rearWindow.rotation.x = 0.58;
+    mustang.add(rearWindow);
+
+    // C-Pillars / Sail Panels
+    [-0.66, 0.66].forEach((xPos) => {
+      const cPillar = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.50, 0.08), bodyMat);
+      cPillar.position.set(xPos, 0.76, -1.04);
+      cPillar.rotation.x = 0.58;
+      mustang.add(cPillar);
+    });
+
+    // Side Windows
+    [-0.68, 0.68].forEach((xPos) => {
+      const sideGlass = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.36, 1.25), glassMat);
+      sideGlass.position.set(xPos, 0.74, -0.32);
+      mustang.add(sideGlass);
+
+      // Chrome upper window drip molding
+      const dripMold = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.02, 1.36), chromeMat);
+      dripMold.position.set(xPos, 0.99, -0.32);
+      mustang.add(dripMold);
+    });
+
+    // 8. Interior (Dashboard, 3-Spoke Steering Wheel, Bucket Seats)
+    const dash = new THREE.Mesh(new THREE.BoxGeometry(1.30, 0.14, 0.22), interiorMat);
+    dash.position.set(0, 0.60, 0.32);
+    mustang.add(dash);
+
+    // 3-Spoke Chrome Steering Wheel
+    const steerGroup = new THREE.Group();
+    steerGroup.position.set(-0.38, 0.66, 0.18);
+    steerGroup.rotation.x = -0.45;
+    const steerRing = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.014, 8, 20), interiorMat);
+    const steerHub = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.03, 12), chromeMat);
+    steerHub.rotation.x = Math.PI / 2;
+    steerGroup.add(steerRing, steerHub);
+    for (let sp = 0; sp < 3; sp++) {
+      const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.13, 0.015), chromeMat);
+      spoke.rotation.z = (sp * Math.PI * 2) / 3;
+      steerGroup.add(spoke);
+    }
+    mustang.add(steerGroup);
+
+    // Front Low-Back Bucket Seats
+    [-0.38, 0.38].forEach((xPos) => {
+      const seatGroup = new THREE.Group();
+      seatGroup.position.set(xPos, 0.40, -0.22);
+      const cushion = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.14, 0.42), interiorMat);
+      const seatBack = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.40, 0.12), interiorMat);
+      seatBack.position.set(0, 0.24, -0.16);
+      seatBack.rotation.x = -0.12;
+      seatGroup.add(cushion, seatBack);
+      mustang.add(seatGroup);
+    });
+
+    // Rear Bench Seat
+    const rearSeat = new THREE.Mesh(new THREE.BoxGeometry(1.24, 0.20, 0.42), interiorMat);
+    rearSeat.position.set(0, 0.42, -0.74);
+    mustang.add(rearSeat);
+
+    // 9. Front Fascia (Recessed Grille, Pony Emblem, Round Headlights, Bumper)
+    // Dark Recessed Honeycomb Grille
+    const grille = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.24, 0.06), grilleMat);
+    grille.position.set(0, 0.38, 2.05);
+    mustang.add(grille);
+
+    // Chrome Grille Surround Trim
+    const grilleTrim = new THREE.Mesh(new THREE.BoxGeometry(1.28, 0.28, 0.03), chromeMat);
+    grilleTrim.position.set(0, 0.38, 2.03);
+    mustang.add(grilleTrim);
+
+    // Center Chrome Mustang "Running Horse" Pony Emblem
+    const crossBar = new THREE.Mesh(new THREE.BoxGeometry(0.60, 0.025, 0.04), chromeMat);
+    crossBar.position.set(0, 0.38, 2.08);
+    const ponyEmblem = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.07, 0.05), chromeMat);
+    ponyEmblem.position.set(0, 0.38, 2.09);
+    mustang.add(crossBar, ponyEmblem);
+
+    // Iconic Round Headlights with Chrome Bezels
+    [-0.68, 0.68].forEach((xPos) => {
+      // Chrome Bezel Bucket
+      const bezel = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.115, 0.06, 16), chromeMat);
+      bezel.rotation.x = Math.PI / 2;
+      bezel.position.set(xPos, 0.40, 2.05);
+      // Bright Glass Lens
+      const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.062, 16), headlightMat);
+      lens.rotation.x = Math.PI / 2;
+      lens.position.set(xPos, 0.40, 2.06);
+      mustang.add(bezel, lens);
+    });
+
+    // Amber Turn Signals / Parking Lights in lower valance
+    [-0.48, 0.48].forEach((xPos) => {
+      const amber = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.045, 0.03), amberMat);
+      amber.position.set(xPos, 0.24, 2.06);
+      mustang.add(amber);
+    });
+
+    // Deep Chrome Front Bumper with Vertical Bumperettes
+    const frontBumper = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.08, 0.09), chromeMat);
+    frontBumper.position.set(0, 0.27, 2.12);
+    frontBumper.castShadow = true;
+    mustang.add(frontBumper);
+
+    [-0.40, 0.40].forEach((xPos) => {
+      const guard = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.15, 0.11), chromeMat);
+      guard.position.set(xPos, 0.27, 2.14);
+      mustang.add(guard);
+    });
+
+    // 10. Rear Fascia (Iconic Tri-Bar Taillights, Round Chrome Gas Cap, Rear Bumper)
+    const rearPanel = new THREE.Mesh(new THREE.BoxGeometry(1.62, 0.24, 0.05), bodyMat);
+    rearPanel.position.set(0, 0.38, -2.04);
+    mustang.add(rearPanel);
+
+    // Iconic 1965 Tri-Bar Taillights (3 vertical red bars on each side)
+    [-1, 1].forEach((side) => {
+      const baseX = side * 0.58;
+      // Chrome backing plate
+      const plate = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.15, 0.02), chromeMat);
+      plate.position.set(baseX, 0.40, -2.055);
+      mustang.add(plate);
+
+      // 3 vertical lens bars
+      [-0.065, 0.0, 0.065].forEach((offset) => {
+        const bar = new THREE.Mesh(new THREE.BoxGeometry(0.032, 0.13, 0.03), tailLightMat);
+        bar.position.set(baseX + offset, 0.40, -2.07);
+        mustang.add(bar);
+      });
+    });
+
+    // Famous Center Round Chrome Gas Cap with Pony Emblem
+    const gasCap = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.03, 16), chromeMat);
+    gasCap.rotation.x = Math.PI / 2;
+    gasCap.position.set(0, 0.40, -2.065);
+    const capCenter = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.032, 12), bodyMat);
+    capCenter.rotation.x = Math.PI / 2;
+    capCenter.position.set(0, 0.40, -2.066);
+    mustang.add(gasCap, capCenter);
+
+    // Chrome Rear Bumper with Bumperettes
+    const rearBumper = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.08, 0.09), chromeMat);
+    rearBumper.position.set(0, 0.27, -2.10);
+    rearBumper.castShadow = true;
+    mustang.add(rearBumper);
+
+    [-0.40, 0.40].forEach((xPos) => {
+      const guard = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.15, 0.11), chromeMat);
+      guard.position.set(xPos, 0.27, -2.12);
+      mustang.add(guard);
+    });
+
+    // License Plate
+    const plateMesh = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.12, 0.015), stripeMat);
+    plateMesh.position.set(0, 0.27, -2.06);
+    mustang.add(plateMesh);
+
+    mustang.userData = {
+      type: "vehicle",
+      name: "1965 Ford Mustang",
+      description: "1965 Ford Mustang Coupe in Northern Garage Bay",
+      level: "main"
+    };
+
+    scene.add(mustang);
+    vehicleMeshes.push(mustang);
+  }
+
   function setLabelsVisible(visible) {
     labelsVisible = visible;
     updateVisibility();
@@ -1071,6 +1472,7 @@
     windowMeshes.forEach((m) => (m.visible = checkLevel(m.userData.level)));
     stairMeshes.forEach((m) => (m.visible = showAll || activeLevel === "main" || activeLevel === "basement"));
     equipmentMeshes.forEach((m) => (m.visible = checkLevel(m.userData.level)));
+    vehicleMeshes.forEach((m) => (m.visible = (activeLevel !== "basement")));
     labelSprites.forEach((m) => (m.visible = labelsVisible && checkLevel(m.userData.level)));
 
     if (environmentGroup) {
