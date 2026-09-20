@@ -16,7 +16,7 @@
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "HOUSE_DATA_v1";
+  const STORAGE_KEY = "house-dashboard:model:v1";
   const LOGS_KEY    = "HOUSE_LOGS_v1";
 
   const StorageService = {

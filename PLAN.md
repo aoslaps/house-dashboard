@@ -1,0 +1,265 @@
+# 2905 Renovation Dashboard — Build Plan: Editable & Saveable
+
+Your working game plan for turning the dashboard from a read-only viewer into a
+tool you can **edit in the page** and **save**. Drop this in your repo as `PLAN.md`
+and work through it phase by phase. Each phase is one Antigravity prompt and is
+independently testable, so you never need to hold the whole thing in your head.
+
+---
+
+## 0. Where things stand
+
+- Floor plan is real and rendering (Sweet Home 3D SVG inlined, wall PNG optimized to 69 KB).
+- `data/data.js` holds real IDs, names, and square footages. `window.HOUSE = { meta, rooms[], circuits[] }`.
+- Clicking a room opens a **read-only** panel. Nothing in the page can change data yet.
+- "Editable" so far only meant *edit `data.js` by hand in the editor*. This plan adds real in-page editing.
+
+### ⚠️ Fix this FIRST — you have a duplicate folder
+
+The agent ran a `Copy-Item` that created a **nested copy**:
+`C:\Users\aosla\Dev\house-dashboard\house-dashboard\`
+
+That's the two-copy drift trap. Edits made in one copy silently don't show up in the other.
+
+- **Canonical folder = the OUTER one:** `C:\Users\aosla\Dev\house-dashboard\` (has `index.html` at its root next to `css/ js/ data/ assets/`).
+- **Delete the inner** `house-dashboard\house-dashboard\`.
+- Whatever folder you open in Antigravity and in the browser must be the one with `index.html` directly inside it.
+
+---
+
+## 1. The one decision that shapes everything: how you save
+
+A static page can't write to `data.js` on its own. Three ways to persist, and you're picking **B**:
+
+| | Where data lives | Syncs across devices? | In git history? | Cost |
+|---|---|---|---|---|
+| A — localStorage only | that one browser | ❌ | ❌ | none, but data is trapped |
+| **B — localStorage + Export (CHOSEN)** | browser now, `data.js` on export | ✅ via repo | ✅ | one paste+commit to persist |
+| C — real backend | database | ✅ | ❌ (unless you log it) | server/auth/hosting; no longer static |
+
+**Why B:** you keep git as the source of truth and Pages-simple hosting, and you still
+get instant in-page editing that survives a refresh. The only manual step is exporting
+`data.js` and committing it when you want the change permanent in the repo.
+
+**The mental model:**
+- *Local edits* → saved to `localStorage` the instant you type. Survive refresh. Live only in this browser.
+- *Committed* → you click **Export data.js**, drop the file in the repo, `git commit`. Now it's permanent and syncs.
+- A **sync pill** in the UI always tells you which state you're in: `● Local edits not exported` vs `✓ In sync with data.js`.
+
+---
+
+## 2. What becomes editable (the design contract)
+
+**Editable in the panel** (you said "all editable" — this is all the *content*):
+- `status` (dropdown: not-started / in-progress / blocked / complete)
+- `percent` (0–100 slider)
+- `budget`, `spent` (numbers)
+- `notes` (textarea)
+- `name` (display label), `type` (dropdown), `phase` (existing/proposed)
+- `countsAsFinished` (checkbox) ← you need this to fix the hall2 bug, see §6
+- `tasks` (add / rename / check off / delete)
+
+**Locked by default — structural, keep read-only:**
+- `id` — keyed to the SVG shape. Free-typing this desyncs the plan from the data. Renaming an id is a deliberate cross-file operation, not a casual edit.
+- `area` — comes from your measured Sweet Home 3D plan. Hand-editing invites drift from reality.
+- `floor` — controls which level renders.
+
+Put these three behind an **"Advanced"** disclosure that unlocks them with a warning, so nothing is *impossible* to change, but you can't fumble them by accident.
+
+**Circuits** (`HOUSE.circuits[]`: breaker, panel, amps, description, rooms[]) get their own editable table — that's Phase 4, different UI from the room panel.
+
+---
+
+## 3. Build phases — hand these to Antigravity one at a time
+
+Do them in order. Test each before starting the next. Prompts to copy are in §5.
+
+- **Phase 1 — Editable panel (in-memory).** Turn the read-only panel into form controls for the editable fields. Edits mutate the in-memory model and live-update the plan, list, charts, and KPIs. No saving yet — just prove editing works and the dashboard reflects it instantly.
+- **Phase 2 — Persistence.** On load, overlay `localStorage` onto `data.js`. On every edit, write the overlay (debounced). Add a **Reset to file** button. Now edits survive refresh.
+- **Phase 3 — Export round-trip.** Add **Export data.js** (regenerates the file, downloads it) and the **sync pill**. This closes the loop: browser → file → repo.
+- **Phase 4 — Tasks + circuits editing.** Full task CRUD in the panel; a separate circuits editor table.
+- **Phase 5 — Data audit & polish.** Fix the known correctness items in §6.
+
+---
+
+## 4. Technical spec (so the agent builds it right)
+
+**Data flow**
+```
+data.js  ──sets──▶  window.HOUSE            (baseline / source of truth, in git)
+                         │
+  on load:  model = localStorage[KEY] ? JSON.parse(...) : structuredClone(window.HOUSE)
+                         │
+  every edit ──▶ mutate model ──▶ re-run the SAME render path used on first load
+                         │         (aggregates, paintPlan, room list, charts, KPIs)
+                         └──▶ debounced write: localStorage[KEY] = JSON.stringify(model)
+```
+
+- **localStorage key:** `house-dashboard:model:v1`
+- **Overlay = the whole edited model** (not a diff). Simpler and robust at this scale.
+- **Sync pill:** compare `JSON.stringify(model)` to `JSON.stringify(window.HOUSE)`. Equal → `✓ In sync`. Different → `● Local edits not exported`. (After you commit an export and reload, they match again automatically — no extra bookkeeping.)
+- **Reset to file:** `localStorage.removeItem(KEY); location.reload();`
+- **Export data.js:** build the file text as
+  ```js
+  const HEADER = `/* 2905 Renovation Dashboard — data (exported from the app) */\n`;
+  const text = HEADER + "window.HOUSE = " + JSON.stringify(model, null, 2) + ";\n";
+  // download as a Blob named data.js
+  ```
+  Valid JS, clean, re-loadable. (Optional: preserve the original comment header if you want the schema notes to survive.)
+
+**Non-negotiables**
+- Every edit must re-trigger the aggregate + render path, or the KPIs and charts will lie.
+- Editing a field must never touch a room's `id` or the matching SVG `<g id>` — that link stays intact.
+- Keep it driven from `HOUSE.rooms` / `HOUSE.circuits`. No hardcoded room ids anywhere.
+
+---
+
+## 5. Copy-paste prompts
+
+### Phase 1 — Editable panel
+```
+Make the room detail panel editable (in-memory only; no persistence yet).
+
+- Replace the read-only fields with form controls for: status (dropdown:
+  not-started/in-progress/blocked/complete), percent (0–100 slider), budget (number),
+  spent (number), notes (textarea), name (text), type (dropdown of existing types),
+  phase (existing/proposed). Add a checkbox for countsAsFinished.
+- Keep id, area, and floor READ-ONLY, shown under an "Advanced" disclosure that unlocks
+  them with a warning. Never let an edit change a room's id or its SVG <g id>.
+- On any edit, mutate the in-memory model and immediately re-run the SAME aggregate +
+  render path used on initial load, so the floor plan, room list, charts, and KPIs update live.
+- Everything stays driven from HOUSE.rooms — no hardcoded room ids.
+- Do NOT add localStorage or export yet. This phase only proves editing + live re-render work.
+```
+
+### Phase 2 — Persistence (localStorage)
+```
+Add persistence via localStorage (Option B — file stays source of truth).
+
+- Key: "house-dashboard:model:v1".
+- On load: if the key exists, JSON.parse it as the working model; else structuredClone(window.HOUSE).
+  Keep window.HOUSE untouched as the baseline for comparison.
+- On every edit: debounced write of JSON.stringify(model) to that key.
+- Add a "Reset to file" button that does localStorage.removeItem(key) then reloads —
+  reverting to whatever data.js currently says.
+- Verify: edit a room, refresh the page, the edit persists. Click Reset to file, it reverts.
+```
+
+### Phase 3 — Export round-trip + sync pill
+```
+Add an "Export data.js" button and a sync-status indicator.
+
+- Export builds the file text: a short header comment, then
+  "window.HOUSE = " + JSON.stringify(model, null, 2) + ";" and downloads it as data.js (Blob).
+  The output must be valid JS that reloads cleanly to the same state.
+- Sync pill in the header: compare JSON.stringify(model) to JSON.stringify(window.HOUSE).
+  Equal -> "✓ In sync with data.js". Different -> "● Local edits not exported".
+- Workflow the pill supports: edit (pill goes yellow) -> Export data.js -> replace
+  data/data.js in the repo with the download -> reload -> pill goes green.
+```
+
+### Phase 4 — Tasks + circuits
+```
+Add full task editing and a circuits editor.
+
+- In the room panel: add task (text -> new {label, done:false}), toggle done, rename, delete.
+- Separate "Circuits" view/table editing HOUSE.circuits[]: breaker, panel, amps, description,
+  and rooms[] (multi-select from existing room ids only, so no dangling references get created).
+- All edits flow through the same model + persistence + export path from phases 1–3.
+```
+
+---
+
+## 6. Data audit (Phase 5) — known items to fix
+
+These are correctness issues I already spotted; fix them once editing is live (or as a data pass):
+
+1. **`hall2` (55.88) — set `countsAsFinished: true`.** My scaffold had it as an exterior porch; your model shows it's an *interior hallway*, which IS finished space. This currently understates your finished sq ft.
+2. **`entryporch` (25.20)** is the real exterior porch — `countsAsFinished: false` is correct for it.
+3. **Audit placeholder tasks/budgets.** Some scaffold entries were illustrative filler that may have ridden onto renamed rooms. Real: garage Senville mini-split. Placeholder: e.g. the great-room "carpet torn out / subfloor" tasks and round-number budgets. Eyeball each room's tasks and $ and delete anything fictional.
+4. **Photos** — `assets/photos/` is empty. Add files, list paths in each room's `photos[]`.
+5. **Circuits** — only ~5 placeholder circuits exist. Walk the house with your breaker identifier and fill in `HOUSE.circuits[]`.
+
+---
+
+## 7. Verification snippets
+
+**Wiring check** — run in the browser console with `index.html` open, any time after a change:
+```js
+(() => {
+  const rooms = window.HOUSE?.rooms ?? [];
+  const roomIds  = new Set(rooms.map(r => r.id));
+  const shapeIds = new Set([...document.querySelectorAll('g.room[id]')].map(g => g.id));
+  const notClickable = rooms.filter(r => !shapeIds.has(r.id)).map(r => r.id);
+  const orphanShapes = [...shapeIds].filter(id => !roomIds.has(id));
+  const danglingCircuits = (window.HOUSE?.circuits ?? [])
+    .flatMap(c => (c.rooms ?? []).map(r => ({ circuit: c.id, room: r })))
+    .filter(x => !roomIds.has(x.room));
+  console.group('%cFloor-plan wiring check', 'font-weight:bold');
+  console.log(`data rooms: ${roomIds.size}   tagged shapes: ${shapeIds.size}`);
+  console.log('Rooms with NO shape (not clickable):', notClickable);
+  console.log('Shapes with NO room (orphan ids):', orphanShapes);
+  console.log('Circuit refs to missing rooms:', danglingCircuits);
+  console.groupEnd();
+})();
+```
+Three empty arrays = clean.
+
+**Persistence smoke test** (after Phase 2): edit a room → note the value → refresh → value persists → click Reset to file → value reverts. If a refresh loses edits, the load-merge isn't reading localStorage.
+
+**Export test** (after Phase 3): export, diff the downloaded `data.js` against the current one — the only changes should be the edits you made. Replace, reload, confirm the sync pill goes green.
+
+---
+
+## 8. Gotchas that will bite you
+
+- **`file://` vs `http://localhost` are different origins → different localStorage.** If you double-click `index.html` sometimes and run `python -m http.server` other times, your saved edits will seem to vanish (they're stored under the other origin). **Pick one way to open it and stick with it.** Recommend the local server on a fixed port for consistency.
+- **The nested-folder duplicate** (§0). Kill it before you start or you'll edit the wrong copy.
+- **Export must stay valid JS.** If a round-trip ever produces a file that won't load, the exporter is emitting something `JSON.stringify` didn't (functions, undefined). The model should be plain data only.
+- **Forgetting to re-render on edit** makes the dashboard silently lie — charts/KPIs stale while the panel shows new values. Every mutation goes through the render path.
+- **Don't unlock `id`/`area` casually.** That's the one move that desyncs plan from data.
+
+---
+
+## 9. Suggested commit points
+
+Commit after each green phase so you can roll back cleanly:
+- `feat: editable room panel (in-memory)`
+- `feat: localStorage persistence + reset`
+- `feat: export data.js round-trip + sync pill`
+- `feat: task + circuit editing`
+- `chore: data audit — hall2 finished flag, strip placeholder tasks`
+
+---
+
+---
+
+## Phase 6 — Make it real (triage + verify the spine)
+
+The 3D work raced ahead of the data. "Real" now means *trustworthy underneath* and
+*maintainable*, not more features. The more architectural it looks, the more it invites
+you to trust numbers that were never verified — closing that gap is the whole job here.
+
+**Keep / Freeze / Cut** (grade against the real purpose: a reno record you maintain for years)
+- **Keep (core):** 2D plan, budget/status/tasks, localStorage + export/reset, per-room photos, panel/circuit visualizer, PWA offline (basement = no signal; aligned with real use).
+- **Freeze (cosmetic — done enough, stop investing):** vinyl siding, brass knobs, '65 Mustang, carriage lanterns, golden-hour lighting, first-person walkthrough. Don't delete, don't touch.
+- **Verify (the dangerous middle):** the 3D conduit/duct/PEX layers — see step 7.
+
+**To-do, in order (3–7 are the actual distance to "real"):**
+1. **Delete the duplicate folder** (§0) if not already done.
+2. **Freeze cosmetic 3D** — a decision, not a task. Stop investing there.
+3. **Fix `hall2` → `countsAsFinished: true`** (§6.1). Corrects finished sq ft.
+4. **Strip placeholder tasks/budgets** (§6.3). Delete anything fictional that rode in from the scaffold.
+5. **Stamp area accuracy** — add `meta.areaAccuracyNote` recording that areas are approximate (from a "somewhat accurate" model), so they don't get over-trusted.
+6. **Settle circuits** — mark the placeholders (`placeholder: true`) or empty `HOUSE.circuits[]`. No fiction dressed as fact. Trace the real ones with your breaker tool.
+7. **Make the infra layers honest** — open the code: are conduit/duct/PEX driven from `circuits[]` / real data, or hardcoded decoration? Data-driven → keep. Decorative → label "illustrative" in the UI so it can't be read as as-built.
+8. **Decouple tracker from model** — two views, one `data.js`. Editing a room must not be able to break the 3D, or vice versa.
+9. **Version the PWA cache** — bump a cache version on the service worker on every deploy, or it serves stale code and you edit without seeing changes (the app lies to you).
+10. **Lock the net** — export→commit is the real save (localStorage is one cache-clear from gone). Run the §7 wiring + persistence checks after every agent session; commit per phase.
+
+---
+
+*Order of operations: delete the duplicate folder → Phase 1 → test → Phase 2 → test →
+Phase 3 → test → then 4 and 5 whenever. You can stop after Phase 3 and already have a
+fully editable, saveable dashboard. Phase 6 is the verify-the-spine pass that makes it
+trustworthy, not just impressive — do steps 3–7 whenever you're ready to trust the numbers.*

@@ -8,6 +8,7 @@
   "use strict";
 
   const SS = window.StorageService;
+  const BASELINE = structuredClone(window.HOUSE);
   let H = window.HOUSE;
 
   const $  = (s, r = document) => r.querySelector(s);
@@ -37,6 +38,15 @@
   const byId  = (id) => H.rooms.find((r) => r.id === id);
   const circuitById = (id) => H.circuits.find((c) => c.id === id);
 
+  function updateSyncPill() {
+    const el = $("#saveIndicator");
+    if (!el) return;
+    const inSync = (JSON.stringify(H) === JSON.stringify(BASELINE));
+    el.classList.toggle("is-synced", inSync);
+    el.classList.toggle("is-unexported", !inSync);
+    el.textContent = inSync ? "✓ In sync with data.js" : "● Local edits not exported";
+  }
+
   function flashSaved() {
     const el = $("#saveIndicator");
     if (!el) return;
@@ -44,10 +54,8 @@
     el.classList.add("is-saving");
     clearTimeout(flashSaved._timer);
     flashSaved._timer = setTimeout(() => {
-      el.textContent = "● Saved";
       el.classList.remove("is-saving");
-      el.classList.add("is-saved");
-      setTimeout(() => el.classList.remove("is-saved"), 1500);
+      updateSyncPill();
     }, 250);
   }
 
@@ -424,6 +432,7 @@
     paintPlan();
     if (state.mode === "electrical") renderBreakerBox();
     if (window.Charts) window.Charts.render(rooms, STATUS);
+    updateSyncPill();
   }
 
   /* ---------- render: detail panel ---------- */
@@ -476,8 +485,11 @@
         </div>`
       : ``;
 
+    const ALL_TYPES = ["bedroom", "bath", "kitchen", "living", "flex", "utility", "storage", "circulation", "exterior", "garage", "basement"];
+    const roomTypes = Array.from(new Set([...ALL_TYPES, ...H.rooms.map((x) => x.type).filter(Boolean)]));
+
     body.innerHTML = `
-      <h2>${r.name}</h2>
+      <input type="text" class="edit-room-name" id="editName" value="${r.name || ""}" placeholder="Room Name" aria-label="Room name" />
       <div class="detail-controls-row">
         <select class="status-select ${r.status}" id="editStatus" aria-label="Room status">
           <option value="not-started" ${r.status === "not-started" ? "selected" : ""}>Not started</option>
@@ -485,7 +497,13 @@
           <option value="blocked"     ${r.status === "blocked"     ? "selected" : ""}>Blocked</option>
           <option value="complete"    ${r.status === "complete"    ? "selected" : ""}>Complete</option>
         </select>
-        <div class="detail-type">${r.type}${r.phase === "proposed" ? " · proposed" : ""}${r.floor === "basement" ? " · basement" : ""}</div>
+        <select class="detail-select" id="editType" aria-label="Room type" title="Room type">
+          ${roomTypes.map((t) => `<option value="${t}" ${r.type === t ? "selected" : ""}>${t}</option>`).join("")}
+        </select>
+        <select class="detail-select" id="editPhase" aria-label="Room phase" title="Room phase">
+          <option value="existing" ${r.phase === "existing" ? "selected" : ""}>Existing</option>
+          <option value="proposed" ${r.phase === "proposed" ? "selected" : ""}>Proposed</option>
+        </select>
       </div>
 
       <div class="meter"><i style="width:${r.percent || 0}%"></i></div>
@@ -515,6 +533,13 @@
         </div>
       </div>
 
+      <div style="margin: 4px 0 12px;">
+        <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--graphite);cursor:pointer;">
+          <input type="checkbox" id="editFinished" ${r.countsAsFinished ? "checked" : ""} style="cursor:pointer;" />
+          <span>Counts as finished / heated sq ft</span>
+        </label>
+      </div>
+
       <h3>Tasks</h3>
       ${tasksHtml}
       <form class="add-task-form" id="addTaskForm">
@@ -538,7 +563,73 @@
 
       <h3>Notes</h3>
       <textarea class="edit-notes" id="editNotes" placeholder="Notes on this room…">${r.notes || ""}</textarea>
+
+      <details class="advanced-disclosure">
+        <summary>Advanced (Structural)</summary>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;font-size:11.5px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:var(--graphite);">ID (SVG Key):</span>
+            <input type="text" id="advId" value="${r.id}" readonly disabled style="width:130px;background:var(--paper-2);border:1px solid var(--line);border-radius:4px;padding:3px 6px;font-family:var(--font-mono);font-size:11px;" />
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:var(--graphite);">Area:</span>
+            <input type="text" id="advArea" value="${r.area ? r.area.toFixed(2) : 0} sq ft" readonly disabled style="width:130px;background:var(--paper-2);border:1px solid var(--line);border-radius:4px;padding:3px 6px;font-family:var(--font-mono);font-size:11px;" />
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="color:var(--graphite);">Floor:</span>
+            <input type="text" id="advFloor" value="${r.floor || "main"}" readonly disabled style="width:130px;background:var(--paper-2);border:1px solid var(--line);border-radius:4px;padding:3px 6px;font-family:var(--font-mono);font-size:11px;" />
+          </div>
+          <div style="font-size:10.5px;color:var(--graphite);line-height:1.3;margin-top:2px;">
+            🔒 Structural IDs, areas, and floor levels are locked to maintain plan sync.
+          </div>
+        </div>
+      </details>
     `;
+
+    // Room Name change
+    const nameInput = $("#editName", body);
+    if (nameInput) {
+      nameInput.addEventListener("input", (e) => {
+        r.name = e.target.value;
+        SS.save(H);
+        flashSaved();
+        refreshAll();
+      });
+    }
+
+    // Room Type change
+    const typeSelect = $("#editType", body);
+    if (typeSelect) {
+      typeSelect.addEventListener("change", (e) => {
+        r.type = e.target.value;
+        SS.save(H);
+        flashSaved();
+        refreshAll();
+      });
+    }
+
+    // Room Phase change
+    const phaseSelect = $("#editPhase", body);
+    if (phaseSelect) {
+      phaseSelect.addEventListener("change", (e) => {
+        r.phase = e.target.value;
+        SS.save(H);
+        flashSaved();
+        refreshAll();
+      });
+    }
+
+    // Counts as Finished toggle
+    const finishedCb = $("#editFinished", body);
+    if (finishedCb) {
+      finishedCb.addEventListener("change", (e) => {
+        r.countsAsFinished = e.target.checked;
+        SS.save(H);
+        flashSaved();
+        refreshAll();
+        renderDetail(r);
+      });
+    }
 
     // Status change
     const statusSelect = $("#editStatus", body);
@@ -1142,7 +1233,7 @@
     const btnReset = $("#btnReset");
     if (btnReset) {
       btnReset.addEventListener("click", () => {
-        if (confirm("Reset all room edits, tasks, and circuits to default data.js?")) {
+        if (confirm("Reset to file? This will discard unexported local changes and reload data.js.")) {
           SS.reset();
           location.reload();
         }
@@ -1226,6 +1317,7 @@
     setPhase("existing");
     setLevel("main");
     setMode("renovation");
+    updateSyncPill();
   }
 
   // Expose selectRoom for 3D raycaster
