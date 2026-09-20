@@ -803,3 +803,5 @@ body.theme-monochrome { --paper: #FFFFFF; --paper-2: #F3F4F6; --ink: #000000; --
 .btn-close-detail:hover { color: var(--ink); }
 
 .settings-popover[hidden] { display: none !important; }
+
+.settings-popover::before { content: ""; position: absolute; top: -12px; left: 0; right: 0; height: 12px; background: transparent; }
