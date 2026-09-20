@@ -1564,7 +1564,7 @@
   }
 
   function onClick(e) {
-    if (isPlaceVentMode) {
+    if (isPlaceVentMode || isPlaceFixtureMode) {
       // Raycast against visible room floors
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(roomMeshes.filter((m) => m.visible));
@@ -1575,9 +1575,17 @@
         const hitZ = Math.round(hit.point.z * 100) / 100;
         const detectedRoom = detectRoomAtPoint(hitX, hitZ, activeLevel) || (hit.object.userData && hit.object.userData.id) || "livingroom";
 
-        if (window.App && typeof window.App.addRegisterFrom3D === "function") {
+        if (isPlaceVentMode && window.App && typeof window.App.addRegisterFrom3D === "function") {
           window.App.addRegisterFrom3D({
             room: detectedRoom,
+            anchor: { x: hitX, y: hitY + 0.02, z: hitZ }
+          });
+        } else if (isPlaceFixtureMode && window.App && typeof window.App.addFixtureFrom3D === "function") {
+          const sel = document.getElementById("selFixtureType");
+          const type = sel ? sel.value : "sink";
+          window.App.addFixtureFrom3D({
+            room: detectedRoom,
+            type: type,
             anchor: { x: hitX, y: hitY + 0.02, z: hitZ }
           });
         }
@@ -1876,6 +1884,7 @@
   }
 
   let isPlaceVentMode = false;
+  let isPlaceFixtureMode = false;
 
   function setPlaceVentMode(active) {
     isPlaceVentMode = !!active;
@@ -1884,6 +1893,24 @@
     }
     const btn = document.getElementById("btnPlaceVent");
     if (btn) btn.classList.toggle("is-active", isPlaceVentMode);
+    
+    // Auto-disable fixture mode if enabling vent mode
+    if (active && isPlaceFixtureMode) setPlaceFixtureMode(false);
+  }
+
+  function setPlaceFixtureMode(active) {
+    isPlaceFixtureMode = !!active;
+    if (renderer && renderer.domElement) {
+      renderer.domElement.style.cursor = isPlaceFixtureMode ? "crosshair" : "default";
+    }
+    const btn = document.getElementById("btnPlaceFixture");
+    if (btn) btn.classList.toggle("is-active", isPlaceFixtureMode);
+    
+    const palette = document.getElementById("fixturePalette");
+    if (palette) palette.hidden = !isPlaceFixtureMode;
+
+    // Auto-disable vent mode if enabling fixture mode
+    if (active && isPlaceVentMode) setPlaceVentMode(false);
   }
 
   function generateHVACSchematic() {
@@ -2001,6 +2028,98 @@
     });
   }
 
+  function addPipeRun(x1, y1, z1, x2, y2, z2, mat, fixtureId) {
+    const dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
+    const len = Math.hypot(dx, dy, dz);
+    if (len < 0.01) return;
+    const geom = new THREE.CylinderGeometry(0.016, 0.016, len, 8);
+    const mesh = new THREE.Mesh(geom, mat);
+    mesh.position.set((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
+    mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(dx, dy, dz).normalize());
+    mesh.userData = { fixtureId, isPipe: true };
+    plumbingLayerGroup.add(mesh);
+  }
+
+  function generatePlumbingSchematic() {
+    if (!plumbingLayerGroup) {
+      plumbingLayerGroup = new THREE.Group();
+      scene.add(plumbingLayerGroup);
+    }
+
+    while (plumbingLayerGroup.children.length > 0) {
+      const child = plumbingLayerGroup.children[0];
+      if (child.geometry) child.geometry.dispose();
+      if (child.material) {
+        if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+        else child.material.dispose();
+      }
+      plumbingLayerGroup.remove(child);
+    }
+
+    const H = window.HOUSE || { fixtures: [] };
+    const meta = H.meta || {};
+    const manifoldAnchor = meta.manifoldAnchor || { x: 1.2, y: -1.18, z: 3.27 };
+    const drainStackAnchor = meta.drainStackAnchor || { x: 1.4, y: -1.18, z: 3.27 };
+    const basementCeilingY = -0.15; // slightly below HVAC
+
+    const pexHotMat = new THREE.MeshStandardMaterial({ color: 0xEF4444, emissive: 0xB91C1C, emissiveIntensity: 0.35, roughness: 0.35 });
+    const pexColdMat = new THREE.MeshStandardMaterial({ color: 0x3B82F6, emissive: 0x1D4ED8, emissiveIntensity: 0.35, roughness: 0.35 });
+    const drainMat = new THREE.MeshStandardMaterial({ color: 0x9CA3AF, metalness: 0.1, roughness: 0.8 });
+    const fixtureMat = new THREE.MeshStandardMaterial({ color: 0xE5E7EB, roughness: 0.2 });
+    const verifiedFixtureMat = new THREE.MeshStandardMaterial({ color: 0x3E8E5A, emissive: 0x2B6946, emissiveIntensity: 0.25, roughness: 0.2 });
+
+    // Manifold and Stack roots
+    const manifold = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.6, 0.3), pexColdMat);
+    manifold.position.set(manifoldAnchor.x, manifoldAnchor.y + 0.3, manifoldAnchor.z);
+    plumbingLayerGroup.add(manifold);
+
+    const stack = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.2, 12), drainMat);
+    stack.position.set(drainStackAnchor.x, drainStackAnchor.y + 0.6, drainStackAnchor.z);
+    plumbingLayerGroup.add(stack);
+
+    const fixtures = H.fixtures || [];
+    fixtures.forEach((fix, i) => {
+      const anchor = fix.anchor;
+      if (!anchor) return;
+
+      const fMat = fix.verified ? verifiedFixtureMat : fixtureMat;
+      const fixtureMesh = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.1, 0.2), fMat);
+      fixtureMesh.position.set(anchor.x, anchor.y || 0.02, anchor.z);
+      fixtureMesh.userData = { fixtureId: fix.id, isFixture: true, fixtureData: fix };
+      plumbingLayerGroup.add(fixtureMesh);
+
+      // Routing offsets to prevent z-fighting
+      const offset = (i % 5) * 0.03;
+      const rY = basementCeilingY + offset;
+
+      if (fix.cold) {
+        addPipeRun(manifoldAnchor.x, rY, manifoldAnchor.z, anchor.x - 0.04, rY, manifoldAnchor.z, pexColdMat, fix.id);
+        addPipeRun(anchor.x - 0.04, rY, manifoldAnchor.z, anchor.x - 0.04, rY, anchor.z, pexColdMat, fix.id);
+        addPipeRun(anchor.x - 0.04, rY, anchor.z, anchor.x - 0.04, anchor.y, anchor.z, pexColdMat, fix.id);
+      }
+      if (fix.hot) {
+        addPipeRun(manifoldAnchor.x, rY + 0.02, manifoldAnchor.z, anchor.x + 0.04, rY + 0.02, manifoldAnchor.z, pexHotMat, fix.id);
+        addPipeRun(anchor.x + 0.04, rY + 0.02, manifoldAnchor.z, anchor.x + 0.04, rY + 0.02, anchor.z, pexHotMat, fix.id);
+        addPipeRun(anchor.x + 0.04, rY + 0.02, anchor.z, anchor.x + 0.04, anchor.y, anchor.z, pexHotMat, fix.id);
+      }
+      if (fix.drain) {
+        // Drains use larger pipe and route to drainStackAnchor
+        const rYd = basementCeilingY - 0.1 - offset;
+        const dx = anchor.x - drainStackAnchor.x;
+        const dz = anchor.z - drainStackAnchor.z;
+        const len = Math.hypot(dx, dz);
+        if (len > 0.01) {
+            const dxMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, len, 8), drainMat);
+            dxMesh.position.set((drainStackAnchor.x + anchor.x)/2, rYd, (drainStackAnchor.z + anchor.z)/2);
+            dxMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), new THREE.Vector3(dx, 0, dz).normalize());
+            plumbingLayerGroup.add(dxMesh);
+        }
+        addPipeRun(anchor.x, rYd, anchor.z, anchor.x, anchor.y, anchor.z, drainMat, fix.id);
+        addPipeRun(drainStackAnchor.x, drainStackAnchor.y, drainStackAnchor.z, drainStackAnchor.x, rYd, drainStackAnchor.z, drainMat, fix.id);
+      }
+    });
+  }
+
   function buildInfrastructureLayers() {
     // 1. Electrical Conduit Layer (Data-Driven Generator)
     generateElectricalSchematic();
@@ -2012,10 +2131,8 @@
     scene.add(hvacLayerGroup);
 
     // 3. Plumbing Layer (PEX Hot Red & Cold Blue)
-    // Plumbing layer generation pending Phase 7b (data-driven schema)
-    plumbingLayerGroup = new THREE.Group();
+    generatePlumbingSchematic();
     plumbingLayerGroup.visible = false;
-    scene.add(plumbingLayerGroup);
   }
 
   function updateSchematicBadge() {
@@ -2245,10 +2362,13 @@
     highlightCircuit,
     generateElectricalSchematic,
     generateHVACSchematic,
+    generatePlumbingSchematic,
     roomAnchor,
     detectRoomAtPoint,
     setPlaceVentMode,
     isPlaceVentMode: () => isPlaceVentMode,
+    setPlaceFixtureMode,
+    isPlaceFixtureMode: () => isPlaceFixtureMode,
     updateSchematicBadge
   };
 })();

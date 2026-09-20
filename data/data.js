@@ -20,7 +20,11 @@ window.HOUSE = {
     areaAccuracyNote: "Areas are approximate from architectural model ('somewhat accurate.sh3d'). Verify in the field before ordering materials.",
     panelAnchor: { x: 1.291, y: -0.9, z: 6.855 }, // Sited at centroid of basement-mech room.
     furnaceAnchor: { x: 1.55, y: -1.18, z: 3.27 }, // Approximate furnace equipment location in basement.
+    manifoldAnchor: { x: 1.2, y: -1.18, z: 3.27 }, // Approximate water heater/softener
+    drainStackAnchor: { x: 1.4, y: -1.18, z: 3.27 } // Approximate main drain stack
   },
+
+  fixtures: [], // { id, room, type, hot, cold, drain, anchor, verified }
 
   /* -------------------------------------------------------------------------
    * ROOMS

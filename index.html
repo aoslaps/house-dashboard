@@ -75,10 +75,25 @@
             <button id="btnToggleHVAC" title="Toggle 3D HVAC Ductwork">HVAC</button>
             <button id="btnTogglePlumbing" title="Toggle 3D Plumbing Lines">Plumbing</button>
             <button id="btnPlaceVent" class="btn-place-mode" title="Click on floor in 3D to place a vent">Place Vent</button>
+            <button id="btnPlaceFixture" class="btn-place-mode" title="Click on floor in 3D to place a plumbing fixture">Place Fixture</button>
           </div>
         </div>
       </div>
       <div class="model3d-wrap" id="model3dWrap" hidden>
+        <div class="fixture-palette" id="fixturePalette" hidden style="position:absolute;top:12px;left:12px;z-index:10;background:rgba(22,32,43,0.85);color:#fff;padding:6px 12px;border-radius:6px;font-family:var(--font-ui);font-size:12px;display:flex;align-items:center;gap:8px;backdrop-filter:blur(4px);">
+          <strong>Placing Fixture:</strong>
+          <select id="selFixtureType" style="background:#1F2732;color:#fff;border:1px solid #334050;padding:2px 6px;border-radius:4px;font-family:inherit;font-size:12px;outline:none;">
+            <option value="sink">Sink</option>
+            <option value="toilet">Toilet</option>
+            <option value="shower">Shower</option>
+            <option value="tub">Tub</option>
+            <option value="laundry">Laundry</option>
+            <option value="dishwasher">Dishwasher</option>
+            <option value="hosebib">Hose Bib</option>
+            <option value="waterheater">Water Heater</option>
+            <option value="softener">Softener</option>
+          </select>
+        </div>
         <div class="model3d-canvas-container" id="model3dContainer"></div>
         <div class="model3d-hint">Left drag: Orbit 360° · Right drag: Pan · Scroll: Zoom · Click room to inspect</div>
       </div>
@@ -3253,13 +3268,44 @@ lFYM/45SC/+ITwv/iE8L/4hPC/8BAAD//3AHFsS4Cd1sAAAAAElFTkSuQmCC"/>
       <div class="registers-head">
         <div>
           <h2>❄️ HVAC Registers & Ventilation</h2>
-          <p>Click "📍 Place Vent" in the 3D model to drop observed registers, or edit them below. Duct runs are dynamically generated.</p>
+          <p>Click "Place Vent" in the 3D model to drop observed registers, or edit them below. Duct runs are dynamically generated.</p>
         </div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
           <button class="btn-add-breaker" id="btnAddRegister">+ Add Register</button>
         </div>
       </div>
       <div class="registers-table-wrap" id="registersTableWrap">
+        <!-- filled by app.js -->
+      </div>
+    </section>
+
+    <section class="registers-section" id="fixturesSection">
+      <div class="registers-head">
+        <div>
+          <h2>💧 Plumbing Fixtures</h2>
+          <p>Click "Place Fixture" in the 3D model to drop observed fixtures. Red/Blue PEX is routed from the manifold, Grey drains route to the stack.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <button class="btn-add-breaker" id="btnAddFixture">+ Add Fixture</button>
+        </div>
+      </div>
+      <div class="panel-anchor-bar">
+        <div class="anchor-bar-label">
+          <span class="anchor-bar-title">💧 Basement Utility Anchors:</span>
+          <span class="anchor-bar-hint">Manifold (Supply root) and Drain Stack (Waste root).</span>
+        </div>
+        <div class="anchor-inputs-group">
+          <span style="font-size:11px;color:var(--graphite);font-weight:600;">Manifold:</span>
+          <label class="anchor-field">X: <input type="number" step="0.05" class="anchor-input" id="manifoldX" value="1.2" /></label>
+          <label class="anchor-field">Y: <input type="number" step="0.05" class="anchor-input" id="manifoldY" value="-1.18" /></label>
+          <label class="anchor-field">Z: <input type="number" step="0.05" class="anchor-input" id="manifoldZ" value="3.27" /></label>
+          <span style="font-size:11px;color:var(--graphite);font-weight:600;margin-left:12px;">Stack:</span>
+          <label class="anchor-field">X: <input type="number" step="0.05" class="anchor-input" id="drainStackX" value="1.4" /></label>
+          <label class="anchor-field">Y: <input type="number" step="0.05" class="anchor-input" id="drainStackY" value="-1.18" /></label>
+          <label class="anchor-field">Z: <input type="number" step="0.05" class="anchor-input" id="drainStackZ" value="3.27" /></label>
+        </div>
+      </div>
+      <div class="registers-table-wrap" id="fixturesTableWrap">
         <!-- filled by app.js -->
       </div>
     </section>

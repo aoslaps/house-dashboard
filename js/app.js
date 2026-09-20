@@ -718,6 +718,121 @@
       });
     });
   }
+  function renderFixturesTable() {
+    const wrap = $("#fixturesTableWrap");
+    if (!wrap) return;
+
+    const fixtures = H.fixtures || [];
+    if (fixtures.length === 0) {
+      wrap.innerHTML = `<p style="padding:15px;color:var(--graphite);font-size:13px;text-align:center;">No plumbing fixtures mapped yet. Click 'Place Fixture' in the 3D model.</p>`;
+      return;
+    }
+
+    const roomOpts = H.rooms.map((r) => `<option value="${r.id}">${r.name}</option>`).join("");
+
+    let html = `
+      <table class="circuits-table" style="margin-top:0;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Room</th>
+            <th>Type</th>
+            <th>Services</th>
+            <th style="text-align:center;">Verified</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    fixtures.forEach((fix) => {
+      const isV = fix.verified ? "checked" : "";
+      const isHot = fix.hot ? "checked" : "";
+      const isCold = fix.cold ? "checked" : "";
+      const isDrain = fix.drain ? "checked" : "";
+      const rOpts = H.rooms.map((r) => `<option value="${r.id}" ${r.id === fix.room ? "selected" : ""}>${r.name}</option>`).join("");
+      const kinds = ["sink", "toilet", "shower", "tub", "laundry", "dishwasher", "hosebib", "waterheater", "softener"];
+      const kOpts = kinds.map((k) => `<option value="${k}" ${k === fix.kind ? "selected" : ""}>${k.charAt(0).toUpperCase() + k.slice(1)}</option>`).join("");
+
+      html += `
+        <tr class="${fix.verified ? "is-verified" : ""}">
+          <td style="font-weight:600;font-family:monospace;">${fix.id}</td>
+          <td><select class="fix-room-sel" data-id="${fix.id}">${rOpts}</select></td>
+          <td><select class="fix-kind-sel" data-id="${fix.id}">${kOpts}</select></td>
+          <td>
+            <label style="margin-right:6px;"><input type="checkbox" class="fix-srv-check" data-id="${fix.id}" data-srv="hot" ${isHot}> Hot</label>
+            <label style="margin-right:6px;"><input type="checkbox" class="fix-srv-check" data-id="${fix.id}" data-srv="cold" ${isCold}> Cold</label>
+            <label><input type="checkbox" class="fix-srv-check" data-id="${fix.id}" data-srv="drain" ${isDrain}> Drain</label>
+          </td>
+          <td style="text-align:center;">
+            <input type="checkbox" class="fix-verify-check" data-id="${fix.id}" ${isV} title="Mark as physically verified">
+          </td>
+          <td style="text-align:right;">
+            <button class="btn-del-register" data-id="${fix.id}" title="Delete Fixture">🗑</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    wrap.innerHTML = html;
+
+    // Listeners
+    $$(".fix-room-sel", wrap).forEach((sel) => {
+      sel.addEventListener("change", (e) => {
+        const id = e.target.dataset.id;
+        const fix = fixtures.find((f) => f.id === id);
+        if (fix) {
+          fix.room = e.target.value;
+          SS.save(H); flashSaved(); refreshAll();
+        }
+      });
+    });
+
+    $$(".fix-kind-sel", wrap).forEach((sel) => {
+      sel.addEventListener("change", (e) => {
+        const id = e.target.dataset.id;
+        const fix = fixtures.find((f) => f.id === id);
+        if (fix) {
+          fix.kind = e.target.value;
+          SS.save(H); flashSaved(); refreshAll();
+        }
+      });
+    });
+
+    $$(".fix-srv-check", wrap).forEach((chk) => {
+      chk.addEventListener("change", (e) => {
+        const id = e.target.dataset.id;
+        const srv = e.target.dataset.srv; // 'hot', 'cold', or 'drain'
+        const fix = fixtures.find((f) => f.id === id);
+        if (fix) {
+          fix[srv] = e.target.checked;
+          SS.save(H); flashSaved(); refreshAll();
+        }
+      });
+    });
+
+    $$(".fix-verify-check", wrap).forEach((chk) => {
+      chk.addEventListener("change", (e) => {
+        const id = e.target.dataset.id;
+        const fix = fixtures.find((f) => f.id === id);
+        if (fix) {
+          fix.verified = e.target.checked;
+          SS.save(H); flashSaved(); refreshAll();
+        }
+      });
+    });
+
+    $$(".btn-del-register", wrap).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        if (confirm(`Delete fixture ${id}?`)) {
+          H.fixtures = (H.fixtures || []).filter((f) => f.id !== id);
+          SS.save(H); flashSaved(); refreshAll();
+        }
+      });
+    });
+  }
 
   /* ---------- live update helper ---------- */
   function refreshAll() {
@@ -728,10 +843,12 @@
     paintPlan();
     if (state.mode === "electrical") renderBreakerBox();
     renderRegistersTable();
+    renderFixturesTable();
     if (window.Charts) window.Charts.render(rooms, STATUS);
     if (window.Model3D) {
       if (window.Model3D.generateElectricalSchematic) window.Model3D.generateElectricalSchematic();
       if (window.Model3D.generateHVACSchematic) window.Model3D.generateHVACSchematic();
+      if (window.Model3D.generatePlumbingSchematic) window.Model3D.generatePlumbingSchematic();
       if (window.Model3D.updateSchematicBadge) window.Model3D.updateSchematicBadge();
     }
     updateSyncPill();
@@ -1693,6 +1810,52 @@
       });
     }
 
+    const btnAddFixture = $("#btnAddFixture");
+    if (btnAddFixture) {
+      btnAddFixture.addEventListener("click", () => {
+        addFixtureFrom3D({
+          room: state.selected || (H.rooms[0] ? H.rooms[0].id : "livingroom"),
+          type: "sink",
+          anchor: null
+        });
+      });
+    }
+
+    const btnPlaceFixture = $("#btnPlaceFixture");
+    if (btnPlaceFixture) {
+      btnPlaceFixture.addEventListener("click", () => {
+        if (window.Model3D && typeof window.Model3D.setPlaceFixtureMode === "function") {
+          const isF = window.Model3D.isPlaceFixtureMode ? window.Model3D.isPlaceFixtureMode() : false;
+          window.Model3D.setPlaceFixtureMode(!isF);
+          // Auto-enable plumbing layer if turning on
+          if (!isF) {
+            const btnPlumbing = $("#btnTogglePlumbing");
+            if (btnPlumbing && !btnPlumbing.classList.contains("is-active")) {
+              btnPlumbing.click();
+            }
+          }
+        }
+      });
+    }
+
+    // Anchor inputs listeners
+    ["manifoldX", "manifoldY", "manifoldZ", "drainStackX", "drainStackY", "drainStackZ"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("change", (e) => {
+          if (!H.meta) H.meta = {};
+          if (id.startsWith("manifold")) {
+            if (!H.meta.manifoldAnchor) H.meta.manifoldAnchor = {x: 1.2, y: -1.18, z: 3.27};
+            H.meta.manifoldAnchor[id.slice(-1).toLowerCase()] = parseFloat(e.target.value);
+          } else {
+            if (!H.meta.drainStackAnchor) H.meta.drainStackAnchor = {x: 1.4, y: -1.18, z: 3.27};
+            H.meta.drainStackAnchor[id.slice(-1).toLowerCase()] = parseFloat(e.target.value);
+          }
+          SS.save(H); flashSaved(); refreshAll();
+        });
+      }
+    });
+
     renderLegend();
     setPhase("existing");
     setLevel("main");
@@ -1717,6 +1880,41 @@
     flashSaved();
     refreshAll();
     const sec = $("#registersSection");
+    if (sec) sec.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function addFixtureFrom3D({ room, type, anchor }) {
+    if (!H.fixtures) H.fixtures = [];
+    const id = "fix-" + (H.fixtures.length + 1);
+    
+    // Determine defaults based on fixture type
+    // sink/shower/tub/dishwasher/laundry -> hot+cold+drain
+    // toilet -> cold+drain
+    // hosebib -> cold only
+    // waterheater/softener -> source, no runs drawn to it (hot/cold false)
+    let hot = true, cold = true, drain = true;
+    
+    if (type === "toilet") {
+      hot = false;
+    } else if (type === "hosebib") {
+      hot = false; drain = false;
+    } else if (type === "waterheater" || type === "softener") {
+      hot = false; cold = false; drain = false;
+    }
+    
+    const newFix = {
+      id,
+      room: room || (state.selected || (H.rooms[0] ? H.rooms[0].id : "livingroom")),
+      kind: type || "sink",
+      hot, cold, drain,
+      anchor: anchor || null,
+      verified: false
+    };
+    H.fixtures.push(newFix);
+    SS.save(H);
+    flashSaved();
+    refreshAll();
+    const sec = $("#fixturesSection");
     if (sec) sec.scrollIntoView({ behavior: "smooth" });
   }
 
