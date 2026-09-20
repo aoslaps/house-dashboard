@@ -263,3 +263,85 @@ you to trust numbers that were never verified — closing that gap is the whole 
 Phase 3 → test → then 4 and 5 whenever. You can stop after Phase 3 and already have a
 fully editable, saveable dashboard. Phase 6 is the verify-the-spine pass that makes it
 trustworthy, not just impressive — do steps 3–7 whenever you're ready to trust the numbers.*
+
+---
+
+## Phase 7 — 3D schematic infrastructure routing (data-driven, not as-built)
+
+**Governing principle:** you can only route as accurately as your data, and your data is *connectivity, not geometry*. So every layer here is **schematic** — topologically true (what feeds what), never a claim about where a wire or pipe physically bends. Each layer carries a persistent UI badge: **"Schematic — shows what connects to what, not where it runs. Not as-built."** No wall gets drilled on the strength of these lines.
+
+**"Editable" means edit the data, regenerate the 3D** — never hand-draw paths in space. A dragged spline through studs is the as-built fiction we're refusing. The 3D is a *projection* of the tables, exactly like the 2D plan is.
+
+### Shared foundation (build once, all three layers use it)
+- **`roomAnchor(roomId, z)`** — a utility returning a 3D point from the room's existing SVG polygon centroid at a given height. This is the default anchor for every node, so electrical needs almost no new data. Each layer's data can optionally override with an explicit `anchor: {x,y,z}`.
+- **Orthogonal (right-angle) routing** — draw runs as axis-aligned polylines, not curves. Reads as "wiring diagram," reinforces that it's schematic, and is trivial to generate.
+- **One generator pattern per layer:** read the layer's data from the working model → resolve anchors (explicit or centroid) → emit orthogonal tubes/lines source→node → group under one toggleable `Object3D` tagged with the layer name.
+- **Flows through existing plumbing:** new data arrays live on `HOUSE`, so `JSON.stringify(model)` already exports them. Every edit mutates the model, triggers `refreshAll()`, and writes the localStorage overlay — same as tasks and circuits. The sync pill and Export just work.
+
+### 7a — Electrical (do first: data already exists, proves the pattern cheaply)
+Source = panel anchor (basement mech). Nodes = the rooms in each `circuits[].rooms[]`, at junction height. Generate one path per circuit, colored by panel/amps, toggled per circuit through the circuit table you already built. New data is minimal: a `meta.panelAnchor {x,y,z}` and an optional per-circuit color.
+
+### 7b — Plumbing (new `fixtures[]` layer)
+```
+fixtures: [
+  { id, room, type: "sink|toilet|shower|tub|washer|hosebib|waterheater|softener",
+    hot: bool, cold: bool, drain: bool, anchor: {x,y,z}|null }  // null → room centroid
+]
+```
+Source = water-heater/softener manifold. Generate cold (blue) to every fixture, hot (red) where `hot:true`, drain (grey) to a stack. You populate it by walking the house — you know where your fixtures are.
+
+### 7c — HVAC (new `registers[]` layer)
+```
+registers: [
+  { id, room, kind: "supply|return", size: "4x10"|…, cfm: number|null, anchor: {x,y,z}|null }
+]
+```
+Source = furnace/air handler. Generate a main trunk → branches to each supply register → return trunk from returns. Schematic trunk-and-branch, not modeled duct.
+
+**Sequence:** 7a → 7b → 7c. Electrical rides on data you have and validates the anchor+generator utility before you invest in populating the two new layers.
+
+### Copy-paste prompts
+
+**Phase 7a — Electrical routing**
+```
+Build a shared schematic-routing foundation, then the electrical layer.
+
+FOUNDATION (used by all infra layers):
+- roomAnchor(roomId, z): returns a 3D point from the room's SVG polygon centroid at height z.
+  Every node defaults to this; data may override with an explicit anchor {x,y,z}.
+- Route paths as orthogonal (axis-aligned) polylines, not curves — schematic, not as-built.
+- Each layer is one toggleable Object3D group tagged by layer name.
+- A persistent UI badge on every infra layer: "Schematic — what connects to what, not where it
+  runs. Not as-built." Non-dismissable.
+
+ELECTRICAL:
+- Add meta.panelAnchor {x,y,z} (basement mechanical). Optional per-circuit color.
+- For each circuit, draw orthogonal paths from panelAnchor to each room in circuits[].rooms[],
+  at junction height, colored by panel/amps. Toggle per circuit via the existing circuit table.
+- No new geometry data beyond panelAnchor — use roomAnchor for room nodes.
+- Regenerate on edit; flows through the existing model/persistence/export path. Do NOT add drag editing.
+```
+
+**Phase 7b — Plumbing routing**
+```
+Add a plumbing layer, same schematic pattern as electrical.
+
+- New HOUSE.fixtures[]: { id, room, type (sink|toilet|shower|tub|washer|hosebib|waterheater|
+  softener), hot:bool, cold:bool, drain:bool, anchor:{x,y,z}|null }.
+- Table editor like the circuits table: room dropdown (valid ids only), type dropdown,
+  hot/cold/drain checkboxes, delete. Edits flow through model/persistence/export.
+- Generator: source = the waterheater/softener fixture (or meta.manifoldAnchor). Cold (blue) to
+  every fixture, hot (red) where hot:true, drain (grey) to a stack. Orthogonal. Toggleable group.
+  Reuse roomAnchor for defaults. Keep the schematic badge.
+```
+
+**Phase 7c — HVAC routing**
+```
+Add an HVAC layer, same schematic pattern.
+
+- New HOUSE.registers[]: { id, room, kind (supply|return), size, cfm:number|null, anchor:{x,y,z}|null }.
+- Table editor: room dropdown (valid ids only), kind dropdown, size, cfm, delete.
+- Generator: source = furnace/air-handler anchor (meta.furnaceAnchor). Main trunk → branches to each
+  supply register → return trunk from returns. Orthogonal trunk-and-branch, not modeled duct.
+  Toggleable group, roomAnchor defaults, schematic badge.
+```
