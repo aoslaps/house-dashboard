@@ -87,20 +87,20 @@ window.Landscape = (function() {
     
     // Fun placements!
     const treeData = [
-      { t: "spruce", x: -12, z: -15 },
-      { t: "white_pine", x: -8, z: -18 },
-      { t: "white_pine", x: -15, z: -10 },
+      { t: "spruce", x: -22, z: -25 },
+      { t: "white_pine", x: -18, z: -28 },
+      { t: "white_pine", x: -25, z: -18 },
       { t: "spruce", x: 14, z: -16 },
       { t: "red_cedar", x: 18, z: -5 },
       { t: "red_cedar", x: 18, z: -2 },
       { t: "red_cedar", x: 18, z: 1 },
       { t: "sugar_maple", x: -10, z: 12 },
       { t: "sugar_maple", x: 12, z: 14 },
-      { t: "apple", x: -5, z: -14 },
-      { t: "apple", x: -2, z: -16 },
-      { t: "apple", x: 2, z: -15 },
-      { t: "white_pine", x: 8, z: -20 },
-      { t: "spruce", x: -18, z: 5 }
+      { t: "apple", x: -5, z: -24 },
+      { t: "apple", x: -2, z: -26 },
+      { t: "apple", x: 2, z: -25 },
+      { t: "white_pine", x: 8, z: -28 },
+      { t: "spruce", x: -28, z: 5 }
     ];
 
     treeData.forEach(td => {
