@@ -2,12 +2,14 @@
  * model3d.js — Interactive 3D Orbital House Model using Three.js
  * ----------------------------------------------------------------------------
  * Features:
+ * - Dual-sided wall materials: eggshell vinyl siding on the exterior face,
+ *   clean drywall on the interior face (NO vinyl siding inside rooms!)
  * - True wall openings for all doors and windows (see right through windows & portals)
- * - Eggshell white vinyl siding on exterior walls
- * - Closed doors with white exterior doors
- * - Open-frame walkway portal for the entry porch
+ * - All exterior doors (slabs and frames) are crisp white
+ * - All doors closed
+ * - Open-frame architectural walkway portal for the entry porch
  * - Gravel driveway aligned with the front of the garage
- * - Landscaped lot with lush green lawn, walkway, and 3D trees
+ * - Spaciously landscaped lot with lush lawn, walkway, and perimeter 3D trees
  * - Sleek compact 3D room badges
  * - Offline file:// compatibility via data/model3d.js
  * ============================================================================ */
@@ -240,7 +242,7 @@
     const H = window.HOUSE || { rooms: [] };
     const byId = (id) => H.rooms.find((r) => r.id === id);
 
-    // 1. Build Landscaped Environment (Lawn, Gravel Driveway, Walkway, 3D Trees)
+    // 1. Build Landscaped Environment (Lawn, Gravel Driveway, Walkway, Spaced 3D Trees)
     buildEnvironment();
 
     // 2. Build Room Slabs & Sleek Compact 3D Floating Labels
@@ -302,13 +304,13 @@
       labelSprites.push(labelSprite);
     });
 
-    // 3. Build 3D Walls with Real Openings (subdivided around doors & windows)
+    // 3. Build 3D Walls with Dual-Sided Materials (Vinyl Siding Outside, Drywall Inside)
     buildWallsWithOpenings();
 
-    // 4. Build Exact 3D Doors from Sweet Home 3D (Closed, White Exterior, Porch Portal)
+    // 4. Build Exact 3D Doors (All Closed, All Exterior Doors White, Porch Walkway)
     buildDoors();
 
-    // 5. Build Exact 3D Windows from Sweet Home 3D (Transparent Glass, Framed)
+    // 5. Build Exact 3D Windows (Transparent Glass, Framed Openings)
     buildWindows();
 
     // 6. Build Accurate 3D Basement Staircase
@@ -327,7 +329,7 @@
     const groundGeom = new THREE.PlaneGeometry(85, 85);
     groundGeom.rotateX(-Math.PI / 2);
     const grassMat = new THREE.MeshStandardMaterial({
-      color: 0x487937, // Rich lawn green
+      color: 0x487937, // Rich natural lawn green
       roughness: 0.88,
       metalness: 0.02,
     });
@@ -336,9 +338,7 @@
     groundMesh.receiveShadow = true;
     environmentGroup.add(groundMesh);
 
-    // 2. Gravel Driveway (aligned right with the front of the garage doors)
-    // Garage doors are at (-12.24, -3.00) and (-14.07, -6.18), angle 60° (rotY = -PI/3)
-    // Driveway starts directly at garage doors and extends out a short distance
+    // 2. Gravel Driveway (aligned right with front of garage doors)
     const gravelTex = createGravelTexture();
     const driveGeom = new THREE.PlaneGeometry(10.5, 12);
     driveGeom.rotateX(-Math.PI / 2);
@@ -349,7 +349,6 @@
       metalness: 0.03
     });
     const driveMesh = new THREE.Mesh(driveGeom, driveMat);
-    // Positioned aligned with garage front edge
     driveMesh.position.set(-16.2, -0.04, -8.5);
     driveMesh.rotation.y = -Math.PI / 6; // 30° alignment
     driveMesh.receiveShadow = true;
@@ -368,21 +367,23 @@
     walkMesh.receiveShadow = true;
     environmentGroup.add(walkMesh);
 
-    // 4. Procedural Low-Poly 3D Trees & Shrubs
+    // 4. Spaced Out 3D Trees & Shrubs (open front yard, perimeter placement)
     const treePositions = [
-      { x: -16.5, z: 9.5,  h: 5.8, r: 1.8 },
-      { x: -13.0, z: 13.5, h: 4.8, r: 1.5 },
-      { x: -18.5, z: 3.0,  h: 6.2, r: 2.0 },
-      { x: -21.0, z: -8.0, h: 5.5, r: 1.7 },
-      { x: 18.5,  z: 1.5,  h: 6.0, r: 1.9 },
-      { x: 19.5,  z: 7.5,  h: 5.2, r: 1.6 },
-      { x: 13.0,  z: 17.5, h: 6.6, r: 2.2 },
-      { x: 5.5,   z: 18.5, h: 5.6, r: 1.8 },
-      { x: -2.5,  z: 18.5, h: 6.2, r: 2.0 },
-      { x: -9.5,  z: 17.0, h: 5.0, r: 1.6 },
-      { x: -4.2,  z: -2.2, h: 1.6, r: 0.8, isBush: true },
-      { x: -8.2,  z: -2.0, h: 1.5, r: 0.75, isBush: true },
-      { x: 0.5,   z: -2.2, h: 1.7, r: 0.85, isBush: true }
+      // Front yard: pushed wide to perimeter and street curb for open view
+      { x: -22.0, z: 10.0,  h: 5.6, r: 1.8 },
+      { x: -10.0, z: 18.5,  h: 5.2, r: 1.6 },
+      { x:   2.0, z: 20.0,  h: 5.8, r: 1.9 },
+      // Far northwest corner (past garage)
+      { x: -24.0, z: -10.0, h: 5.2, r: 1.6 },
+      // East perimeter
+      { x:  20.0, z:   2.0, h: 6.2, r: 2.0 },
+      { x:  21.0, z:  10.0, h: 5.4, r: 1.7 },
+      // Backyard perimeter (north fence line)
+      { x:  14.0, z:  22.0, h: 6.5, r: 2.2 },
+      { x:  -4.0, z:  22.0, h: 6.0, r: 2.0 },
+      // Low foundation shrubs near walkway
+      { x:  -4.2, z:  -2.2, h: 1.4, r: 0.7, isBush: true },
+      { x:  -0.5, z:  -2.2, h: 1.4, r: 0.7, isBush: true }
     ];
 
     const trunkMat = new THREE.MeshStandardMaterial({ color: 0x4B3728, roughness: 0.85, metalness: 0.05 });
@@ -439,7 +440,6 @@
     canvas.height = 56;
     const ctx = canvas.getContext("2d");
 
-    // Clean compact pill
     ctx.fillStyle = "rgba(15, 23, 42, 0.86)";
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(3, 3, 234, 50, 25);
@@ -450,13 +450,11 @@
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Status dot
     ctx.fillStyle = colorHex || "#00E5FF";
     ctx.beginPath();
     ctx.arc(22, 28, 6, 0, Math.PI * 2);
     ctx.fill();
 
-    // Crisp typography
     ctx.fillStyle = "#F8FAFC";
     ctx.font = "600 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
     ctx.textBaseline = "middle";
@@ -470,21 +468,21 @@
     return sprite;
   }
 
-  // --- 3D Walls with Real Openings (Doorways & Windows) ---
+  // --- 3D Walls with Dual-Sided Materials (Vinyl Siding Outside, Drywall Inside) ---
 
   function buildWallsWithOpenings() {
     const sidingTex = createVinylSidingTexture();
 
     const exteriorWallMat = new THREE.MeshStandardMaterial({
-      color: 0xF4F1EA, // Eggshell white vinyl siding
+      color: 0xF4F1EA, // Warm eggshell white vinyl siding
       map: sidingTex,
       roughness: 0.65,
       metalness: 0.04
     });
 
     const interiorWallMat = new THREE.MeshStandardMaterial({
-      color: 0xE2E8F0, // Clean drywall off-white
-      roughness: 0.75,
+      color: 0xE8ECF0, // Clean interior drywall off-white
+      roughness: 0.78,
       metalness: 0.02
     });
 
@@ -494,7 +492,34 @@
       metalness: 0.05
     });
 
-    // Helper: find distance and projection of point (px, pz) onto segment (x1, z1)-(x2, z2)
+    const wallCapMat = new THREE.MeshStandardMaterial({
+      color: 0xD8DEE4, // Clean wall top trim
+      roughness: 0.6,
+      metalness: 0.05
+    });
+
+    // Returns array of 6 materials for BoxGeometry:
+    // [0:+X, 1:-X, 2:+Y (top), 3:-Y (bottom), 4:+Z, 5:-Z]
+    function getWallMaterials(extSide, isCutaway) {
+      const intMat = isCutaway ? cutawayInteriorMat : interiorWallMat;
+      const extMat = exteriorWallMat;
+      const capMat = isCutaway ? cutawayInteriorMat : wallCapMat;
+
+      if (extSide === "+x") {
+        // +X faces outside (vinyl siding), -X faces inside (drywall)
+        return [extMat, intMat, capMat, intMat, intMat, intMat];
+      } else if (extSide === "-x") {
+        // -X faces outside (vinyl siding), +X faces inside (drywall)
+        return [intMat, extMat, capMat, intMat, intMat, intMat];
+      } else if (extSide === "both") {
+        // Both sides exterior (e.g. freestanding porch wall)
+        return [extMat, extMat, capMat, extMat, extMat, extMat];
+      } else {
+        // Pure interior wall: drywall on all faces
+        return [intMat, intMat, capMat, intMat, intMat, intMat];
+      }
+    }
+
     function ptToSegment(px, pz, x1, z1, x2, z2) {
       const dx = x2 - x1;
       const dz = z2 - z1;
@@ -506,7 +531,7 @@
       return { t: t, dist: Math.hypot(px - projX, pz - projZ) };
     }
 
-    // Associate doors and windows with walls
+    // Match openings to walls
     const wallOpenings = modelData.walls.map(() => []);
 
     if (modelData.doors) {
@@ -557,7 +582,7 @@
       });
     }
 
-    // Build each wall
+    // Build walls
     modelData.walls.forEach((w, wid) => {
       const dx = w.x2 - w.x1;
       const dz = w.y2 - w.y1;
@@ -566,28 +591,28 @@
 
       const origH = w.height || 2.44;
       const thickness = w.thickness || 0.17;
-      const isExt = !!w.isExterior;
-      const mat = isExt ? exteriorWallMat : (wallHeightMode === "cutaway" ? cutawayInteriorMat : interiorWallMat);
+      const extSide = w.extSide || (w.isExterior ? "+x" : "none");
+      const mats = getWallMaterials(extSide, wallHeightMode === "cutaway");
 
       const wallGroup = new THREE.Group();
       wallGroup.position.set(w.x1, w.elevation, w.y1);
       const angle = Math.atan2(dx, dz);
       wallGroup.rotation.y = angle;
 
-      const segments = []; // store sub-mesh info for height toggling
+      const segments = [];
 
       const ops = wallOpenings[wid];
       if (!ops || ops.length === 0) {
-        // Solid wall with no openings
+        // Solid wall
         const geom = new THREE.BoxGeometry(thickness, origH, length);
-        const mesh = new THREE.Mesh(geom, mat);
+        const mesh = new THREE.Mesh(geom, mats);
         mesh.position.set(0, origH / 2, length / 2);
         mesh.castShadow = true;
         mesh.receiveShadow = true;
         wallGroup.add(mesh);
         segments.push({ mesh: mesh, type: "column", origH: origH });
       } else {
-        // Wall has openings: calculate non-overlapping intervals along length
+        // Wall with openings
         const intervals = ops.map((op) => {
           const sMid = op.t * length;
           return {
@@ -611,11 +636,11 @@
 
         let currS = 0.0;
         cleanIntervals.forEach((iv) => {
-          // 1. Solid column before opening
+          // 1. Column before opening
           const colLen = iv.start - currS;
           if (colLen > 0.02) {
             const geom = new THREE.BoxGeometry(thickness, origH, colLen);
-            const mesh = new THREE.Mesh(geom, mat);
+            const mesh = new THREE.Mesh(geom, mats);
             mesh.position.set(0, origH / 2, currS + colLen / 2);
             mesh.castShadow = true;
             mesh.receiveShadow = true;
@@ -627,7 +652,7 @@
           const opLen = iv.end - iv.start;
           if (iv.sill > 0.02 && opLen > 0.02) {
             const geom = new THREE.BoxGeometry(thickness, iv.sill, opLen);
-            const mesh = new THREE.Mesh(geom, mat);
+            const mesh = new THREE.Mesh(geom, mats);
             mesh.position.set(0, iv.sill / 2, iv.start + opLen / 2);
             mesh.castShadow = true;
             mesh.receiveShadow = true;
@@ -635,11 +660,11 @@
             segments.push({ mesh: mesh, type: "apron", sill: iv.sill });
           }
 
-          // 3. Top header above opening (visible in full wall mode, hidden in cutaway)
+          // 3. Top header above opening (hidden in cutaway mode)
           const headerH = origH - iv.top;
           if (headerH > 0.02 && opLen > 0.02) {
             const geom = new THREE.BoxGeometry(thickness, headerH, opLen);
-            const mesh = new THREE.Mesh(geom, mat);
+            const mesh = new THREE.Mesh(geom, mats);
             mesh.position.set(0, iv.top + headerH / 2, iv.start + opLen / 2);
             mesh.castShadow = true;
             mesh.receiveShadow = true;
@@ -650,11 +675,11 @@
           currS = iv.end;
         });
 
-        // Final column after last opening
+        // Column after last opening
         const lastLen = length - currS;
         if (lastLen > 0.02) {
           const geom = new THREE.BoxGeometry(thickness, origH, lastLen);
-          const mesh = new THREE.Mesh(geom, mat);
+          const mesh = new THREE.Mesh(geom, mats);
           mesh.position.set(0, origH / 2, currS + lastLen / 2);
           mesh.castShadow = true;
           mesh.receiveShadow = true;
@@ -668,7 +693,7 @@
         level: w.level,
         elevation: w.elevation,
         originalHeight: origH,
-        isExterior: isExt,
+        extSide: extSide,
         segments: segments
       };
 
@@ -676,7 +701,6 @@
       wallMeshes.push(wallGroup);
     });
 
-    // Apply initial cutaway / full heights
     applyWallHeights();
   }
 
@@ -691,12 +715,10 @@
           seg.mesh.scale.y = cutH / origH;
           seg.mesh.position.y = cutH / 2;
         } else if (seg.type === "apron") {
-          // Apron under window stays at sill height (or cutH if smaller)
           const h = Math.min(seg.sill, cutH);
           seg.mesh.scale.y = h / seg.sill;
           seg.mesh.position.y = h / 2;
         } else if (seg.type === "header") {
-          // Headers are hidden in cutaway mode so openings stay clear!
           seg.mesh.visible = (wallHeightMode === "full");
         }
       });
@@ -708,18 +730,20 @@
     applyWallHeights();
   }
 
-  // --- 3D Doors: All Closed, White Exterior, Porch Portal ---
+  // --- 3D Doors: All Closed, All Exterior Doors White, Porch Walkway Portal ---
 
   function buildDoors() {
     if (!modelData.doors) return;
 
-    const frameMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.65, metalness: 0.1 });
+    // Materials: exterior doors (slabs and frames) are crisp white
+    const extDoorMat = new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.35, metalness: 0.1 });
+    const extFrameMat = new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.45, metalness: 0.1 });
+    const intFrameMat = new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.65, metalness: 0.1 });
     const woodDoorMat = new THREE.MeshStandardMaterial({ color: 0x8B5A2B, roughness: 0.55, metalness: 0.05 });
-    const extDoorMat = new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.35, metalness: 0.1 }); // Crisp white exterior door
     const knobMat = new THREE.MeshStandardMaterial({ color: 0xD4AF37, roughness: 0.2, metalness: 0.9 });
     const garageDoorMat = new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.5, metalness: 0.1 });
-    const garageTrimMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6, metalness: 0.2 });
-    const porchTrimMat = new THREE.MeshStandardMaterial({ color: 0xF4F1EA, roughness: 0.5, metalness: 0.05 }); // White porch archway trim
+    const garageTrimMat = new THREE.MeshStandardMaterial({ color: 0xF1F5F9, roughness: 0.5, metalness: 0.1 });
+    const porchTrimMat = new THREE.MeshStandardMaterial({ color: 0xF4F1EA, roughness: 0.5, metalness: 0.05 });
 
     modelData.doors.forEach((d) => {
       const group = new THREE.Group();
@@ -730,9 +754,10 @@
       const h = d.height || 2.05;
       const frameThick = 0.06;
       const depth = Math.max(d.depth || 0.16, 0.14);
+      const isExterior = !!d.isExterior;
 
       if (d.isOpenWalkway) {
-        // Entry Porch Walkway: Open frame architectural archway portal (no door slab)
+        // Entry Porch Walkway: Open frame architectural archway portal
         const leftCol = new THREE.Mesh(new THREE.BoxGeometry(0.12, h, depth * 1.1), porchTrimMat);
         leftCol.position.set(-w / 2 + 0.06, h / 2, 0);
         leftCol.castShadow = true;
@@ -741,14 +766,13 @@
         rightCol.position.set(w / 2 - 0.06, h / 2, 0);
         rightCol.castShadow = true;
 
-        // Classical archway header beam
         const archBeam = new THREE.Mesh(new THREE.BoxGeometry(w + 0.1, 0.14, depth * 1.15), porchTrimMat);
         archBeam.position.set(0, h - 0.07, 0);
         archBeam.castShadow = true;
 
         group.add(leftCol, rightCol, archBeam);
       } else if (d.isGarage) {
-        // Sectional overhead garage door with horizontal panels
+        // Sectional overhead garage door with white horizontal panels
         const panelCount = 4;
         const panelH = h / panelCount;
         for (let i = 0; i < panelCount; i++) {
@@ -765,26 +789,28 @@
 
           group.add(panelMesh);
         }
-        const jambL = new THREE.Mesh(new THREE.BoxGeometry(frameThick, h, depth), frameMat);
+        const frameM = extFrameMat;
+        const jambL = new THREE.Mesh(new THREE.BoxGeometry(frameThick, h, depth), frameM);
         jambL.position.set(-w / 2 + frameThick / 2, h / 2, 0);
-        const jambR = new THREE.Mesh(new THREE.BoxGeometry(frameThick, h, depth), frameMat);
+        const jambR = new THREE.Mesh(new THREE.BoxGeometry(frameThick, h, depth), frameM);
         jambR.position.set(w / 2 - frameThick / 2, h / 2, 0);
-        const lintel = new THREE.Mesh(new THREE.BoxGeometry(w, frameThick, depth), frameMat);
+        const lintel = new THREE.Mesh(new THREE.BoxGeometry(w, frameThick, depth), frameM);
         lintel.position.set(0, h - frameThick / 2, 0);
         group.add(jambL, jambR, lintel);
       } else {
-        // Standard Door Frame
+        // Standard Door Frame: white for exterior, dark slate for interior
+        const frameM = isExterior ? extFrameMat : intFrameMat;
         const jambGeom = new THREE.BoxGeometry(frameThick, h, depth);
-        const leftJamb = new THREE.Mesh(jambGeom, frameMat);
+        const leftJamb = new THREE.Mesh(jambGeom, frameM);
         leftJamb.position.set(-w / 2 + frameThick / 2, h / 2, 0);
         leftJamb.castShadow = true;
 
-        const rightJamb = new THREE.Mesh(jambGeom, frameMat);
+        const rightJamb = new THREE.Mesh(jambGeom, frameM);
         rightJamb.position.set(w / 2 - frameThick / 2, h / 2, 0);
         rightJamb.castShadow = true;
 
         const headGeom = new THREE.BoxGeometry(w, frameThick, depth);
-        const header = new THREE.Mesh(headGeom, frameMat);
+        const header = new THREE.Mesh(headGeom, frameM);
         header.position.set(0, h - frameThick / 2, 0);
         header.castShadow = true;
 
@@ -796,8 +822,8 @@
           const slabH = h - frameThick - 0.02;
           const slabThick = 0.045;
           const slabGeom = new THREE.BoxGeometry(slabW, slabH, slabThick);
-          const doorMat = d.isExterior ? extDoorMat : woodDoorMat;
-          const slab = new THREE.Mesh(slabGeom, doorMat);
+          const doorM = isExterior ? extDoorMat : woodDoorMat;
+          const slab = new THREE.Mesh(slabGeom, doorM);
 
           // All doors closed (angle = 0)
           slab.position.set(0, slabH / 2, 0);
@@ -812,7 +838,7 @@
         }
       }
 
-      group.userData = { type: "door", id: d.id, level: d.level };
+      group.userData = { type: "door", id: d.id, level: d.level, isExterior: isExterior };
       scene.add(group);
       doorMeshes.push(group);
     });
@@ -855,11 +881,11 @@
       const topFrame = new THREE.Mesh(new THREE.BoxGeometry(width, frameThick, depth), frameMat);
       topFrame.position.set(0, height - frameThick / 2, 0);
 
-      // Window Sill (extends outside slightly on bottom)
+      // Window Sill (extends outside on bottom)
       const sill = new THREE.Mesh(new THREE.BoxGeometry(width + 0.08, frameThick + 0.02, depth + 0.06), sillMat);
       sill.position.set(0, frameThick / 2, 0.02);
 
-      // See-through Glass Pane
+      // Transparent Glass Pane
       const glassGeom = new THREE.PlaneGeometry(width - frameThick * 2, height - frameThick * 2);
       const glass = new THREE.Mesh(glassGeom, glassMat);
       glass.position.set(0, height / 2, 0);

@@ -730,7 +730,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": 15.198,
@@ -741,7 +742,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 15.185,
@@ -752,7 +754,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": 15.185,
@@ -763,7 +766,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": 7.819,
@@ -774,7 +778,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 11.781,
@@ -785,7 +790,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 3.577,
@@ -796,7 +802,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 3.577,
@@ -807,7 +814,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 3.577,
@@ -818,7 +826,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 15.185,
@@ -829,7 +838,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 11.223,
@@ -840,7 +850,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 11.223,
@@ -851,7 +862,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 8.048,
@@ -862,7 +874,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 8.048,
@@ -873,7 +886,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 6.447,
@@ -884,7 +898,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 6.447,
@@ -895,7 +910,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 11.223,
@@ -906,7 +922,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 7.819,
@@ -917,7 +934,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 7.819,
@@ -928,7 +946,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 4.796,
@@ -939,7 +958,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 7.819,
@@ -950,7 +970,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 7.819,
@@ -961,7 +982,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 3.73,
@@ -972,7 +994,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 3.73,
@@ -983,7 +1006,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 3.577,
@@ -994,7 +1018,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -0.995,
@@ -1005,7 +1030,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -0.995,
@@ -1016,7 +1042,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -7.523,
@@ -1027,7 +1054,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -7.523,
@@ -1038,7 +1066,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -7.523,
@@ -1049,7 +1078,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -0.995,
@@ -1060,7 +1090,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -7.523,
@@ -1071,7 +1102,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -2.951,
@@ -1082,7 +1114,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -1.096,
@@ -1093,7 +1126,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -1.076,
@@ -1104,7 +1138,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 3.597,
@@ -1115,7 +1150,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": -6.164,
@@ -1126,7 +1162,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -6.164,
@@ -1137,7 +1174,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -3.97,
@@ -1148,7 +1186,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -3.97,
@@ -1159,7 +1198,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -3.97,
@@ -1170,7 +1210,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -3.244,
@@ -1181,7 +1222,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -11.058,
@@ -1192,7 +1234,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -15.185,
@@ -1203,7 +1246,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -8.586,
@@ -1214,7 +1258,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -10.871,
@@ -1225,7 +1270,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -3.252,
@@ -1236,7 +1282,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "both"
     },
     {
       "x1": -3.97,
@@ -1247,7 +1294,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -3.97,
@@ -1258,7 +1306,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 4.602,
@@ -1269,7 +1318,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 4.602,
@@ -1280,7 +1330,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 6.642,
@@ -1291,7 +1342,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -1.083,
@@ -1302,7 +1354,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": -0.995,
@@ -1313,7 +1366,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 11.209,
@@ -1324,7 +1378,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 6.027,
@@ -1335,7 +1390,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 5.958,
@@ -1346,7 +1402,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -7.523,
@@ -1357,7 +1414,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 7.819,
@@ -1368,7 +1426,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": 3.577,
@@ -1379,7 +1438,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": 7.819,
@@ -1390,7 +1450,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 7.819,
@@ -1401,7 +1462,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 7.819,
@@ -1412,7 +1474,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 6.027,
@@ -1423,7 +1486,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 3.577,
@@ -1434,7 +1498,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 7.819,
@@ -1445,7 +1510,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 7.819,
@@ -1456,7 +1522,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 3.577,
@@ -1467,7 +1534,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 3.577,
@@ -1478,7 +1546,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 7.819,
@@ -1489,7 +1558,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -3.97,
@@ -1500,7 +1570,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -2.951,
@@ -1511,7 +1582,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -2.951,
@@ -1522,7 +1594,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -7.523,
@@ -1533,7 +1606,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -2.951,
@@ -1544,7 +1618,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -0.995,
@@ -1555,7 +1630,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -0.995,
@@ -1566,7 +1642,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -0.995,
@@ -1577,7 +1654,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": -0.995,
@@ -1588,7 +1666,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": -0.995,
@@ -1599,7 +1678,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": 3.577,
@@ -1610,7 +1690,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "both"
     },
     {
       "x1": -0.995,
@@ -1621,7 +1702,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": 3.577,
@@ -1632,7 +1714,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "-x"
     },
     {
       "x1": 3.577,
@@ -1643,7 +1726,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 3.577,
@@ -1654,7 +1738,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 3.577,
@@ -1665,7 +1750,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 3.577,
@@ -1676,7 +1762,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 7.819,
@@ -1687,7 +1774,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": 7.819,
@@ -1698,7 +1786,8 @@ window.MODEL_3D_DATA = {
       "height": 2.0,
       "thickness": 0.168,
       "level": "basement",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "both"
     },
     {
       "x1": -6.164,
@@ -1709,7 +1798,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -7.523,
@@ -1720,7 +1810,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -7.523,
@@ -1731,7 +1822,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -6.164,
@@ -1742,7 +1834,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false
+      "isExterior": false,
+      "extSide": "none"
     }
   ],
   "doors": [
@@ -1778,7 +1871,7 @@ window.MODEL_3D_DATA = {
       "angleDeg": 179.5,
       "isGarage": false,
       "isCased": false,
-      "isExterior": false
+      "isExterior": true
     },
     {
       "id": "doorOrWindow-8fa07825-4a0c-4979-85f4-c4135c118d8c",
