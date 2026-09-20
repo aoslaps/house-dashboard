@@ -1354,8 +1354,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": false,
-      "extSide": "none"
+      "isExterior": true,
+      "extSide": "+x"
     },
     {
       "x1": -0.995,
@@ -1762,8 +1762,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true,
-      "extSide": "+x"
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 7.819,
@@ -2110,7 +2110,7 @@ window.MODEL_3D_DATA = {
       "y": 0.0,
       "z": 4.8139,
       "width": 1.2446,
-      "height": 2.4384,
+      "height": 2.0828,
       "depth": 0.2131,
       "rotY": -4.7124,
       "angleDeg": 270.0,
@@ -2372,40 +2372,6 @@ window.MODEL_3D_DATA = {
       "isGarage": false,
       "isCased": false,
       "isExterior": true
-    },
-    {
-      "id": "doorOrWindow-544d3fad-eaca-4494-84df-53a99855371f",
-      "name": "Door frame",
-      "catalogId": "eTeks#doorFrame",
-      "level": "main",
-      "x": 0.0883,
-      "y": 0.0,
-      "z": 2.1791,
-      "width": 1.0922,
-      "height": 1.2446,
-      "depth": 0.2131,
-      "rotY": -3.1416,
-      "angleDeg": 180.0,
-      "isGarage": false,
-      "isCased": true,
-      "isExterior": false
-    },
-    {
-      "id": "doorOrWindow-0c5bd53e-9094-4a9a-8c2b-963a1afe565a",
-      "name": "Door frame",
-      "catalogId": "eTeks#doorFrame",
-      "level": "main",
-      "x": -1.0961,
-      "y": 0.0,
-      "z": 1.5365,
-      "width": 0.9144,
-      "height": 1.1176,
-      "depth": 0.2131,
-      "rotY": -4.7124,
-      "angleDeg": 270.0,
-      "isGarage": false,
-      "isCased": true,
-      "isExterior": false
     },
     {
       "id": "doorOrWindow-71f612e9-df3b-45cd-9c9b-edb01a802be9",
@@ -2955,6 +2921,36 @@ window.MODEL_3D_DATA = {
       "rotY": -0.0,
       "angleDeg": 0.0,
       "sill": 1.7018
+    },
+    {
+      "id": "doorOrWindow-544d3fad-eaca-4494-84df-53a99855371f",
+      "name": "Flex 1 Interior Window",
+      "catalogId": "eTeks#window85x123",
+      "level": "main",
+      "x": 0.0883,
+      "y": 0.0,
+      "z": 2.1791,
+      "width": 1.0922,
+      "height": 1.2446,
+      "depth": 0.2131,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "sill": 0.7874
+    },
+    {
+      "id": "doorOrWindow-0c5bd53e-9094-4a9a-8c2b-963a1afe565a",
+      "name": "Flex 1 Interior Window",
+      "catalogId": "eTeks#window85x123",
+      "level": "main",
+      "x": -1.0961,
+      "y": 0.0,
+      "z": 1.5365,
+      "width": 0.9144,
+      "height": 1.1176,
+      "depth": 0.2131,
+      "rotY": -4.7124,
+      "angleDeg": 270.0,
+      "sill": 0.8128
     }
   ],
   "stairs": [
