@@ -801,3 +801,5 @@ body.theme-monochrome { --paper: #FFFFFF; --paper-2: #F3F4F6; --ink: #000000; --
 .settings-section select, .settings-section button { width: 100%; }
 .btn-close-detail { position: absolute; top: 18px; right: 24px; background: transparent; border: none; font-size: 18px; color: var(--graphite); cursor: pointer; padding: 4px; line-height: 1; z-index: 10; }
 .btn-close-detail:hover { color: var(--ink); }
+
+.settings-popover[hidden] { display: none !important; }
