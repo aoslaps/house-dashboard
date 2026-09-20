@@ -559,37 +559,49 @@
 
     if (modelData.doors) {
       modelData.doors.forEach((d) => {
+        let bestDist = 999, bestW = -1, bestT = 0;
         modelData.walls.forEach((w, idx) => {
           if (w.level !== d.level) return;
           const res = ptToSegment(d.x, d.z, w.x1, w.y1, w.x2, w.y2);
-          if (res.dist < 0.80 && res.t >= -0.15 && res.t <= 1.15) {
-            wallOpenings[idx].push({
-              type: "door",
-              width: d.width || 0.85,
-              height: d.height || 2.05,
-              sill: 0.0,
-              t: Math.max(0.0, Math.min(1.0, res.t))
-            });
+          if (res.dist < bestDist && res.t >= -0.08 && res.t <= 1.08) {
+            bestDist = res.dist;
+            bestW = idx;
+            bestT = res.t;
           }
         });
+        if (bestDist < 0.40 && bestW >= 0) {
+          wallOpenings[bestW].push({
+            type: "door",
+            width: d.width || 0.85,
+            height: d.height || 2.05,
+            sill: 0.0,
+            t: Math.max(0.0, Math.min(1.0, bestT))
+          });
+        }
       });
     }
 
     if (modelData.windows) {
       modelData.windows.forEach((win) => {
+        let bestDist = 999, bestW = -1, bestT = 0;
         modelData.walls.forEach((w, idx) => {
           if (w.level !== win.level) return;
           const res = ptToSegment(win.x, win.z, w.x1, w.y1, w.x2, w.y2);
-          if (res.dist < 0.80 && res.t >= -0.15 && res.t <= 1.15) {
-            wallOpenings[idx].push({
-              type: "window",
-              width: win.width || 0.9,
-              height: win.height || 1.2,
-              sill: win.elevation || 0.8,
-              t: Math.max(0.0, Math.min(1.0, res.t))
-            });
+          if (res.dist < bestDist && res.t >= -0.08 && res.t <= 1.08) {
+            bestDist = res.dist;
+            bestW = idx;
+            bestT = res.t;
           }
         });
+        if (bestDist < 0.40 && bestW >= 0) {
+          wallOpenings[bestW].push({
+            type: "window",
+            width: win.width || 0.9,
+            height: win.height || 1.2,
+            sill: win.elevation || 0.8,
+            t: Math.max(0.0, Math.min(1.0, bestT))
+          });
+        }
       });
     }
 
