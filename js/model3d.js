@@ -1564,7 +1564,7 @@
   }
 
   function onClick(e) {
-    if (isPlaceVentMode || isPlaceFixtureMode) {
+    if (isPlaceVentMode || isPlaceFixtureMode || isPlaceOutletMode) {
       // Raycast against visible room floors
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(roomMeshes.filter((m) => m.visible));
@@ -1587,6 +1587,11 @@
             room: detectedRoom,
             type: type,
             anchor: { x: hitX, y: hitY + 0.02, z: hitZ }
+          });
+        } else if (isPlaceOutletMode && window.App && typeof window.App.addOutletFrom3D === "function") {
+          window.App.addOutletFrom3D({
+            room: detectedRoom,
+            anchor: { x: hitX, y: hitY + 0.3, z: hitZ } // outlets typically ~12" off the floor
           });
         }
       }
@@ -1789,6 +1794,18 @@
       50: 0xEF4444  // Red (Heavy feed)
     };
 
+    // Verified Outlet Material
+    const verifiedOutletMat = new THREE.MeshStandardMaterial({
+      color: 0x3E8E5A,
+      emissive: 0x2B6946,
+      emissiveIntensity: 0.25,
+      roughness: 0.2
+    });
+    const outletMat = new THREE.MeshStandardMaterial({
+      color: 0xE2E8F0,
+      roughness: 0.2
+    });
+
     function addSchematicRun(x1, y1, z1, x2, y2, z2, mat, circuitId) {
       const dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
       const len = Math.hypot(dx, dy, dz);
@@ -1813,40 +1830,63 @@
         metalness: 0.5
       });
 
-      const rooms = c.rooms || [];
-      rooms.forEach((roomId, roomIdx) => {
-        const anchor = roomAnchor(roomId);
-        if (!anchor) return;
+      const cOutlets = (H.outlets || []).filter(o => o.circuit === c.id);
+      
+      if (cOutlets.length > 0) {
+        cOutlets.forEach((out, outIdx) => {
+          if (!out.anchor) return;
+          const spread = 0.015;
+          const ox = ((i + outIdx) % 6 - 2.5) * spread;
+          const oz = ((i * 2 + outIdx) % 6 - 2.5) * spread;
+          const targetY = (out.anchor.y < 1.0) ? -0.28 : ceilingY; // Basement uses under-floor runs
 
-        // Spread wires slightly to avoid perfect Z-fighting in bundles
-        const spread = 0.015;
-        const ox = ((i + roomIdx) % 6 - 2.5) * spread;
-        const oz = ((i * 2 + roomIdx) % 6 - 2.5) * spread;
+          addSchematicRun(pAnchor.x + ox, targetY, pAnchor.z + oz, out.anchor.x + ox, targetY, pAnchor.z + oz, mat, c.id);
+          addSchematicRun(out.anchor.x + ox, targetY, pAnchor.z + oz, out.anchor.x + ox, targetY, out.anchor.z + oz, mat, c.id);
+          
+          const roomJBox = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.10, 0.08), jboxMat);
+          roomJBox.position.set(out.anchor.x + ox, targetY, out.anchor.z + oz);
+          roomJBox.userData = { circuitId: c.id };
+          electricalLayerGroup.add(roomJBox);
+          
+          addSchematicRun(out.anchor.x + ox, targetY, out.anchor.z + oz, out.anchor.x + ox, out.anchor.y, out.anchor.z + oz, mat, c.id);
 
-        const targetY = (anchor.level === "basement") ? -0.28 : ceilingY;
+          // Draw the outlet
+          const oMat = out.verified ? verifiedOutletMat : outletMat;
+          const outletMesh = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 0.04), oMat);
+          outletMesh.position.set(out.anchor.x, out.anchor.y, out.anchor.z);
+          outletMesh.userData = { isOutlet: true, circuitId: c.id, outletId: out.id };
+          electricalLayerGroup.add(outletMesh);
+        });
+      } else {
+        const rooms = c.rooms || [];
+        rooms.forEach((roomId, roomIdx) => {
+          const anchor = roomAnchor(roomId);
+          if (!anchor) return;
 
-        // Orthogonal routing:
-        // Run 1: from panel riser along X to room centroid X at ceiling height
-        addSchematicRun(pAnchor.x + ox, targetY, pAnchor.z + oz, anchor.x + ox, targetY, pAnchor.z + oz, mat, c.id);
-        // Run 2: from (anchor.x, targetY, pAnchor.z) along Z to (anchor.x, targetY, anchor.z)
-        addSchematicRun(anchor.x + ox, targetY, pAnchor.z + oz, anchor.x + ox, targetY, anchor.z + oz, mat, c.id);
+          const spread = 0.015;
+          const ox = ((i + roomIdx) % 6 - 2.5) * spread;
+          const oz = ((i * 2 + roomIdx) % 6 - 2.5) * spread;
 
-        // Ceiling junction box in room
-        const roomJBox = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.10, 0.08), jboxMat);
-        roomJBox.position.set(anchor.x + ox, targetY, anchor.z + oz);
-        roomJBox.userData = { circuitId: c.id };
-        electricalLayerGroup.add(roomJBox);
+          const targetY = (anchor.level === "basement") ? -0.28 : ceilingY;
 
-        // Vertical drop to switch/outlet height
-        const dropBottomY = anchor.elevation + 0.6;
-        addSchematicRun(anchor.x + ox, targetY, anchor.z + oz, anchor.x + ox, dropBottomY, anchor.z + oz, mat, c.id);
+          addSchematicRun(pAnchor.x + ox, targetY, pAnchor.z + oz, anchor.x + ox, targetY, pAnchor.z + oz, mat, c.id);
+          addSchematicRun(anchor.x + ox, targetY, pAnchor.z + oz, anchor.x + ox, targetY, anchor.z + oz, mat, c.id);
 
-        // Receptacle box at drop bottom
-        const outletBox = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.05), jboxMat);
-        outletBox.position.set(anchor.x, dropBottomY, anchor.z);
-        outletBox.userData = { circuitId: c.id };
-        electricalLayerGroup.add(outletBox);
-      });
+          const roomJBox = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.10, 0.08), jboxMat);
+          roomJBox.position.set(anchor.x + ox, targetY, anchor.z + oz);
+          roomJBox.userData = { circuitId: c.id };
+          electricalLayerGroup.add(roomJBox);
+
+          const dropBottomY = anchor.elevation + 0.6;
+          addSchematicRun(anchor.x + ox, targetY, anchor.z + oz, anchor.x + ox, dropBottomY, anchor.z + oz, mat, c.id);
+
+          // Receptacle box at drop bottom
+          const outletBox = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.09, 0.05), jboxMat);
+          outletBox.position.set(anchor.x, dropBottomY, anchor.z);
+          outletBox.userData = { circuitId: c.id };
+          electricalLayerGroup.add(outletBox);
+        });
+      }
     });
   }
 
@@ -1885,6 +1925,7 @@
 
   let isPlaceVentMode = false;
   let isPlaceFixtureMode = false;
+  let isPlaceOutletMode = false;
 
   function setPlaceVentMode(active) {
     isPlaceVentMode = !!active;
@@ -1894,8 +1935,9 @@
     const btn = document.getElementById("btnPlaceVent");
     if (btn) btn.classList.toggle("is-active", isPlaceVentMode);
     
-    // Auto-disable fixture mode if enabling vent mode
+    // Auto-disable others
     if (active && isPlaceFixtureMode) setPlaceFixtureMode(false);
+    if (active && isPlaceOutletMode) setPlaceOutletMode(false);
   }
 
   function setPlaceFixtureMode(active) {
@@ -1909,8 +1951,22 @@
     const palette = document.getElementById("fixturePalette");
     if (palette) palette.hidden = !isPlaceFixtureMode;
 
-    // Auto-disable vent mode if enabling fixture mode
+    // Auto-disable others
     if (active && isPlaceVentMode) setPlaceVentMode(false);
+    if (active && isPlaceOutletMode) setPlaceOutletMode(false);
+  }
+
+  function setPlaceOutletMode(active) {
+    isPlaceOutletMode = !!active;
+    if (renderer && renderer.domElement) {
+      renderer.domElement.style.cursor = isPlaceOutletMode ? "crosshair" : "default";
+    }
+    const btn = document.getElementById("btnPlaceOutlet");
+    if (btn) btn.classList.toggle("is-active", isPlaceOutletMode);
+    
+    // Auto-disable others
+    if (active && isPlaceVentMode) setPlaceVentMode(false);
+    if (active && isPlaceFixtureMode) setPlaceFixtureMode(false);
   }
 
   function generateHVACSchematic() {
@@ -2157,8 +2213,10 @@
         if (isConduitOn) {
           const circs = H.circuits || [];
           const vCircs = circs.filter((c) => !c.placeholder).length;
-          const pct = circs.length ? Math.round((vCircs / circs.length) * 100) : 0;
-          stats.push(`Electrical: ${vCircs}/${circs.length} verified (${pct}%)`);
+          const outs = H.outlets || [];
+          const vOuts = outs.filter(o => o.verified).length;
+          const cPct = circs.length ? Math.round((vCircs / circs.length) * 100) : 0;
+          stats.push(`Electrical: ${vCircs}/${circs.length} circuits (${cPct}%), ${vOuts}/${outs.length} outlets verified`);
         }
 
         if (isHvacOn) {
@@ -2369,6 +2427,8 @@
     isPlaceVentMode: () => isPlaceVentMode,
     setPlaceFixtureMode,
     isPlaceFixtureMode: () => isPlaceFixtureMode,
+    setPlaceOutletMode,
+    isPlaceOutletMode: () => isPlaceOutletMode,
     updateSchematicBadge
   };
 })();

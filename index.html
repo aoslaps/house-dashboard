@@ -74,6 +74,8 @@
             <button id="btnToggleConduit" title="Toggle 3D Electrical Conduit">Conduit</button>
             <button id="btnToggleHVAC" title="Toggle 3D HVAC Ductwork">HVAC</button>
             <button id="btnTogglePlumbing" title="Toggle 3D Plumbing Lines">Plumbing</button>
+            <div class="dropdown-sep">Placement Tools</div>
+            <button id="btnPlaceOutlet" class="btn-place-mode" title="Select a circuit, then click on floor in 3D to place an outlet">Place Outlet</button>
             <button id="btnPlaceVent" class="btn-place-mode" title="Click on floor in 3D to place a vent">Place Vent</button>
             <button id="btnPlaceFixture" class="btn-place-mode" title="Click on floor in 3D to place a plumbing fixture">Place Fixture</button>
           </div>
@@ -3260,6 +3262,18 @@ lFYM/45SC/+ITwv/iE8L/4hPC/8BAAD//3AHFsS4Cd1sAAAAAElFTkSuQmCC"/>
         <!-- filled by app.js -->
       </div>
       <div class="circuits-table-wrap" id="circuitsTableWrap" hidden>
+        <!-- filled by app.js -->
+      </div>
+    </section>
+
+    <section class="registers-section" id="outletsSection">
+      <div class="registers-head">
+        <div>
+          <h2>🔌 Electrical Outlets & Switches</h2>
+          <p>Select a circuit in the panel above, then click "Place Outlet" in the 3D model to drop observed outlets. Conduit runs are dynamically generated.</p>
+        </div>
+      </div>
+      <div class="registers-table-wrap" id="outletsTableWrap">
         <!-- filled by app.js -->
       </div>
     </section>

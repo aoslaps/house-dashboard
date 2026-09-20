@@ -718,6 +718,104 @@
       });
     });
   }
+  function renderOutletsTable() {
+    const wrap = $("#outletsTableWrap");
+    if (!wrap) return;
+
+    if (!state.activeCircuit) {
+      wrap.innerHTML = `<p style="padding:15px;color:var(--graphite);font-size:13px;text-align:center;">Select a circuit in the panel above to view its outlets.</p>`;
+      return;
+    }
+
+    const outs = (H.outlets || []).filter(o => o.circuit === state.activeCircuit);
+    if (outs.length === 0) {
+      wrap.innerHTML = `<p style="padding:15px;color:var(--graphite);font-size:13px;text-align:center;">No outlets mapped for circuit ${state.activeCircuit} yet. Click 'Place Outlet' in the 3D model.</p>`;
+      return;
+    }
+
+    let html = `
+      <table class="circuits-table" style="margin-top:0;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Room</th>
+            <th>Type</th>
+            <th style="text-align:center;">Verified</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    outs.forEach((out) => {
+      const isV = out.verified ? "checked" : "";
+      const rOpts = H.rooms.map((r) => `<option value="${r.id}" ${r.id === out.room ? "selected" : ""}>${r.name}</option>`).join("");
+      const kinds = ["receptacle", "switch", "fixture", "appliance", "junction"];
+      const kOpts = kinds.map((k) => `<option value="${k}" ${k === out.kind ? "selected" : ""}>${k.charAt(0).toUpperCase() + k.slice(1)}</option>`).join("");
+
+      html += `
+        <tr class="${out.verified ? "is-verified" : ""}">
+          <td style="font-weight:600;font-family:monospace;">${out.id}</td>
+          <td><select class="out-room-sel" data-id="${out.id}">${rOpts}</select></td>
+          <td><select class="out-kind-sel" data-id="${out.id}">${kOpts}</select></td>
+          <td style="text-align:center;">
+            <input type="checkbox" class="out-verify-check" data-id="${out.id}" ${isV} title="Mark as physically verified">
+          </td>
+          <td style="text-align:right;">
+            <button class="btn-del-outlet" data-id="${out.id}" title="Delete Outlet">🗑</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    html += `</tbody></table>`;
+    wrap.innerHTML = html;
+
+    // Listeners
+    $$(".out-room-sel", wrap).forEach((sel) => {
+      sel.addEventListener("change", (e) => {
+        const id = e.target.dataset.id;
+        const out = H.outlets.find((o) => o.id === id);
+        if (out) {
+          out.room = e.target.value;
+          SS.save(H); flashSaved(); refreshAll();
+        }
+      });
+    });
+
+    $$(".out-kind-sel", wrap).forEach((sel) => {
+      sel.addEventListener("change", (e) => {
+        const id = e.target.dataset.id;
+        const out = H.outlets.find((o) => o.id === id);
+        if (out) {
+          out.kind = e.target.value;
+          SS.save(H); flashSaved(); refreshAll();
+        }
+      });
+    });
+
+    $$(".out-verify-check", wrap).forEach((chk) => {
+      chk.addEventListener("change", (e) => {
+        const id = e.target.dataset.id;
+        const out = H.outlets.find((o) => o.id === id);
+        if (out) {
+          out.verified = e.target.checked;
+          SS.save(H); flashSaved(); refreshAll();
+        }
+      });
+    });
+
+    $$(".btn-del-outlet", wrap).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        if (confirm(`Delete outlet ${id}?`)) {
+          H.outlets = (H.outlets || []).filter((o) => o.id !== id);
+          SS.save(H); flashSaved(); refreshAll();
+        }
+      });
+    });
+  }
+
   function renderFixturesTable() {
     const wrap = $("#fixturesTableWrap");
     if (!wrap) return;
@@ -841,7 +939,10 @@
     renderKpis(agg);
     renderList();
     paintPlan();
-    if (state.mode === "electrical") renderBreakerBox();
+    if (state.mode === "electrical") {
+      renderBreakerBox();
+      renderOutletsTable();
+    }
     renderRegistersTable();
     renderFixturesTable();
     if (window.Charts) window.Charts.render(rooms, STATUS);
@@ -1838,6 +1939,27 @@
       });
     }
 
+    const btnPlaceOutlet = $("#btnPlaceOutlet");
+    if (btnPlaceOutlet) {
+      btnPlaceOutlet.addEventListener("click", () => {
+        if (!state.activeCircuit) {
+          alert("Please select a circuit from the Electrical Panel below first, so the outlet has a circuit to bind to.");
+          return;
+        }
+        if (window.Model3D && typeof window.Model3D.setPlaceOutletMode === "function") {
+          const isO = window.Model3D.isPlaceOutletMode ? window.Model3D.isPlaceOutletMode() : false;
+          window.Model3D.setPlaceOutletMode(!isO);
+          // Auto-enable conduit layer if turning on
+          if (!isO) {
+            const btnConduit = $("#btnToggleConduit");
+            if (btnConduit && !btnConduit.classList.contains("is-active")) {
+              btnConduit.click();
+            }
+          }
+        }
+      });
+    }
+
     // Anchor inputs listeners
     ["manifoldX", "manifoldY", "manifoldZ", "drainStackX", "drainStackY", "drainStackZ"].forEach(id => {
       const el = document.getElementById(id);
@@ -1915,6 +2037,31 @@
     flashSaved();
     refreshAll();
     const sec = $("#fixturesSection");
+    if (sec) sec.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function addOutletFrom3D({ room, anchor }) {
+    if (!state.activeCircuit) {
+      alert("Please select a circuit in the Main Electrical Panel first.");
+      if (window.Model3D && window.Model3D.setPlaceOutletMode) window.Model3D.setPlaceOutletMode(false);
+      return;
+    }
+    if (!H.outlets) H.outlets = [];
+    const id = "out-" + (H.outlets.length + 1);
+    
+    const newOut = {
+      id,
+      circuit: state.activeCircuit,
+      room: room || (state.selected || (H.rooms[0] ? H.rooms[0].id : "livingroom")),
+      kind: "receptacle",
+      anchor: anchor || null,
+      verified: false
+    };
+    H.outlets.push(newOut);
+    SS.save(H);
+    flashSaved();
+    refreshAll();
+    const sec = $("#outletsSection");
     if (sec) sec.scrollIntoView({ behavior: "smooth" });
   }
 
