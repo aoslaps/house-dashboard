@@ -52,6 +52,11 @@
           <button role="tab" data-level="basement">Basement</button>
           <button role="tab" data-level="all">Both Levels</button>
         </div>
+        <div class="wall-height-toggle" id="wallHeightToggle" role="tablist" aria-label="Wall height mode" hidden>
+          <button role="tab" data-height="cutaway" class="is-active" title="Lower walls to 1.1m (dollhouse) to easily see inside rooms">Dollhouse (1.1m)</button>
+          <button role="tab" data-height="full" title="Full 2.44m ceiling-height walls">Full Walls (2.4m)</button>
+        </div>
+        <button class="btn-toggle-labels is-active" id="btnToggle3DLabels" title="Toggle 3D room name badges" hidden>🏷️ Labels: ON</button>
       </div>
       <div class="model3d-wrap" id="model3dWrap" hidden>
         <div class="model3d-canvas-container" id="model3dContainer"></div>

@@ -165,18 +165,27 @@ body {
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
   padding: 10px 14px; background: var(--paper-2); border-bottom: 1px solid var(--line);
 }
-.view-toggle, .level-toggle {
+.view-toggle, .level-toggle, .wall-height-toggle {
   display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; background: var(--surface);
 }
-.view-toggle button, .level-toggle button {
+.view-toggle button, .level-toggle button, .wall-height-toggle button {
   font-family: var(--font-ui); font-size: 12px; font-weight: 600;
   padding: 6px 12px; border: 0; background: transparent; color: var(--graphite);
   cursor: pointer; border-right: 1px solid var(--line); transition: background .12s ease, color .12s ease;
 }
-.view-toggle button:last-child, .level-toggle button:last-child { border-right: 0; }
-.view-toggle button.is-active, .level-toggle button.is-active {
+.view-toggle button:last-child, .level-toggle button:last-child, .wall-height-toggle button:last-child { border-right: 0; }
+.view-toggle button.is-active, .level-toggle button.is-active, .wall-height-toggle button.is-active {
   background: var(--blue); color: #fff;
 }
+
+.btn-toggle-labels {
+  font-family: var(--font-ui); font-size: 12px; font-weight: 600;
+  padding: 6px 12px; border-radius: 7px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--graphite); cursor: pointer;
+  transition: all .12s ease; display: inline-flex; align-items: center; gap: 4px;
+}
+.btn-toggle-labels:hover { background: var(--paper-2); color: var(--ink); }
+.btn-toggle-labels.is-active { background: var(--blue-wash); color: var(--blue-deep); border-color: var(--blue); }
 
 /* 3D model container */
 .model3d-wrap {

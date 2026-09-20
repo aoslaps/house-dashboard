@@ -763,10 +763,14 @@
 
     const planScroll = $("#planScroll");
     const model3dWrap = $("#model3dWrap");
+    const wallHeightToggle = $("#wallHeightToggle");
+    const btnToggle3DLabels = $("#btnToggle3DLabels");
 
     if (view === "3d") {
       if (planScroll) planScroll.hidden = true;
       if (model3dWrap) model3dWrap.hidden = false;
+      if (wallHeightToggle) wallHeightToggle.hidden = false;
+      if (btnToggle3DLabels) btnToggle3DLabels.hidden = false;
 
       // Initialize Three.js 3D model
       if (window.Model3D) {
@@ -783,6 +787,8 @@
     } else {
       if (planScroll) planScroll.hidden = false;
       if (model3dWrap) model3dWrap.hidden = true;
+      if (wallHeightToggle) wallHeightToggle.hidden = true;
+      if (btnToggle3DLabels) btnToggle3DLabels.hidden = true;
       paintPlan();
     }
   }
@@ -1115,6 +1121,26 @@
     // Add breaker button
     const btnAddBreaker = $("#btnAddBreaker");
     if (btnAddBreaker) btnAddBreaker.addEventListener("click", showAddBreakerModal);
+
+    // 3D Wall Height Toggle (Cutaway / Full)
+    $$("#wallHeightToggle button").forEach((b) => {
+      b.addEventListener("click", () => {
+        $$("#wallHeightToggle button").forEach((btn) => btn.classList.toggle("is-active", btn === b));
+        if (window.Model3D) window.Model3D.setWallHeight(b.dataset.height);
+      });
+    });
+
+    // 3D Labels Toggle
+    const btnLabels = $("#btnToggle3DLabels");
+    if (btnLabels) {
+      let labelsOn = true;
+      btnLabels.addEventListener("click", () => {
+        labelsOn = !labelsOn;
+        btnLabels.classList.toggle("is-active", labelsOn);
+        btnLabels.textContent = labelsOn ? "🏷️ Labels: ON" : "🏷️ Labels: OFF";
+        if (window.Model3D) window.Model3D.setLabelsVisible(labelsOn);
+      });
+    }
 
     renderLegend();
     setPhase("existing");
