@@ -1750,8 +1750,32 @@
       a.href = url;
       a.download = "data.js";
       a.click();
-      URL.revokeObjectURL(url);
+      
+      localStorage.setItem("house_dashboard_last_export", new Date().toISOString());
+      updateLastExportText();
+      
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     };
+  }
+
+  function updateLastExportText() {
+    const el = $("#lastExportText");
+    if (!el) return;
+    const iso = localStorage.getItem("house_dashboard_last_export");
+    if (!iso) {
+      el.textContent = "Never exported";
+      return;
+    }
+    try {
+      const t = new Date(iso);
+      const diff = Math.floor((Date.now() - t.getTime()) / 60000);
+      if (diff < 1) el.textContent = "Exported just now";
+      else if (diff < 60) el.textContent = `Exported ${diff}m ago`;
+      else if (diff < 1440) el.textContent = `Exported ${Math.floor(diff/60)}h ago`;
+      else el.textContent = `Exported ${Math.floor(diff/1440)}d ago`;
+    } catch(e) {
+      el.textContent = "";
+    }
   }
 
   /* ---------- init ---------- */
@@ -1830,6 +1854,56 @@
       exportData();
       if (settingsPopover) settingsPopover.hidden = true;
     });
+
+    const btnDownloadBackup = $("#btnDownloadBackup");
+    if (btnDownloadBackup) {
+      btnDownloadBackup.addEventListener("click", () => {
+        const d = new Date();
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const hh = String(d.getHours()).padStart(2, '0');
+        const m = String(d.getMinutes()).padStart(2, '0');
+        const filename = `house-dashboard-backup-${yyyy}${mm}${dd}-${hh}${m}.json`;
+        
+        const blob = new Blob([JSON.stringify(H, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+    }
+
+    const btnRestoreBackup = $("#btnRestoreBackup");
+    const backupFileInput = $("#backupFileInput");
+    if (btnRestoreBackup && backupFileInput) {
+      btnRestoreBackup.addEventListener("click", () => backupFileInput.click());
+      backupFileInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const parsed = JSON.parse(ev.target.result);
+            if (parsed && parsed.rooms) {
+              if (confirm("Restore backup? This will completely overwrite your current working model.")) {
+                H = parsed;
+                SS.save(H);
+                refreshAll();
+              }
+            } else {
+              alert("Invalid backup file.");
+            }
+          } catch(err) {
+            alert("Error parsing backup JSON.");
+          }
+        };
+        reader.readAsText(file);
+        e.target.value = "";
+      });
+    }
 
     const btnReset = $("#btnReset");
     if (btnReset) {
@@ -2063,6 +2137,15 @@
     setLevel("main");
     setMode("renovation");
     updateSyncPill();
+    updateLastExportText();
+
+    window.addEventListener("beforeunload", (e) => {
+      const inSync = (JSON.stringify(H) === JSON.stringify(BASELINE));
+      if (!inSync) {
+        e.preventDefault();
+        e.returnValue = "You have local edits that haven't been exported to data.js. Leave anyway?";
+      }
+    });
   }
 
   function addRegisterFrom3D({ room, anchor }) {

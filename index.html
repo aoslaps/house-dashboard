@@ -55,7 +55,11 @@
         <div class="settings-section">
           <label>Data Management</label>
           <button id="btnExport" class="btn-action" title="Export current data as data.js">Export data.js</button>
-          <button id="btnReset" class="btn-action btn-subtle" title="Reset all changes to data.js defaults" style="margin-top:8px;width:100%;">Reset Data</button>
+          <div id="lastExportText" style="font-size: 10px; color: var(--text-mut); margin-top: 4px; margin-bottom: 8px; text-align: center;"></div>
+          <button id="btnDownloadBackup" class="btn-action btn-subtle" title="Download working model as JSON" style="width:100%; margin-bottom:4px;">Download Backup</button>
+          <button id="btnRestoreBackup" class="btn-action btn-subtle" title="Restore model from JSON backup" style="width:100%; margin-bottom:8px;">Restore Backup</button>
+          <input type="file" id="backupFileInput" accept=".json" hidden />
+          <button id="btnReset" class="btn-action btn-subtle" title="Reset all changes to data.js defaults" style="width:100%;">Reset Data</button>
         </div>
       </div>
     </div>
