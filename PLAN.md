@@ -369,3 +369,4 @@ THEN HVAC:
 - Set meta.panelAnchor to the basement-mech room centroid (the panel sits mid-mechanical-room);
   if that room has no 2D footprint, leave the current value and note it's a manual placeholder.
 ```
+\n\n## Phase 8: Capstone Batch (COMPLETED)\n- **Priority 1**: Data protection (Download/Restore backups, tab-close warnings)\n- **Priority 2**: Tablet 3D placement usability (Touch tap vs drag)\n- **Priority 3**: Undo stack (Ctrl+Z and UI button) for node placement/deletion\n- **Priority 4**: Date-stamp physical verification tracking\n- **Priority 5**: Room status coloring 3D mode with floating legend\n- **Stretch**: Print/Contractor view for punch lists and budget\n
