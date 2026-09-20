@@ -961,15 +961,18 @@
   function renderDetail(r) {
     const detailAside = $("#detail");
     const layoutWrap = $(".layout");
+    const btnCloseDetail = $("#btnCloseDetail");
     
     if (!r) {
       if (detailAside) detailAside.hidden = true;
       if (layoutWrap) layoutWrap.classList.add("detail-hidden");
+      if (btnCloseDetail) btnCloseDetail.hidden = true;
       return;
     }
     
     if (detailAside) detailAside.hidden = false;
     if (layoutWrap) layoutWrap.classList.remove("detail-hidden");
+    if (btnCloseDetail) btnCloseDetail.hidden = false;
     
     $("#detailEmpty").hidden = true;
     const body = $("#detailBody");
@@ -1789,9 +1792,33 @@
     // Room search filter
     $("#roomSearch").addEventListener("input", (e) => { state.filter = e.target.value.toLowerCase(); renderList(); });
 
-    // Topbar actions: Export & Reset
+    // Close detail panel button
+    const btnCloseDetail = $("#btnCloseDetail");
+    if (btnCloseDetail) {
+      btnCloseDetail.addEventListener("click", () => selectRoom(null));
+    }
+
+    // Topbar actions: Settings Popover
+    const btnSettingsToggle = $("#btnSettingsToggle");
+    const settingsPopover = $("#settingsPopover");
+    if (btnSettingsToggle && settingsPopover) {
+      btnSettingsToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        settingsPopover.hidden = !settingsPopover.hidden;
+      });
+      // Close popover when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!settingsPopover.hidden && !settingsPopover.contains(e.target) && e.target !== btnSettingsToggle) {
+          settingsPopover.hidden = true;
+        }
+      });
+    }
+
     const btnExport = $("#btnExport");
-    if (btnExport) btnExport.addEventListener("click", exportData);
+    if (btnExport) btnExport.addEventListener("click", () => {
+      exportData();
+      if (settingsPopover) settingsPopover.hidden = true;
+    });
 
     const btnReset = $("#btnReset");
     if (btnReset) {

@@ -36,15 +36,28 @@
       <button role="tab" data-phase="both">Both</button>
     </div>
 
-    <div class="topbar-actions">
-      <select id="themeSelect" class="btn-action" style="padding:4px 8px;font-size:12px;" aria-label="Select Theme">
-        <option value="">Drafting (Default)</option>
-        <option value="theme-earth">Earth Tones</option>
-        <option value="theme-dark">Dark Slate</option>
-      </select>
+    <div class="topbar-actions" style="position: relative;">
       <span id="saveIndicator" class="save-indicator" title="All edits are automatically saved to your browser">● Saved</span>
-      <button id="btnExport" class="btn-action" title="Export current data as data.js">Export data.js</button>
-      <button id="btnReset" class="btn-action btn-subtle" title="Reset all changes to data.js defaults">Reset</button>
+      <button id="btnSettingsToggle" class="btn-action" aria-label="Settings" title="Settings">⚙️ Settings</button>
+      
+      <div id="settingsPopover" class="settings-popover" hidden>
+        <div class="settings-section">
+          <label for="themeSelect">Theme</label>
+          <select id="themeSelect" class="btn-action">
+            <option value="">Drafting (Default)</option>
+            <option value="theme-earth">Earth Tones</option>
+            <option value="theme-dark">Dark Slate</option>
+            <option value="theme-warmwood">Warm Wood</option>
+            <option value="theme-blueprint">Blueprint</option>
+            <option value="theme-monochrome">Monochrome</option>
+          </select>
+        </div>
+        <div class="settings-section">
+          <label>Data Management</label>
+          <button id="btnExport" class="btn-action" title="Export current data as data.js">Export data.js</button>
+          <button id="btnReset" class="btn-action btn-subtle" title="Reset all changes to data.js defaults" style="margin-top:8px;width:100%;">Reset Data</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -3205,6 +3218,7 @@ lFYM/45SC/+ITwv/iE8L/4hPC/8BAAD//3AHFsS4Cd1sAAAAAElFTkSuQmCC"/>
 
     <!-- DETAIL PANEL -->
     <aside class="detail" id="detail" aria-live="polite">
+      <button id="btnCloseDetail" class="btn-close-detail" aria-label="Close panel" hidden>✕</button>
       <div class="detail-empty" id="detailEmpty">
         <p>Select a room</p>
         <span>Click any space on the plan, or pick one from the list.</span>

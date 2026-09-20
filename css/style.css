@@ -792,3 +792,12 @@ body {
 
 body.theme-earth { --paper: #F5F5DC; --paper-2: #EAE6D5; --ink: #3A352F; --graphite: #6C665C; --line: #D2CEBC; --blue: #6B8E23; --blue-deep: #556B2F; --blue-wash: #E8EBD9; --surface: #FCFCF8; --s-complete: #4A7042; }
 body.theme-dark { --paper: #12161A; --paper-2: #1B2228; --ink: #E2E8F0; --graphite: #94A3B8; --line: #334155; --blue: #38BDF8; --blue-deep: #0284C7; --blue-wash: #0C4A6E; --surface: #0F172A; --s-none: #475569; --s-progress: #FBBF24; --s-blocked: #F87171; --s-complete: #4ADE80; --shadow: 0 1px 2px rgba(0,0,0,.5), 0 6px 20px rgba(0,0,0,.4); }
+
+body.theme-warmwood { --paper: #FDFBF7; --paper-2: #F4EFE6; --ink: #4A3C31; --graphite: #8C7A6B; --line: #E2D5C8; --blue: #D97736; --blue-deep: #B25922; --blue-wash: #F9EBE1; --surface: #FFFFFF; --s-complete: #5C8040; }
+body.theme-blueprint { --paper: #1A365D; --paper-2: #1E3F66; --ink: #FFFFFF; --graphite: #93C5FD; --line: #3B82F6; --blue: #FFFFFF; --blue-deep: #DBEAFE; --blue-wash: #2563EB; --surface: #1E40AF; --s-none: #60A5FA; --s-progress: #FBBF24; --s-blocked: #F87171; --s-complete: #34D399; }
+body.theme-monochrome { --paper: #FFFFFF; --paper-2: #F3F4F6; --ink: #000000; --graphite: #6B7280; --line: #E5E7EB; --blue: #000000; --blue-deep: #000000; --blue-wash: #F3F4F6; --surface: #FFFFFF; --s-complete: #111827; }
+.settings-popover { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; width: 220px; z-index: 1000; display: flex; flex-direction: column; gap: 16px; }
+.settings-section label { display: block; font-family: var(--font-ui); font-size: 11px; font-weight: 700; color: var(--graphite); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+.settings-section select, .settings-section button { width: 100%; }
+.btn-close-detail { position: absolute; top: 18px; right: 24px; background: transparent; border: none; font-size: 18px; color: var(--graphite); cursor: pointer; padding: 4px; line-height: 1; z-index: 10; }
+.btn-close-detail:hover { color: var(--ink); }
