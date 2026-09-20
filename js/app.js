@@ -958,10 +958,21 @@
 
   /* ---------- render: detail panel ---------- */
   function renderDetail(r) {
-    $("#detailEmpty").hidden = !!r;
+    const detailAside = $("#detail");
+    const layoutWrap = $(".layout");
+    
+    if (!r) {
+      if (detailAside) detailAside.hidden = true;
+      if (layoutWrap) layoutWrap.classList.add("detail-hidden");
+      return;
+    }
+    
+    if (detailAside) detailAside.hidden = false;
+    if (layoutWrap) layoutWrap.classList.remove("detail-hidden");
+    
+    $("#detailEmpty").hidden = true;
     const body = $("#detailBody");
-    body.hidden = !r;
-    if (!r) return;
+    body.hidden = false;
 
     const tasksHtml = (r.tasks || []).length
       ? `<ul class="tasks">${r.tasks.map((t, idx) => `
@@ -1788,6 +1799,20 @@
           SS.reset();
           location.reload();
         }
+      });
+    }
+    
+    // Theme Select
+    const themeSelect = $("#themeSelect");
+    if (themeSelect) {
+      const savedTheme = localStorage.getItem("house_dashboard_theme") || "";
+      themeSelect.value = savedTheme;
+      if (savedTheme) document.body.className = savedTheme;
+      
+      themeSelect.addEventListener("change", (e) => {
+        const theme = e.target.value;
+        document.body.className = theme;
+        localStorage.setItem("house_dashboard_theme", theme);
       });
     }
 

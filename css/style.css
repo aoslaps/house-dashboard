@@ -29,7 +29,7 @@
 
   --font-ui:   "Archivo", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
-  --font-mono: "Space Mono", ui-monospace, monospace;
+  --font-mono: "Fira Code", monospace;
 
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
@@ -149,6 +149,14 @@ body {
 .detail       { grid-area: detail; }
 .roomlist-wrap{ grid-area: list; }
 .charts       { grid-area: charts; }
+
+.layout.detail-hidden {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "plan"
+    "list"
+    "charts";
+}
 
 @media (max-width: 900px) {
   .layout {
@@ -781,3 +789,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+body.theme-earth { --paper: #F5F5DC; --paper-2: #EAE6D5; --ink: #3A352F; --graphite: #6C665C; --line: #D2CEBC; --blue: #6B8E23; --blue-deep: #556B2F; --blue-wash: #E8EBD9; --surface: #FCFCF8; --s-complete: #4A7042; }
+body.theme-dark { --paper: #12161A; --paper-2: #1B2228; --ink: #E2E8F0; --graphite: #94A3B8; --line: #334155; --blue: #38BDF8; --blue-deep: #0284C7; --blue-wash: #0C4A6E; --surface: #0F172A; --s-none: #475569; --s-progress: #FBBF24; --s-blocked: #F87171; --s-complete: #4ADE80; --shadow: 0 1px 2px rgba(0,0,0,.5), 0 6px 20px rgba(0,0,0,.4); }
