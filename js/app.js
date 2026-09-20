@@ -362,6 +362,7 @@
                     <div class="breaker-desc">
                       ${c.description || "Circuit " + c.id}
                       ${c.placeholder ? '<span class="placeholder-badge" style="margin-left:4px;">PLACEHOLDER</span>' : ''}
+                      ${c.notes ? `<span title="${c.notes.replace(/"/g, '&quot;')}" style="margin-left:4px;cursor:help;opacity:0.7;">📝</span>` : ''}
                     </div>
                     <div class="breaker-rooms">${roomBadges || '<span style="color:#6A7888;font-size:10px;">Unassigned</span>'}</div>
                   </div>
@@ -1514,6 +1515,10 @@
               <input type="text" id="editBreakerDesc" class="add-task-input" value="${c.description || ""}" required style="width:100%;" />
             </div>
             <div>
+              <label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;">Field Notes (Oddities, Split Outlets, etc.)</label>
+              <textarea id="editBreakerNotes" class="add-task-input" style="width:100%;height:60px;resize:vertical;" placeholder="Half-hot outlets, weird wiring, etc.">${c.notes || ""}</textarea>
+            </div>
+            <div>
               <label style="display:block;font-size:12px;font-weight:600;margin-bottom:4px;">Connected Rooms</label>
               <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));gap:6px;max-height:160px;overflow-y:auto;padding:8px;background:var(--paper-2);border-radius:6px;">
                 ${H.rooms.map((rm) => `
@@ -1552,11 +1557,22 @@
     };
 
     $("#btnSaveEditBreaker").onclick = () => {
-      c.panel = $("#editBreakerPanel").value;
-      c.breaker = parseInt($("#editBreakerNum").value, 10) || 1;
-      c.amps = parseInt($("#editBreakerAmps").value, 10) || 20;
-      c.description = $("#editBreakerDesc").value.trim();
-      c.rooms = Array.from(modal.querySelectorAll('input[name="editBreakerRooms"]:checked')).map((cb) => cb.value);
+      const bPanel = $("#editBreakerPanel").value;
+      const bNum = parseInt($("#editBreakerNum").value, 10);
+      const bAmps = parseInt($("#editBreakerAmps").value, 10);
+      const bDesc = $("#editBreakerDesc").value.trim();
+      const bNotes = $("#editBreakerNotes").value.trim();
+      if (!bNum || !bDesc) return alert("Breaker # and Description are required.");
+      
+      const cbRooms = Array.from($$("[name='editBreakerRooms']:checked", modal)).map(el => el.value);
+
+      c.panel = bPanel;
+      c.breaker = bNum;
+      c.amps = bAmps;
+      c.description = bDesc;
+      c.notes = bNotes;
+      c.rooms = cbRooms;
+      c.placeholder = false; // editing it verifies it
 
       const prefix = c.panel === "main" ? "A" : "B";
       c.id = `${prefix}${c.breaker < 10 ? "0" + c.breaker : c.breaker}`;
