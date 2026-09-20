@@ -802,8 +802,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true,
-      "extSide": "+x"
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 3.577,
@@ -850,8 +850,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true,
-      "extSide": "+x"
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 11.223,
@@ -862,8 +862,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true,
-      "extSide": "+x"
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 8.048,
@@ -1450,8 +1450,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true,
-      "extSide": "+x"
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 7.819,
@@ -1462,8 +1462,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true,
-      "extSide": "+x"
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": 7.819,

@@ -338,19 +338,48 @@
     groundMesh.receiveShadow = true;
     environmentGroup.add(groundMesh);
 
-    // 2. Gravel Driveway (aligned right with front of garage doors)
+    // 2. Gravel Driveway (exact alignment with Wall 42 / garage doors)
     const gravelTex = createGravelTexture();
-    const driveGeom = new THREE.PlaneGeometry(10.5, 12);
-    driveGeom.rotateX(-Math.PI / 2);
+    gravelTex.repeat.set(4, 5);
+
+    const D = 8.5; // distance extending out in front of garage
+    const nx = -0.866;
+    const nz = 0.500;
+    const p1 = [-11.06, -0.96];
+    const p2 = [-15.19, -8.11];
+    const p3 = [p2[0] + nx * D, p2[1] + nz * D];
+    const p4 = [p1[0] + nx * D, p1[1] + nz * D];
+
+    const yLevel = -0.04;
+    const vertices = new Float32Array([
+      p1[0], yLevel, p1[1],
+      p2[0], yLevel, p2[1],
+      p3[0], yLevel, p3[1],
+
+      p1[0], yLevel, p1[1],
+      p3[0], yLevel, p3[1],
+      p4[0], yLevel, p4[1],
+    ]);
+    const uvs = new Float32Array([
+      0, 0,
+      1, 0,
+      1, 1,
+      0, 0,
+      1, 1,
+      0, 1,
+    ]);
+    const driveGeom = new THREE.BufferGeometry();
+    driveGeom.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+    driveGeom.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+    driveGeom.computeVertexNormals();
+
     const driveMat = new THREE.MeshStandardMaterial({
-      color: 0xD0CCC4,
+      color: 0xCDC8BF,
       map: gravelTex,
-      roughness: 0.9,
-      metalness: 0.03
+      roughness: 0.92,
+      metalness: 0.02
     });
     const driveMesh = new THREE.Mesh(driveGeom, driveMat);
-    driveMesh.position.set(-16.2, -0.04, -8.5);
-    driveMesh.rotation.y = -Math.PI / 6; // 30° alignment
     driveMesh.receiveShadow = true;
     environmentGroup.add(driveMesh);
 
