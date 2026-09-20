@@ -797,7 +797,7 @@ window.MODEL_3D_DATA = {
       "x1": 3.577,
       "y1": 1.938,
       "x2": 3.577,
-      "y2": -2.025,
+      "y2": -0.54,
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
@@ -916,7 +916,7 @@ window.MODEL_3D_DATA = {
     {
       "x1": 11.223,
       "y1": 5.621,
-      "x2": 3.577,
+      "x2": 8.048,
       "y2": 5.621,
       "elevation": 0.0,
       "height": 2.44,
@@ -1354,8 +1354,8 @@ window.MODEL_3D_DATA = {
       "height": 2.44,
       "thickness": 0.168,
       "level": "main",
-      "isExterior": true,
-      "extSide": "-x"
+      "isExterior": false,
+      "extSide": "none"
     },
     {
       "x1": -0.995,
@@ -1836,6 +1836,30 @@ window.MODEL_3D_DATA = {
       "level": "main",
       "isExterior": false,
       "extSide": "none"
+    },
+    {
+      "x1": 3.577,
+      "y1": -0.54,
+      "x2": 3.577,
+      "y2": -2.025,
+      "elevation": 0.0,
+      "height": 2.44,
+      "thickness": 0.168,
+      "level": "main",
+      "isExterior": true,
+      "extSide": "+x"
+    },
+    {
+      "x1": 8.048,
+      "y1": 5.621,
+      "x2": 3.577,
+      "y2": 5.621,
+      "elevation": 0.0,
+      "height": 2.44,
+      "thickness": 0.168,
+      "level": "main",
+      "isExterior": false,
+      "extSide": "none"
     }
   ],
   "doors": [
@@ -2262,7 +2286,7 @@ window.MODEL_3D_DATA = {
       "angleDeg": 180.0,
       "isGarage": false,
       "isCased": false,
-      "isExterior": false
+      "isExterior": true
     },
     {
       "id": "doorOrWindow-efb6d2ba-655a-4155-b38c-55d874b51ae9",
@@ -2279,7 +2303,7 @@ window.MODEL_3D_DATA = {
       "angleDeg": 270.0,
       "isGarage": false,
       "isCased": false,
-      "isExterior": false
+      "isExterior": true
     },
     {
       "id": "doorOrWindow-30ff556a-8a0e-41fa-b9bb-1bcc7d639021",
@@ -2347,7 +2371,7 @@ window.MODEL_3D_DATA = {
       "angleDeg": 180.0,
       "isGarage": false,
       "isCased": false,
-      "isExterior": false
+      "isExterior": true
     },
     {
       "id": "doorOrWindow-544d3fad-eaca-4494-84df-53a99855371f",
