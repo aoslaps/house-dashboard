@@ -1,3 +1,4 @@
+/* Auto-generated 3D Model Data for Offline file:// compatibility */
 window.MODEL_3D_DATA = {
   "levels": [
     {
@@ -728,7 +729,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": 15.198,
@@ -738,7 +740,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 15.185,
@@ -748,7 +751,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": 15.185,
@@ -758,7 +762,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": 7.819,
@@ -768,7 +773,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 11.781,
@@ -778,7 +784,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 3.577,
@@ -788,7 +795,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 3.577,
@@ -798,7 +806,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 3.577,
@@ -808,7 +817,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 15.185,
@@ -818,7 +828,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": 11.223,
@@ -828,7 +839,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 11.223,
@@ -838,7 +850,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 8.048,
@@ -848,7 +861,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 8.048,
@@ -858,7 +872,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 6.447,
@@ -868,7 +883,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 6.447,
@@ -878,7 +894,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 11.223,
@@ -888,7 +905,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 7.819,
@@ -898,7 +916,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": 7.819,
@@ -908,7 +927,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 4.796,
@@ -918,7 +938,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 7.819,
@@ -928,7 +949,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": 7.819,
@@ -938,7 +960,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": 3.73,
@@ -948,7 +971,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 3.73,
@@ -958,7 +982,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 3.577,
@@ -968,7 +993,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -0.995,
@@ -978,7 +1004,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -0.995,
@@ -988,7 +1015,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -7.523,
@@ -998,7 +1026,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -7.523,
@@ -1008,7 +1037,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -7.523,
@@ -1018,7 +1048,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -0.995,
@@ -1028,7 +1059,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -7.523,
@@ -1038,7 +1070,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -2.951,
@@ -1048,7 +1081,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -1.096,
@@ -1058,7 +1092,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -1.076,
@@ -1068,7 +1103,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 3.597,
@@ -1078,7 +1114,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -6.164,
@@ -1088,7 +1125,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -6.164,
@@ -1098,7 +1136,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -3.97,
@@ -1108,7 +1147,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -3.97,
@@ -1118,7 +1158,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -3.97,
@@ -1128,7 +1169,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -3.244,
@@ -1138,7 +1180,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -11.058,
@@ -1148,7 +1191,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -15.185,
@@ -1158,7 +1202,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -8.586,
@@ -1168,7 +1213,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -10.871,
@@ -1178,7 +1224,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -3.252,
@@ -1188,7 +1235,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -3.97,
@@ -1198,7 +1246,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -3.97,
@@ -1208,7 +1257,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 4.602,
@@ -1218,7 +1268,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 4.602,
@@ -1228,7 +1279,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 6.642,
@@ -1238,7 +1290,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -1.083,
@@ -1248,7 +1301,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -0.995,
@@ -1258,7 +1312,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 11.209,
@@ -1268,7 +1323,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 6.027,
@@ -1278,7 +1334,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 5.958,
@@ -1288,7 +1345,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -7.523,
@@ -1298,7 +1356,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": 7.819,
@@ -1308,7 +1367,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": 3.577,
@@ -1318,7 +1378,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": 7.819,
@@ -1328,7 +1389,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 7.819,
@@ -1338,7 +1400,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 7.819,
@@ -1348,7 +1411,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 6.027,
@@ -1358,7 +1422,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 3.577,
@@ -1368,7 +1433,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": 7.819,
@@ -1378,7 +1444,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": 7.819,
@@ -1388,7 +1455,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": 3.577,
@@ -1398,7 +1466,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": 3.577,
@@ -1408,7 +1477,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": 7.819,
@@ -1418,7 +1488,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": -3.97,
@@ -1428,7 +1499,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -2.951,
@@ -1438,7 +1510,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -2.951,
@@ -1448,7 +1521,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -7.523,
@@ -1458,7 +1532,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -2.951,
@@ -1468,7 +1543,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -0.995,
@@ -1478,7 +1554,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -0.995,
@@ -1488,7 +1565,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -0.995,
@@ -1498,7 +1576,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": -0.995,
@@ -1508,7 +1587,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": -0.995,
@@ -1518,7 +1598,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": 3.577,
@@ -1528,7 +1609,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -0.995,
@@ -1538,7 +1620,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": 3.577,
@@ -1548,7 +1631,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": 3.577,
@@ -1558,7 +1642,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": false
     },
     {
       "x1": 3.577,
@@ -1568,7 +1653,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": false
     },
     {
       "x1": 3.577,
@@ -1578,7 +1664,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": 3.577,
@@ -1588,7 +1675,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": 7.819,
@@ -1598,7 +1686,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": 7.819,
@@ -1608,7 +1697,8 @@ window.MODEL_3D_DATA = {
       "elevation": -2.13,
       "height": 2.0,
       "thickness": 0.168,
-      "level": "basement"
+      "level": "basement",
+      "isExterior": true
     },
     {
       "x1": -6.164,
@@ -1618,7 +1708,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -7.523,
@@ -1628,7 +1719,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": true
     },
     {
       "x1": -7.523,
@@ -1638,7 +1730,8 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     },
     {
       "x1": -6.164,
@@ -1648,431 +1741,1102 @@ window.MODEL_3D_DATA = {
       "elevation": 0.0,
       "height": 2.44,
       "thickness": 0.168,
-      "level": "main"
+      "level": "main",
+      "isExterior": false
     }
   ],
   "doors": [
     {
-      "id": "d_front_entry",
-      "name": "Front Entry Door",
+      "id": "doorOrWindow-b7fcc5cb-8120-4147-86cb-694d97e03060",
+      "name": "Front door",
+      "catalogId": "eTeks#frontDoor",
       "level": "main",
-      "x": -6.15,
-      "z": 0.0,
+      "x": -6.1404,
       "y": 0.0,
-      "width": 0.95,
-      "height": 2.05,
-      "rotY": 0.0,
+      "z": 0.0226,
+      "width": 1.016,
+      "height": 2.086,
+      "depth": 0.2144,
+      "rotY": -4.7124,
+      "angleDeg": 270.0,
+      "isGarage": false,
+      "isCased": false,
       "isExterior": true
     },
     {
-      "id": "d_garage_house",
-      "name": "Garage to House Door",
+      "id": "doorOrWindow-b70d05aa-f6a9-4edc-8c35-499427becbf5",
+      "name": "Door",
+      "catalogId": "eTeks#door",
       "level": "main",
-      "x": -4.0,
-      "z": -1.14,
+      "x": -4.8253,
       "y": 0.0,
-      "width": 0.9,
-      "height": 2.05,
-      "rotY": 1.5708,
+      "z": -1.1035,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -3.1325,
+      "angleDeg": 179.5,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-8fa07825-4a0c-4979-85f4-c4135c118d8c",
+      "name": "Door",
+      "catalogId": "eTeks#door",
+      "level": "main",
+      "x": -3.0077,
+      "y": 0.0,
+      "z": 3.9323,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-ce9af0f5-2140-4440-a2df-0ae46a561e1f",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": -2.0147,
+      "y": 0.0,
+      "z": 4.7573,
+      "width": 1.143,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-b831df3b-94d5-4700-bd91-9a62b5b1b76a",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": -2.0261,
+      "y": 0.0,
+      "z": 1.0997,
+      "width": 1.143,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-92b84881-540c-40cf-936a-32abd5a23e27",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": 2.4221,
+      "y": 0.0,
+      "z": 2.1797,
+      "width": 0.9398,
+      "height": 2.2098,
+      "depth": 0.2131,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-7bca641f-4070-4703-abb2-5bbb9a890866",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": -0.9951,
+      "y": 0.0,
+      "z": 5.706,
+      "width": 1.397,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-7b110865-f67e-42b9-ba9b-7e1e722c3f99",
+      "name": "Door",
+      "catalogId": "eTeks#door",
+      "level": "main",
+      "x": -2.1204,
+      "y": 0.0,
+      "z": 9.3861,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-0cf8fd54-cdd8-47c7-9dd1-56a6a7457fc3",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": -0.9945,
+      "y": 0.0,
+      "z": 8.0348,
+      "width": 1.5494,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -4.7124,
+      "angleDeg": 270.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-82dce777-dbae-457e-b4d6-8e8b64deff03",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": 1.3443,
+      "y": 0.0,
+      "z": 6.4331,
+      "width": 1.3716,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-e3fac80c-9e98-4257-8389-6882ff54225f",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": 4.1002,
+      "y": 0.0,
+      "z": 5.6203,
+      "width": 0.889,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-2720d449-3106-402f-9c51-e3c657099fae",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": 3.5769,
+      "y": 0.0,
+      "z": 7.0523,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-b2fa2919-61a0-43ce-ad93-4510131e25eb",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": 4.7961,
+      "y": 0.0,
+      "z": 7.0523,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-ac9dd4fb-acbe-4263-a159-732c6b8ae069",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": 6.6421,
+      "y": 0.0,
+      "z": 7.0523,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-775a20eb-bde7-47dc-bfe8-c554bf48c6f1",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": 3.5775,
+      "y": 0.0,
+      "z": 4.8139,
+      "width": 1.2446,
+      "height": 2.4384,
+      "depth": 0.2131,
+      "rotY": -4.7124,
+      "angleDeg": 270.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-a8c794ec-2286-4e3b-99d1-7167ba66b970",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
+      "level": "main",
+      "x": 4.6021,
+      "y": 0.0,
+      "z": 10.8123,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-e44b781c-f9b7-45af-99fc-7401bcd6acc9",
+      "name": "Door",
+      "catalogId": "eTeks#door",
+      "level": "main",
+      "x": 3.7867,
+      "y": 0.0,
+      "z": 9.3323,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -4.7124,
+      "angleDeg": 270.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-2098bf3a-abc6-437a-9c00-c3420f090fa5",
+      "name": "Door",
+      "catalogId": "eTeks#door",
+      "level": "main",
+      "x": 7.2596,
+      "y": 0.0,
+      "z": 3.2393,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-11b2e841-97c9-4dac-a7d8-db52cea87c69",
+      "name": "Door",
+      "catalogId": "eTeks#door",
+      "level": "main",
+      "x": 5.0196,
+      "y": 0.0,
+      "z": 1.8805,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-d0545bf0-d686-462f-8614-c2812533a25d",
+      "name": "Door",
+      "catalogId": "eTeks#door",
+      "level": "main",
+      "x": 9.747,
+      "y": 0.0,
+      "z": 1.8672,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-2595c2c9-de37-4829-91d4-9537ff43b695",
+      "name": "Door",
+      "catalogId": "eTeks#door",
+      "level": "main",
+      "x": 9.7462,
+      "y": 0.0,
+      "z": 3.2393,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-39dc3a7b-507c-4b35-82b5-05fe03706b59",
+      "name": "Garage door",
+      "catalogId": "eTeks#garageDoor",
+      "level": "main",
+      "x": -12.236,
+      "y": 0.0,
+      "z": -3.0019,
+      "width": 3.048,
+      "height": 2.0511,
+      "depth": 0.1678,
+      "rotY": -1.0472,
+      "angleDeg": 60.0,
+      "isGarage": true,
+      "isCased": false,
       "isExterior": true
     },
     {
-      "id": "d_garage_overhead",
-      "name": "Garage Overhead Doors",
+      "id": "doorOrWindow-43d29821-504d-4820-a2b6-57af785a5f3e",
+      "name": "Garage door",
+      "catalogId": "eTeks#garageDoor",
       "level": "main",
-      "x": -9.5,
-      "z": -11.8,
+      "x": -14.0693,
       "y": 0.0,
-      "width": 4.8,
-      "height": 2.15,
-      "rotY": 1.5708,
-      "isOverhead": true
-    },
-    {
-      "id": "d_greatroom_north",
-      "name": "Great Room North Patio Door",
-      "level": "main",
-      "x": 1.5,
-      "z": 11.53,
-      "y": 0.0,
-      "width": 0.95,
-      "height": 2.05,
-      "rotY": 1.5708,
+      "z": -6.1773,
+      "width": 3.048,
+      "height": 2.0511,
+      "depth": 0.1678,
+      "rotY": -1.0472,
+      "angleDeg": 60.0,
+      "isGarage": true,
+      "isCased": false,
       "isExterior": true
     },
     {
-      "id": "d_greatroom_east",
-      "name": "Great Room East Exterior Door",
+      "id": "doorOrWindow-224f9dfb-d216-48d7-988d-4b86113414d9",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
       "level": "main",
-      "x": 3.53,
-      "z": 8.5,
+      "x": -1.5731,
       "y": 0.0,
-      "width": 0.95,
-      "height": 2.05,
-      "rotY": 0.0,
-      "isExterior": true
+      "z": 0.2743,
+      "width": 1.4224,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -1.0472,
+      "angleDeg": 60.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
     },
     {
-      "id": "d_flex1_south",
-      "name": "Flex 1 South Exterior Door",
+      "id": "doorOrWindow-2dfb8ae5-3c3d-47b7-9354-6078911938c0",
+      "name": "Door",
+      "catalogId": "eTeks#door",
       "level": "main",
-      "x": 3.4,
-      "z": -0.45,
+      "x": 9.3639,
       "y": 0.0,
-      "width": 0.9,
-      "height": 2.05,
-      "rotY": 1.5708,
-      "isExterior": true
+      "z": -2.0819,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
     },
     {
-      "id": "d_office",
-      "name": "Office Door",
+      "id": "doorOrWindow-efb6d2ba-655a-4155-b38c-55d874b51ae9",
+      "name": "Door",
+      "catalogId": "eTeks#door",
       "level": "main",
-      "x": -4.0,
-      "z": 9.35,
+      "x": 15.2421,
       "y": 0.0,
-      "width": 0.85,
-      "height": 2.05,
-      "rotY": 1.5708
+      "z": -0.0361,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -4.7124,
+      "angleDeg": 270.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
     },
     {
-      "id": "d_bed1",
-      "name": "Bedroom 1 Door",
+      "id": "doorOrWindow-30ff556a-8a0e-41fa-b9bb-1bcc7d639021",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
       "level": "main",
-      "x": -3.03,
-      "z": 3.5,
+      "x": 6.9404,
       "y": 0.0,
-      "width": 0.82,
-      "height": 2.05,
-      "rotY": 0.0
+      "z": 0.8531,
+      "width": 1.0414,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
     },
     {
-      "id": "d_br1closet",
-      "name": "BR1 Closet Door",
+      "id": "doorOrWindow-1ef7c58d-5631-43b8-958e-3b48ba2775dc",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
       "level": "main",
-      "x": -3.03,
-      "z": 2.0,
+      "x": -3.9704,
       "y": 0.0,
-      "width": 0.75,
-      "height": 2.05,
-      "rotY": 0.0
+      "z": 2.0382,
+      "width": 1.143,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
     },
     {
-      "id": "d_hallcloset",
-      "name": "Front Hall Closet Door",
+      "id": "doorOrWindow-6f8b4ac7-83ff-4c8f-9b12-f029af1bb21f",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
       "level": "main",
-      "x": -3.5,
-      "z": -1.26,
+      "x": -3.3887,
       "y": 0.0,
-      "width": 0.75,
-      "height": 2.05,
-      "rotY": 1.5708
+      "z": -1.6352,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -5.4978,
+      "angleDeg": 315.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
     },
     {
-      "id": "d_bed2",
-      "name": "Bedroom 2 Door",
+      "id": "doorOrWindow-9eb2cb1c-ba4d-4af6-8fe4-7cbda8c1decd",
+      "name": "Door",
+      "catalogId": "eTeks#door",
       "level": "main",
-      "x": 5.5,
-      "z": 1.87,
+      "x": -0.9161,
       "y": 0.0,
-      "width": 0.82,
-      "height": 2.05,
-      "rotY": 1.5708
+      "z": -0.5917,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": false
     },
     {
-      "id": "d_br2closet",
-      "name": "BR2 Closet Door",
+      "id": "doorOrWindow-544d3fad-eaca-4494-84df-53a99855371f",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
       "level": "main",
-      "x": 6.5,
-      "z": 1.85,
+      "x": 0.0883,
       "y": 0.0,
-      "width": 0.75,
-      "height": 2.05,
-      "rotY": 1.5708
+      "z": 2.1791,
+      "width": 1.0922,
+      "height": 1.2446,
+      "depth": 0.2131,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
     },
     {
-      "id": "d_bed3",
-      "name": "Bedroom 3 Door",
+      "id": "doorOrWindow-0c5bd53e-9094-4a9a-8c2b-963a1afe565a",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
       "level": "main",
-      "x": 5.5,
-      "z": 7.8,
+      "x": -1.0961,
       "y": 0.0,
-      "width": 0.82,
-      "height": 2.05,
-      "rotY": 1.5708
+      "z": 1.5365,
+      "width": 0.9144,
+      "height": 1.1176,
+      "depth": 0.2131,
+      "rotY": -4.7124,
+      "angleDeg": 270.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
     },
     {
-      "id": "d_br3closet",
-      "name": "BR3 Closet Door",
+      "id": "doorOrWindow-71f612e9-df3b-45cd-9c9b-edb01a802be9",
+      "name": "Round door frame",
+      "catalogId": "eTeks#roundDoorFrame",
       "level": "main",
-      "x": 4.2,
-      "z": 10.18,
+      "x": -7.5226,
       "y": 0.0,
-      "width": 0.75,
-      "height": 2.05,
-      "rotY": 0.0
+      "z": 0.0362,
+      "width": 1.2192,
+      "height": 2.0002,
+      "depth": 0.1678,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
     },
     {
-      "id": "d_bed4",
-      "name": "Bedroom 4 Door",
-      "level": "main",
-      "x": 11.3,
-      "z": 3.0,
-      "y": 0.0,
-      "width": 0.82,
-      "height": 2.05,
-      "rotY": 0.0
-    },
-    {
-      "id": "d_ba1",
-      "name": "Bathroom 1 Door",
-      "level": "main",
-      "x": 5.5,
-      "z": 5.7,
-      "y": 0.0,
-      "width": 0.75,
-      "height": 2.05,
-      "rotY": 1.5708
-    },
-    {
-      "id": "d_ba2",
-      "name": "Bathroom 2 Door",
-      "level": "main",
-      "x": 8.13,
-      "z": 4.2,
-      "y": 0.0,
-      "width": 0.75,
-      "height": 2.05,
-      "rotY": 0.0
-    },
-    {
-      "id": "d_laundry_kitchen",
-      "name": "Laundry / Kitchen Doorway",
-      "level": "main",
-      "x": 3.66,
-      "z": 3.5,
-      "y": 0.0,
-      "width": 0.85,
-      "height": 2.05,
-      "rotY": 0.0,
-      "isCased": true
-    },
-    {
-      "id": "d_laundry_hall",
-      "name": "Laundry / Hallway Doorway",
-      "level": "main",
-      "x": 6.36,
-      "z": 2.5,
-      "y": 0.0,
-      "width": 0.85,
-      "height": 2.05,
-      "rotY": 0.0,
-      "isCased": true
-    },
-    {
-      "id": "d_basement_stairs",
-      "name": "Basement Stairs Door",
-      "level": "main",
-      "x": 6.53,
-      "z": 4.2,
-      "y": 0.0,
-      "width": 0.85,
-      "height": 2.05,
-      "rotY": 0.0
-    },
-    {
-      "id": "d_basement_passage",
-      "name": "Basement Foundation Opening",
+      "id": "doorOrWindow-76794b71-61e0-4d34-a197-11b8334f5df8",
+      "name": "Door frame",
+      "catalogId": "eTeks#doorFrame",
       "level": "basement",
-      "x": 3.58,
-      "z": 6.0,
-      "y": -2.13,
-      "width": 1.1,
-      "height": 1.95,
-      "rotY": 0.0,
-      "isCased": true
+      "x": 3.5775,
+      "y": -2.1336,
+      "z": 2.8889,
+      "width": 1.1176,
+      "height": 2.0828,
+      "depth": 0.2131,
+      "rotY": -4.7124,
+      "angleDeg": 270.0,
+      "isGarage": false,
+      "isCased": true,
+      "isExterior": false
+    },
+    {
+      "id": "doorOrWindow-c5fd6463-faa1-4357-8f2e-2631122f22b5",
+      "name": "Door",
+      "catalogId": "eTeks#door",
+      "level": "basement",
+      "x": 1.1239,
+      "y": -2.1336,
+      "z": 11.5579,
+      "width": 0.9144,
+      "height": 2.0828,
+      "depth": 0.3267,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "isGarage": false,
+      "isCased": false,
+      "isExterior": true
     }
   ],
   "windows": [
     {
-      "id": "w_living_west",
-      "name": "Living Room West Windows",
+      "id": "doorOrWindow-ac60fbe4-50a6-48c3-a0ba-b9d56f24c754",
+      "name": "Double-hung window",
+      "catalogId": "eTeks#doubleHungWindow80x122",
       "level": "main",
-      "x": -7.44,
-      "z": 7.0,
+      "x": -4.1647,
       "y": 0.0,
-      "width": 2.0,
-      "height": 1.3,
-      "sill": 0.85,
-      "rotY": 0.0
+      "z": -4.2732,
+      "width": 0.8128,
+      "height": 1.3716,
+      "depth": 0.179,
+      "rotY": -4.1888,
+      "angleDeg": 240.0,
+      "sill": 0.6096
     },
     {
-      "id": "w_office_west",
-      "name": "Office West Window",
+      "id": "doorOrWindow-c612a8ed-30df-4817-9cf5-a9540263a05f",
+      "name": "Double-hung window",
+      "catalogId": "eTeks#doubleHungWindow80x122",
       "level": "main",
-      "x": -7.44,
-      "z": 10.5,
+      "x": -7.4771,
       "y": 0.0,
-      "width": 1.5,
-      "height": 1.3,
-      "sill": 0.85,
-      "rotY": 0.0
+      "z": -10.0104,
+      "width": 0.8128,
+      "height": 1.2795,
+      "depth": 0.179,
+      "rotY": -4.1888,
+      "angleDeg": 240.0,
+      "sill": 0.6096
     },
     {
-      "id": "w_flex1_south1",
-      "name": "Flex 1 Sunroom Window 1",
+      "id": "doorOrWindow-86f736f8-ab42-4111-9702-6f50f55dede8",
+      "name": "Double-hung window",
+      "catalogId": "eTeks#doubleHungWindow80x122",
       "level": "main",
-      "x": -0.6,
-      "z": -0.45,
+      "x": -10.1699,
       "y": 0.0,
-      "width": 1.8,
-      "height": 1.5,
-      "sill": 0.55,
-      "rotY": 1.5708
+      "z": -11.0119,
+      "width": 0.8128,
+      "height": 1.2795,
+      "depth": 0.179,
+      "rotY": -2.618,
+      "angleDeg": 150.0,
+      "sill": 0.6096
     },
     {
-      "id": "w_flex1_south2",
-      "name": "Flex 1 Sunroom Window 2",
+      "id": "doorOrWindow-6bfe809c-d990-442b-b8e3-408904d0567e",
+      "name": "Double-hung window",
+      "catalogId": "eTeks#doubleHungWindow80x122",
       "level": "main",
-      "x": 1.4,
-      "z": -0.45,
+      "x": -13.3665,
       "y": 0.0,
-      "width": 1.8,
-      "height": 1.5,
-      "sill": 0.55,
-      "rotY": 1.5708
+      "z": -9.1663,
+      "width": 0.8128,
+      "height": 1.2795,
+      "depth": 0.179,
+      "rotY": -2.618,
+      "angleDeg": 150.0,
+      "sill": 0.6096
     },
     {
-      "id": "w_kitchen_north",
-      "name": "Kitchen North Window",
+      "id": "doorOrWindow-3d657e13-b4c4-4ca3-82bf-b135cf2afe4f",
+      "name": "Double-hung window",
+      "catalogId": "eTeks#doubleHungWindow80x122",
       "level": "main",
-      "x": 1.5,
-      "z": 2.26,
+      "x": -7.5282,
       "y": 0.0,
-      "width": 1.3,
-      "height": 1.0,
-      "sill": 1.1,
-      "rotY": 1.5708
+      "z": 1.7975,
+      "width": 1.1684,
+      "height": 1.7018,
+      "depth": 0.179,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "sill": 0.4318
     },
     {
-      "id": "w_bed1_west",
-      "name": "Bedroom 1 West Window",
+      "id": "doorOrWindow-2753b49d-935c-49f6-8758-0ea8873154e6",
+      "name": "Double-hung window",
+      "catalogId": "eTeks#doubleHungWindow80x122",
       "level": "main",
-      "x": -7.44,
-      "z": 3.0,
+      "x": -6.8527,
       "y": 0.0,
-      "width": 1.5,
-      "height": 1.3,
-      "sill": 0.85,
-      "rotY": 0.0
+      "z": 1.0938,
+      "width": 1.1176,
+      "height": 1.7018,
+      "depth": 0.179,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "sill": 0.4572
     },
     {
-      "id": "w_bed2_south",
-      "name": "Bedroom 2 South Window",
+      "id": "doorOrWindow-981bd17e-5066-4b2d-a043-add77c6eeb9c",
+      "name": "Fixed window",
+      "catalogId": "eTeks#fixedWindow85x123",
       "level": "main",
-      "x": 5.5,
-      "z": -1.94,
+      "x": -7.5226,
       "y": 0.0,
-      "width": 1.5,
-      "height": 1.3,
-      "sill": 0.85,
-      "rotY": 1.5708
+      "z": 7.0249,
+      "width": 1.6764,
+      "height": 1.7272,
+      "depth": 0.1678,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "sill": 0.4826
     },
     {
-      "id": "w_bed3_north",
-      "name": "Bedroom 3 North Window",
+      "id": "doorOrWindow-f26eb079-4840-46dc-b57c-289b7131515b",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
       "level": "main",
-      "x": 6.0,
-      "z": 11.53,
+      "x": -7.5538,
       "y": 0.0,
-      "width": 1.5,
-      "height": 1.3,
-      "sill": 0.85,
-      "rotY": 1.5708
+      "z": 8.3203,
+      "width": 0.9144,
+      "height": 1.7018,
+      "depth": 0.2301,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "sill": 0.508
     },
     {
-      "id": "w_bed4_east",
-      "name": "Bedroom 4 East Window",
+      "id": "doorOrWindow-482ba648-5d5d-4572-8beb-58e159e4c716",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
       "level": "main",
-      "x": 15.1,
-      "z": 3.5,
+      "x": -7.5538,
       "y": 0.0,
-      "width": 1.5,
-      "height": 1.3,
-      "sill": 0.85,
-      "rotY": 0.0
+      "z": 5.7295,
+      "width": 0.9144,
+      "height": 1.7272,
+      "depth": 0.2301,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "sill": 0.4826
     },
     {
-      "id": "w_flex2_east",
-      "name": "Flex 2 East Window",
+      "id": "doorOrWindow-c57b92ee-778c-4296-9213-f3ba533d4acd",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
       "level": "main",
-      "x": 15.1,
-      "z": 0.0,
+      "x": -1.9428,
       "y": 0.0,
-      "width": 1.8,
-      "height": 1.3,
-      "sill": 0.85,
-      "rotY": 0.0
+      "z": 11.6462,
+      "width": 0.9144,
+      "height": 1.3462,
+      "depth": 0.2301,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 0.762
     },
     {
-      "id": "w_flex2_south",
-      "name": "Flex 2 South Window",
+      "id": "doorOrWindow-d4a247c0-3d7f-47ec-a28a-6aee42a38949",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
       "level": "main",
-      "x": 11.5,
-      "z": -1.94,
+      "x": -3.4495,
       "y": 0.0,
-      "width": 1.8,
-      "height": 1.3,
-      "sill": 0.85,
-      "rotY": 1.5708
+      "z": 11.6462,
+      "width": 0.9144,
+      "height": 1.7272,
+      "depth": 0.2301,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 0.4064
     },
     {
-      "id": "w_garage_south",
-      "name": "Garage South Window",
+      "id": "doorOrWindow-f599150b-004f-4dbf-bbc8-a3d68e7fbf11",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
       "level": "main",
-      "x": -11.0,
-      "z": -1.14,
+      "x": -4.9161,
       "y": 0.0,
-      "width": 1.2,
-      "height": 0.9,
-      "sill": 1.3,
-      "rotY": 1.5708
+      "z": 11.6462,
+      "width": 0.9144,
+      "height": 1.7272,
+      "depth": 0.2301,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 0.4064
     },
     {
-      "id": "w_garage_west",
-      "name": "Garage West Window",
+      "id": "doorOrWindow-0cbfbf3e-2857-4b42-b1ce-852afc0b6091",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
       "level": "main",
-      "x": -14.5,
-      "z": -5.0,
+      "x": -6.3961,
       "y": 0.0,
-      "width": 1.2,
-      "height": 0.9,
-      "sill": 1.3,
-      "rotY": 0.0
+      "z": 11.6462,
+      "width": 0.9144,
+      "height": 1.7272,
+      "depth": 0.2301,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 0.4064
     },
     {
-      "id": "w_basement_mech",
-      "name": "Basement Mech Hopper Window",
+      "id": "doorOrWindow-f21d96aa-54d2-41e2-a739-133292d2a15d",
+      "name": "Fixed window",
+      "catalogId": "eTeks#fixedWindow85x123",
+      "level": "main",
+      "x": -7.5226,
+      "y": 0.0,
+      "z": 9.6934,
+      "width": 0.5334,
+      "height": 1.3399,
+      "depth": 0.1678,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "sill": 0.8699
+    },
+    {
+      "id": "doorOrWindow-9050ee46-f075-4cf5-a89b-8945a756c459",
+      "name": "Window",
+      "catalogId": "eTeks#window85x163",
+      "level": "main",
+      "x": 1.3322,
+      "y": 0.0,
+      "z": 11.6462,
+      "width": 1.651,
+      "height": 1.9812,
+      "depth": 0.2301,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 0.2286
+    },
+    {
+      "id": "doorOrWindow-9a9c55e8-c7ee-4764-bfb2-2652137b4711",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
+      "level": "main",
+      "x": 2.6149,
+      "y": 0.0,
+      "z": 11.6462,
+      "width": 0.9144,
+      "height": 2.0987,
+      "depth": 0.2301,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 0.108
+    },
+    {
+      "id": "doorOrWindow-336ac452-01c4-409a-be34-c8ab25e4d013",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
+      "level": "main",
+      "x": 0.0495,
+      "y": 0.0,
+      "z": 11.6462,
+      "width": 0.9144,
+      "height": 2.0987,
+      "depth": 0.2301,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 0.108
+    },
+    {
+      "id": "doorOrWindow-dab02cdb-e2c0-4ba7-bf5f-2e2fcd14545e",
+      "name": "Double-hung window",
+      "catalogId": "eTeks#doubleHungWindow80x122",
+      "level": "main",
+      "x": 7.1334,
+      "y": 0.0,
+      "z": 11.6206,
+      "width": 1.0668,
+      "height": 1.7272,
+      "depth": 0.179,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 0.4572
+    },
+    {
+      "id": "doorOrWindow-9e9a7030-73bd-4899-9a18-a965e72555ff",
+      "name": "Double-hung window",
+      "catalogId": "eTeks#doubleHungWindow80x122",
+      "level": "main",
+      "x": 7.8246,
+      "y": 0.0,
+      "z": 10.9188,
+      "width": 1.0414,
+      "height": 1.7272,
+      "depth": 0.179,
+      "rotY": -4.7124,
+      "angleDeg": 270.0,
+      "sill": 0.4572
+    },
+    {
+      "id": "doorOrWindow-db8dc745-f7ed-4ade-996a-bf9e80b1fe85",
+      "name": "Double-hung window",
+      "catalogId": "eTeks#doubleHungWindow80x122",
+      "level": "main",
+      "x": 7.8246,
+      "y": 0.0,
+      "z": 7.0693,
+      "width": 0.6604,
+      "height": 1.2795,
+      "depth": 0.179,
+      "rotY": -4.7124,
+      "angleDeg": 270.0,
+      "sill": 0.889
+    },
+    {
+      "id": "doorOrWindow-74bc0749-ba5c-4c64-874b-c05fc96504c2",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
+      "level": "main",
+      "x": 9.8077,
+      "y": 0.0,
+      "z": 5.6518,
+      "width": 0.762,
+      "height": 1.1938,
+      "depth": 0.2301,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 0.9144
+    },
+    {
+      "id": "doorOrWindow-5815d489-c0a9-4af2-8b5a-3a3498c8fe70",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
+      "level": "main",
+      "x": 12.4305,
+      "y": 0.0,
+      "z": 5.6518,
+      "width": 0.9144,
+      "height": 1.2446,
+      "depth": 0.2301,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 0.8382
+    },
+    {
+      "id": "doorOrWindow-1442e91b-b431-449b-9c5a-c974ed0c2086",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
+      "level": "main",
+      "x": 13.9772,
+      "y": 0.0,
+      "z": 5.6518,
+      "width": 0.9144,
+      "height": 1.2446,
+      "depth": 0.2301,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 0.8128
+    },
+    {
+      "id": "doorOrWindow-de7b8c53-f55f-457a-8d36-708e3fe7c364",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
+      "level": "main",
+      "x": 11.515,
+      "y": 0.0,
+      "z": -2.056,
+      "width": 1.0922,
+      "height": 1.4732,
+      "depth": 0.2301,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "sill": 0.635
+    },
+    {
+      "id": "doorOrWindow-567e3fb0-c2f6-44f2-a813-f5ed60adda66",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
+      "level": "main",
+      "x": 13.4756,
+      "y": 0.0,
+      "z": -2.056,
+      "width": 1.1176,
+      "height": 1.4732,
+      "depth": 0.2301,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "sill": 0.635
+    },
+    {
+      "id": "doorOrWindow-55a958a6-3cab-407d-8f40-79d28d9e110e",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
+      "level": "main",
+      "x": 2.7105,
+      "y": 0.0,
+      "z": -0.5658,
+      "width": 0.9144,
+      "height": 1.3462,
+      "depth": 0.2301,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "sill": 0.8382
+    },
+    {
+      "id": "doorOrWindow-119f1295-686e-4366-b080-082ff0e90dd0",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
+      "level": "main",
+      "x": 1.5372,
+      "y": 0.0,
+      "z": -0.5658,
+      "width": 0.9144,
+      "height": 1.8542,
+      "depth": 0.2301,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "sill": 0.3302
+    },
+    {
+      "id": "doorOrWindow-42f751a2-b8ec-4cad-a79a-b016319a3c96",
+      "name": "French window",
+      "catalogId": "eTeks#frenchWindow85x200",
+      "level": "main",
+      "x": 0.4039,
+      "y": 0.0,
+      "z": -0.5658,
+      "width": 0.9144,
+      "height": 1.8542,
+      "depth": 0.2301,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "sill": 0.3302
+    },
+    {
+      "id": "doorOrWindow-88989c79-d6ca-4c00-bbdb-7035c0d5d9f8",
+      "name": "Double-hung window",
+      "catalogId": "eTeks#doubleHungWindow80x122",
+      "level": "main",
+      "x": 4.3067,
+      "y": 0.0,
+      "z": -2.0304,
+      "width": 1.0922,
+      "height": 1.6764,
+      "depth": 0.179,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "sill": 0.5334
+    },
+    {
+      "id": "doorOrWindow-f8f6c7bd-29b7-4b23-a7f3-9b309cdbe26d",
+      "name": "Double-hung window",
+      "catalogId": "eTeks#doubleHungWindow80x122",
+      "level": "main",
+      "x": 3.5716,
+      "y": 0.0,
+      "z": -1.3574,
+      "width": 0.9652,
+      "height": 1.6764,
+      "depth": 0.179,
+      "rotY": -1.5708,
+      "angleDeg": 90.0,
+      "sill": 0.5334
+    },
+    {
+      "id": "doorOrWindow-edb67bab-de7b-4886-b703-07cdf1db7676",
+      "name": "Small window",
+      "catalogId": "eTeks#window85x123",
       "level": "basement",
-      "x": 0.0,
-      "z": 11.53,
-      "y": -2.13,
-      "width": 0.85,
-      "height": 0.45,
-      "sill": 1.4,
-      "rotY": 1.5708
+      "x": 5.6839,
+      "y": -2.1336,
+      "z": -2.056,
+      "width": 0.9144,
+      "height": 0.6604,
+      "depth": 0.2301,
+      "rotY": -3.1416,
+      "angleDeg": 180.0,
+      "sill": 1.6764
     },
     {
-      "id": "w_basement_storage",
-      "name": "Basement Storage Hopper Window",
+      "id": "doorOrWindow-25290c00-fd54-441b-955c-566dc2fa09d4",
+      "name": "Small window",
+      "catalogId": "eTeks#window85x123",
       "level": "basement",
-      "x": 5.8,
-      "z": 11.53,
-      "y": -2.13,
-      "width": 0.85,
-      "height": 0.45,
-      "sill": 1.4,
-      "rotY": 1.5708
+      "x": 7.8502,
+      "y": -2.1336,
+      "z": 8.2839,
+      "width": 0.9144,
+      "height": 0.7112,
+      "depth": 0.2301,
+      "rotY": -4.7124,
+      "angleDeg": 270.0,
+      "sill": 1.6002
+    },
+    {
+      "id": "doorOrWindow-b83d5e8c-2146-4abc-9d91-b35f217d8c00",
+      "name": "Small window",
+      "catalogId": "eTeks#window85x123",
+      "level": "basement",
+      "x": 5.6705,
+      "y": -2.1336,
+      "z": 11.6462,
+      "width": 0.9144,
+      "height": 0.508,
+      "depth": 0.2301,
+      "rotY": -0.0,
+      "angleDeg": 0.0,
+      "sill": 1.7018
     }
   ],
   "stairs": [
@@ -2080,13 +2844,13 @@ window.MODEL_3D_DATA = {
       "id": "stair_basement",
       "name": "Basement Staircase",
       "level": "all",
-      "startX": 7.25,
-      "startZ": 4.34,
+      "startX": 7.122,
+      "startZ": 3.254,
       "startY": 0.0,
-      "endX": 3.8,
-      "endZ": 4.34,
-      "endY": -2.13,
-      "width": 0.85,
+      "endX": 7.122,
+      "endZ": 5.477,
+      "endY": -2.134,
+      "width": 0.724,
       "steps": 13
     }
   ],
@@ -2096,25 +2860,74 @@ window.MODEL_3D_DATA = {
       "name": "Water Heater Tank",
       "level": "basement",
       "type": "cylinder",
-      "x": 1.0,
-      "z": 9.8,
-      "y": -2.13,
-      "radius": 0.35,
-      "height": 1.65,
+      "x": -0.411,
+      "z": 2.485,
+      "y": -2.134,
+      "radius": 0.228,
+      "height": 2.057,
       "color": 13358561
     },
     {
-      "id": "eq_furnace",
+      "id": "eq_water_softener",
+      "name": "Water Softener / Expansion Tank",
+      "level": "basement",
+      "type": "cylinder",
+      "x": -0.573,
+      "z": 3.253,
+      "y": -2.134,
+      "radius": 0.27,
+      "height": 1.575,
+      "color": 11184810
+    },
+    {
+      "id": "eq_furnace_1",
       "name": "HVAC Furnace Unit",
       "level": "basement",
       "type": "box",
-      "x": 0.0,
-      "z": 9.8,
-      "y": -2.13,
-      "width": 0.85,
-      "depth": 0.85,
-      "height": 1.85,
+      "x": 1.551,
+      "z": 3.271,
+      "y": -2.134,
+      "width": 0.914,
+      "depth": 0.914,
+      "height": 2.134,
       "color": 4674921
+    },
+    {
+      "id": "eq_furnace_2",
+      "name": "HVAC Air Handler Unit",
+      "level": "basement",
+      "type": "box",
+      "x": 0.471,
+      "z": 3.271,
+      "y": -2.134,
+      "width": 0.914,
+      "depth": 0.914,
+      "height": 2.083,
+      "color": 5595238
+    },
+    {
+      "id": "eq_storage_cyl_1",
+      "name": "Basement Storage Drum 1",
+      "level": "basement",
+      "type": "cylinder",
+      "x": 2.857,
+      "z": 7.951,
+      "y": -2.134,
+      "radius": 0.457,
+      "height": 1.88,
+      "color": 7832960
+    },
+    {
+      "id": "eq_storage_cyl_2",
+      "name": "Basement Storage Drum 2",
+      "level": "basement",
+      "type": "cylinder",
+      "x": 2.857,
+      "z": 6.804,
+      "y": -2.134,
+      "radius": 0.457,
+      "height": 1.88,
+      "color": 7832960
     },
     {
       "id": "eq_main_panel_3d",
