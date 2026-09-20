@@ -1355,7 +1355,7 @@ window.MODEL_3D_DATA = {
       "thickness": 0.168,
       "level": "main",
       "isExterior": true,
-      "extSide": "+x"
+      "extSide": "-x"
     },
     {
       "x1": -0.995,
@@ -2935,7 +2935,8 @@ window.MODEL_3D_DATA = {
       "depth": 0.2131,
       "rotY": -3.1416,
       "angleDeg": 180.0,
-      "sill": 0.7874
+      "sill": 0.7874,
+      "isOpenViewport": true
     },
     {
       "id": "doorOrWindow-0c5bd53e-9094-4a9a-8c2b-963a1afe565a",
@@ -2950,7 +2951,8 @@ window.MODEL_3D_DATA = {
       "depth": 0.2131,
       "rotY": -4.7124,
       "angleDeg": 270.0,
-      "sill": 0.8128
+      "sill": 0.8128,
+      "isOpenViewport": true
     }
   ],
   "stairs": [

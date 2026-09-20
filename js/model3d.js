@@ -897,30 +897,49 @@
       const frameThick = 0.05;
       const depth = Math.max(w.depth || 0.18, 0.14);
 
-      // Outer Frame
-      const leftFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThick, height, depth), frameMat);
-      leftFrame.position.set(-width / 2 + frameThick / 2, height / 2, 0);
+      if (w.isOpenViewport) {
+        // Empty open-space viewport with casing/edging trim (no glass, no mullion)
+        const trimThick = 0.04;
+        const leftTrim = new THREE.Mesh(new THREE.BoxGeometry(trimThick, height, depth), frameMat);
+        leftTrim.position.set(-width / 2 + trimThick / 2, height / 2, 0);
 
-      const rightFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThick, height, depth), frameMat);
-      rightFrame.position.set(width / 2 - frameThick / 2, height / 2, 0);
+        const rightTrim = new THREE.Mesh(new THREE.BoxGeometry(trimThick, height, depth), frameMat);
+        rightTrim.position.set(width / 2 - trimThick / 2, height / 2, 0);
 
-      const topFrame = new THREE.Mesh(new THREE.BoxGeometry(width, frameThick, depth), frameMat);
-      topFrame.position.set(0, height - frameThick / 2, 0);
+        const bottomTrim = new THREE.Mesh(new THREE.BoxGeometry(width, trimThick, depth), frameMat);
+        bottomTrim.position.set(0, trimThick / 2, 0);
 
-      // Window Sill (extends outside on bottom)
-      const sill = new THREE.Mesh(new THREE.BoxGeometry(width + 0.08, frameThick + 0.02, depth + 0.06), sillMat);
-      sill.position.set(0, frameThick / 2, 0.02);
+        const topTrim = new THREE.Mesh(new THREE.BoxGeometry(width, trimThick, depth), frameMat);
+        topTrim.position.set(0, height - trimThick / 2, 0);
 
-      // Transparent Glass Pane
-      const glassGeom = new THREE.PlaneGeometry(width - frameThick * 2, height - frameThick * 2);
-      const glass = new THREE.Mesh(glassGeom, glassMat);
-      glass.position.set(0, height / 2, 0);
+        group.add(leftTrim, rightTrim, bottomTrim, topTrim);
+      } else {
+        // Outer Frame
+        const leftFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThick, height, depth), frameMat);
+        leftFrame.position.set(-width / 2 + frameThick / 2, height / 2, 0);
 
-      // Center Divider / Mullion
-      const mullion = new THREE.Mesh(new THREE.BoxGeometry(frameThick * 0.7, height - frameThick * 2, depth * 0.35), frameMat);
-      mullion.position.set(0, height / 2, 0);
+        const rightFrame = new THREE.Mesh(new THREE.BoxGeometry(frameThick, height, depth), frameMat);
+        rightFrame.position.set(width / 2 - frameThick / 2, height / 2, 0);
 
-      group.add(leftFrame, rightFrame, topFrame, sill, glass, mullion);
+        const topFrame = new THREE.Mesh(new THREE.BoxGeometry(width, frameThick, depth), frameMat);
+        topFrame.position.set(0, height - frameThick / 2, 0);
+
+        // Window Sill (extends outside on bottom)
+        const sill = new THREE.Mesh(new THREE.BoxGeometry(width + 0.08, frameThick + 0.02, depth + 0.06), sillMat);
+        sill.position.set(0, frameThick / 2, 0.02);
+
+        // Transparent Glass Pane
+        const glassGeom = new THREE.PlaneGeometry(width - frameThick * 2, height - frameThick * 2);
+        const glass = new THREE.Mesh(glassGeom, glassMat);
+        glass.position.set(0, height / 2, 0);
+
+        // Center Divider / Mullion
+        const mullion = new THREE.Mesh(new THREE.BoxGeometry(frameThick * 0.7, height - frameThick * 2, depth * 0.35), frameMat);
+        mullion.position.set(0, height / 2, 0);
+
+        group.add(leftFrame, rightFrame, topFrame, sill, glass, mullion);
+      }
+
       group.userData = { type: "window", id: w.id, level: w.level };
       scene.add(group);
       windowMeshes.push(group);
