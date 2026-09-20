@@ -948,6 +948,7 @@
     renderFixturesTable();
     if (window.Charts) window.Charts.render(rooms, STATUS);
     if (window.Model3D) {
+      if (window.Model3D.updateRoomTints) window.Model3D.updateRoomTints();
       if (window.Model3D.generateElectricalSchematic) window.Model3D.generateElectricalSchematic();
       if (window.Model3D.generateHVACSchematic) window.Model3D.generateHVACSchematic();
       if (window.Model3D.generatePlumbingSchematic) window.Model3D.generatePlumbingSchematic();

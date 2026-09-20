@@ -722,30 +722,49 @@
     applyWallHeights();
   }
 
-  function applyWallHeights() {
+  let wallTween = null;
+  let currentWallRatio = 1.0; // 1.0 = full, 0.0 = cutaway
+
+  function applyWallHeights(ratio) {
+    if (ratio === undefined) ratio = currentWallRatio;
     wallMeshes.forEach((wallGroup) => {
       const origH = wallGroup.userData.originalHeight || 2.44;
-      const cutH = wallHeightMode === "cutaway" ? Math.min(1.15, origH) : origH;
+      const targetCutH = Math.min(1.15, origH);
+      const currentH = targetCutH + (origH - targetCutH) * ratio;
+      
       const segments = wallGroup.userData.segments || [];
 
       segments.forEach((seg) => {
         if (seg.type === "column") {
-          seg.mesh.scale.y = cutH / origH;
-          seg.mesh.position.y = cutH / 2;
+          seg.mesh.scale.y = currentH / origH;
+          seg.mesh.position.y = currentH / 2;
         } else if (seg.type === "apron") {
-          const h = Math.min(seg.sill, cutH);
+          const h = Math.min(seg.sill, currentH);
           seg.mesh.scale.y = h / seg.sill;
           seg.mesh.position.y = h / 2;
         } else if (seg.type === "header") {
-          seg.mesh.visible = (wallHeightMode === "full");
+          seg.mesh.visible = (ratio > 0.5);
+          // Scale header if it's visible, so it squishes down before disappearing
+          if (seg.mesh.visible) {
+            const hScale = Math.max(0.01, (currentH - seg.head) / (origH - seg.head));
+            seg.mesh.scale.y = hScale;
+            seg.mesh.position.y = seg.head + ((origH - seg.head) * hScale) / 2;
+          }
         }
       });
     });
   }
 
   function setWallHeight(mode) {
+    if (wallHeightMode === mode) return;
     wallHeightMode = mode;
-    applyWallHeights();
+    const targetRatio = (mode === "full") ? 1.0 : 0.0;
+    
+    wallTween = {
+      start: currentWallRatio,
+      end: targetRatio,
+      progress: 0
+    };
   }
 
   // --- 3D Doors: All Closed, All Exterior Doors White, Porch Walkway Portal ---
@@ -1487,11 +1506,37 @@
     });
   }
 
+  let flyTween = null;
+  function flyToRoom(mesh) {
+    if (isFirstPerson || !camera || !controls) return;
+    
+    // Calculate bounding box centroid of the room
+    mesh.geometry.computeBoundingBox();
+    const box = mesh.geometry.boundingBox;
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    center.applyMatrix4(mesh.matrixWorld);
+
+    const startTarget = controls.target.clone();
+    const endTarget = center.clone();
+    
+    const startPos = camera.position.clone();
+    // Offset camera above and slightly south
+    const offset = new THREE.Vector3(0, 18, 14);
+    const endPos = endTarget.clone().add(offset);
+    
+    flyTween = {
+      startTarget, endTarget, startPos, endPos, progress: 0
+    };
+  }
+
   function highlightRoom(id) {
     roomMeshes.forEach((mesh) => {
       const isSel = (mesh.userData.id === id);
       mesh.material.emissive.setHex(isSel ? 0x2C6E9B : 0x000000);
       mesh.material.opacity = isSel ? 1.0 : 0.85;
+      
+      if (isSel) flyToRoom(mesh);
     });
   }
 
@@ -2395,6 +2440,33 @@
       const euler = new THREE.Euler(fpPitch, fpYaw, 0, "YXZ");
       camera.quaternion.setFromEuler(euler);
     } else if (controls) {
+      if (flyTween) {
+        flyTween.progress += 0.04; // roughly 25 frames ~ 400ms
+        if (flyTween.progress >= 1) {
+          camera.position.copy(flyTween.endPos);
+          controls.target.copy(flyTween.endTarget);
+          flyTween = null;
+        } else {
+          // ease in out smoothstep
+          const t = flyTween.progress;
+          const ease = t * t * (3 - 2 * t);
+          camera.position.lerpVectors(flyTween.startPos, flyTween.endPos, ease);
+          controls.target.lerpVectors(flyTween.startTarget, flyTween.endTarget, ease);
+        }
+      }
+      if (wallTween) {
+        wallTween.progress += 0.05; // 20 frames ~ 330ms
+        if (wallTween.progress >= 1) {
+          currentWallRatio = wallTween.end;
+          applyWallHeights(currentWallRatio);
+          wallTween = null;
+        } else {
+          const t = wallTween.progress;
+          const ease = t * t * (3 - 2 * t);
+          currentWallRatio = wallTween.start + (wallTween.end - wallTween.start) * ease;
+          applyWallHeights(currentWallRatio);
+        }
+      }
       controls.update();
     }
 
