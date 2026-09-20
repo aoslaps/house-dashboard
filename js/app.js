@@ -530,7 +530,10 @@
                 <td>
                   <label style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;cursor:pointer;">
                     <input type="checkbox" class="cb-placeholder" data-id="${c.id}" ${c.placeholder ? "checked" : ""} />
-                    <span class="${c.placeholder ? "placeholder-badge" : "verified-badge"}">${c.placeholder ? "Placeholder" : "Verified"}</span>
+                    <div>
+                      <span class="${c.placeholder ? "placeholder-badge" : "verified-badge"}">${c.placeholder ? "Placeholder" : "Verified"}</span>
+                      ${!c.placeholder && c.verifiedDate ? `<div style="font-size:10px;color:var(--graphite);margin-top:2px;">verified ${c.verifiedDate}</div>` : ""}
+                    </div>
                   </label>
                 </td>
                 <td>
@@ -568,6 +571,8 @@
         const c = circuitById(cid);
         if (c) {
           c.placeholder = e.target.checked;
+          if (!c.placeholder) c.verifiedDate = new Date().toISOString().split('T')[0];
+          else delete c.verifiedDate;
           SS.save(H);
           flashSaved();
           refreshAll();
@@ -674,7 +679,10 @@
                 <td>
                   <label style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;cursor:pointer;">
                     <input type="checkbox" class="cb-register-verified" data-id="${reg.id}" ${reg.verified ? "checked" : ""} />
-                    <span class="${reg.verified ? "verified-badge" : "placeholder-badge"}">${reg.verified ? "Verified" : "Unverified"}</span>
+                    <div>
+                      <span class="${reg.verified ? "verified-badge" : "placeholder-badge"}">${reg.verified ? "Verified" : "Unverified"}</span>
+                      ${reg.verified && reg.verifiedDate ? `<div style="font-size:10px;color:var(--graphite);margin-top:2px;">verified ${reg.verifiedDate}</div>` : ""}
+                    </div>
                   </label>
                 </td>
                 <td>
@@ -711,7 +719,10 @@
         const id = cb.dataset.id;
         const reg = (H.registers || []).find((r) => r.id === id);
         if (reg) {
+          window.pushCaptureState();
           reg.verified = e.target.checked;
+          if (reg.verified) reg.verifiedDate = new Date().toISOString().split('T')[0];
+          else delete reg.verifiedDate;
           SS.save(H);
           flashSaved();
           refreshAll();
@@ -789,6 +800,7 @@
           <td><select class="out-kind-sel" data-id="${out.id}">${kOpts}</select></td>
           <td style="text-align:center;">
             <input type="checkbox" class="out-verify-check" data-id="${out.id}" ${isV} title="Mark as physically verified">
+            ${out.verified && out.verifiedDate ? `<div style="font-size:10px;color:var(--graphite);margin-top:2px;">verified ${out.verifiedDate}</div>` : ""}
           </td>
           <td style="text-align:right;">
             <button class="btn-del-outlet" data-id="${out.id}" title="Delete Outlet">🗑</button>
@@ -825,10 +837,12 @@
 
     $$(".out-verify-check", wrap).forEach((chk) => {
       chk.addEventListener("change", (e) => {
-        const id = e.target.dataset.id;
-        const out = H.outlets.find((o) => o.id === id);
+        const out = (H.outlets || []).find((o) => o.id === e.target.dataset.id);
         if (out) {
+          window.pushCaptureState();
           out.verified = e.target.checked;
+          if (out.verified) out.verifiedDate = new Date().toISOString().split('T')[0];
+          else delete out.verifiedDate;
           SS.save(H); flashSaved(); refreshAll();
         }
       });
@@ -894,6 +908,7 @@
           </td>
           <td style="text-align:center;">
             <input type="checkbox" class="fix-verify-check" data-id="${fix.id}" ${isV} title="Mark as physically verified">
+            ${fix.verified && fix.verifiedDate ? `<div style="font-size:10px;color:var(--graphite);margin-top:2px;">verified ${fix.verifiedDate}</div>` : ""}
           </td>
           <td style="text-align:right;">
             <button class="btn-del-register" data-id="${fix.id}" title="Delete Fixture">🗑</button>
@@ -943,9 +958,12 @@
     $$(".fix-verify-check", wrap).forEach((chk) => {
       chk.addEventListener("change", (e) => {
         const id = e.target.dataset.id;
-        const fix = fixtures.find((f) => f.id === id);
+        const fix = (H.fixtures || []).find((f) => f.id === id);
         if (fix) {
+          window.pushCaptureState();
           fix.verified = e.target.checked;
+          if (fix.verified) fix.verifiedDate = new Date().toISOString().split('T')[0];
+          else delete fix.verifiedDate;
           SS.save(H); flashSaved(); refreshAll();
         }
       });
