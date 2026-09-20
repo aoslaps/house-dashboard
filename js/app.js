@@ -1802,15 +1802,26 @@
     const btnSettingsToggle = $("#btnSettingsToggle");
     const settingsPopover = $("#settingsPopover");
     if (btnSettingsToggle && settingsPopover) {
+      const container = settingsPopover.parentElement;
+      
       btnSettingsToggle.addEventListener("click", (e) => {
         e.stopPropagation();
         settingsPopover.hidden = !settingsPopover.hidden;
       });
+      
       // Close popover when clicking outside
       document.addEventListener("click", (e) => {
         if (!settingsPopover.hidden && !settingsPopover.contains(e.target) && e.target !== btnSettingsToggle) {
           settingsPopover.hidden = true;
         }
+      });
+      
+      // Hover behavior
+      container.addEventListener("mouseenter", () => {
+        settingsPopover.hidden = false;
+      });
+      container.addEventListener("mouseleave", () => {
+        settingsPopover.hidden = true;
       });
     }
 
