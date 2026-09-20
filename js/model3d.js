@@ -380,10 +380,7 @@
       { x:  21.0, z:  10.0, h: 5.4, r: 1.7 },
       // Backyard perimeter (north fence line)
       { x:  14.0, z:  22.0, h: 6.5, r: 2.2 },
-      { x:  -4.0, z:  22.0, h: 6.0, r: 2.0 },
-      // Low foundation shrubs near walkway
-      { x:  -4.2, z:  -2.2, h: 1.4, r: 0.7, isBush: true },
-      { x:  -0.5, z:  -2.2, h: 1.4, r: 0.7, isBush: true }
+      { x:  -4.0, z:  22.0, h: 6.0, r: 2.0 }
     ];
 
     const trunkMat = new THREE.MeshStandardMaterial({ color: 0x4B3728, roughness: 0.85, metalness: 0.05 });
