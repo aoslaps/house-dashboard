@@ -908,7 +908,7 @@
 
     modelData.windows.forEach((w) => {
       const group = new THREE.Group();
-      const sillH = w.sill || 0.6;
+      const sillH = w.sill !== undefined ? w.sill : 0.6;
       group.position.set(w.x, w.y + sillH, w.z);
       group.rotation.y = w.rotY || 0;
 
