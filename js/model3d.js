@@ -360,6 +360,11 @@
     // 8. Build 1965 Ford Mustang in Southern Garage Bay
     buildVehicles();
 
+    // 8.5 Build Fun Trees!
+    if (window.Landscape) {
+      window.Landscape.init(scene);
+    }
+
     // 9. Build 3D Infrastructure Layers (Conduit, HVAC, Plumbing)
     buildInfrastructureLayers();
 
@@ -808,6 +813,9 @@
         archBeam.castShadow = true;
 
         group.add(leftCol, rightCol, archBeam);
+      } else if (d.catalogId === "eTeks#doorFrame" || d.name === "Round door frame") {
+        // Edgeless, finished walkway. The wall geometry already leaves a perfect hole, so we render nothing.
+        return;
       } else if (d.isGarage) {
         // Sectional overhead garage door with white horizontal panels
         const panelCount = 4;
