@@ -240,6 +240,32 @@
 
     renderer.domElement.addEventListener("mousemove", onMouseMove);
     renderer.domElement.addEventListener("click", onClick);
+    
+    let touchStartX = 0;
+    let touchStartY = 0;
+    renderer.domElement.addEventListener("touchstart", (e) => {
+      if (e.touches.length === 1) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+    
+    renderer.domElement.addEventListener("touchend", (e) => {
+      if (e.changedTouches.length === 1) {
+        const touch = e.changedTouches[0];
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
+        // If movement was less than 10px, treat as a tap
+        if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {
+          e.preventDefault(); 
+          const rect = renderer.domElement.getBoundingClientRect();
+          mouse.x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+          mouse.y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+          onClick(e, true);
+        }
+      }
+    }, { passive: false });
+    
     window.addEventListener("resize", onWindowResize);
 
     isInitialized = true;

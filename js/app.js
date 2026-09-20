@@ -11,6 +11,33 @@
   const BASELINE = structuredClone(window.HOUSE);
   let H = window.HOUSE;
 
+  // Undo stack for capture operations
+  const captureUndoStack = [];
+  window.pushCaptureState = function pushCaptureState() {
+    captureUndoStack.push({
+      outlets: JSON.parse(JSON.stringify(H.outlets || [])),
+      registers: JSON.parse(JSON.stringify(H.registers || [])),
+      fixtures: JSON.parse(JSON.stringify(H.fixtures || []))
+    });
+    if (captureUndoStack.length > 20) captureUndoStack.shift();
+    updateUndoButton();
+  };
+  window.undoCapture = function undoCapture() {
+    if (captureUndoStack.length === 0) return;
+    const prev = captureUndoStack.pop();
+    H.outlets = prev.outlets;
+    H.registers = prev.registers;
+    H.fixtures = prev.fixtures;
+    SS.save(H);
+    flashSaved();
+    if (typeof refreshAll === "function") refreshAll();
+    updateUndoButton();
+  };
+  function updateUndoButton() {
+    const btn = $("#btnUndoCapture");
+    if (btn) btn.disabled = (captureUndoStack.length === 0);
+  }
+
   const $  = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
@@ -711,6 +738,7 @@
       btn.addEventListener("click", () => {
         const id = btn.dataset.id;
         if (confirm(`Delete register ${id}?`)) {
+          window.pushCaptureState();
           H.registers = (H.registers || []).filter((r) => r.id !== id);
           SS.save(H);
           flashSaved();
@@ -810,6 +838,7 @@
       btn.addEventListener("click", () => {
         const id = btn.dataset.id;
         if (confirm(`Delete outlet ${id}?`)) {
+          window.pushCaptureState();
           H.outlets = (H.outlets || []).filter((o) => o.id !== id);
           SS.save(H); flashSaved(); refreshAll();
         }
@@ -926,6 +955,7 @@
       btn.addEventListener("click", () => {
         const id = btn.dataset.id;
         if (confirm(`Delete fixture ${id}?`)) {
+          window.pushCaptureState();
           H.fixtures = (H.fixtures || []).filter((f) => f.id !== id);
           SS.save(H); flashSaved(); refreshAll();
         }
@@ -1915,6 +1945,12 @@
       });
     }
     
+    // Undo button
+    const btnUndoCapture = $("#btnUndoCapture");
+    if (btnUndoCapture) {
+      btnUndoCapture.addEventListener("click", window.undoCapture);
+    }
+    
     // Theme Select
     const themeSelect = $("#themeSelect");
     if (themeSelect) {
@@ -2149,6 +2185,7 @@
   }
 
   function addRegisterFrom3D({ room, anchor }) {
+    window.pushCaptureState();
     if (!H.registers) H.registers = [];
     const id = "reg-" + (H.registers.length + 1);
     const newReg = {
@@ -2169,6 +2206,7 @@
   }
 
   function addFixtureFrom3D({ room, type, anchor }) {
+    window.pushCaptureState();
     if (!H.fixtures) H.fixtures = [];
     const id = "fix-" + (H.fixtures.length + 1);
     
@@ -2209,6 +2247,7 @@
       if (window.Model3D && window.Model3D.setPlaceOutletMode) window.Model3D.setPlaceOutletMode(false);
       return;
     }
+    window.pushCaptureState();
     if (!H.outlets) H.outlets = [];
     const id = "out-" + (H.outlets.length + 1);
     
@@ -2323,6 +2362,16 @@
     addRegisterFrom3D,
     selectRegister
   };
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "z") {
+      if (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA" || document.activeElement.tagName === "SELECT") {
+        return; // Don't intercept typing undo
+      }
+      e.preventDefault();
+      window.undoCapture();
+    }
+  });
 
   document.addEventListener("DOMContentLoaded", init);
 })();
