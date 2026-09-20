@@ -598,7 +598,7 @@
             type: "window",
             width: win.width || 0.9,
             height: win.height || 1.2,
-            sill: win.elevation || 0.8,
+            sill: win.sill !== undefined ? win.sill : 0.6,
             t: Math.max(0.0, Math.min(1.0, bestT))
           });
         }
