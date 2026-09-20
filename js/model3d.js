@@ -564,7 +564,7 @@
             bestT = res.t;
           }
         });
-        if (bestDist < 0.15 && bestW >= 0) {
+        if (bestDist < 0.40 && bestW >= 0) {
           wallOpenings[bestW].push({
             type: "door",
             width: d.width || 0.85,
@@ -588,7 +588,7 @@
             bestT = res.t;
           }
         });
-        if (bestDist < 0.15 && bestW >= 0) {
+        if (bestDist < 0.40 && bestW >= 0) {
           wallOpenings[bestW].push({
             type: "window",
             width: win.width || 0.9,
@@ -746,9 +746,9 @@
           seg.mesh.visible = (ratio > 0.5);
           // Scale header if it's visible, so it squishes down before disappearing
           if (seg.mesh.visible) {
-            const hScale = Math.max(0.01, (currentH - seg.head) / (origH - seg.head));
+            const hScale = Math.max(0.01, (currentH - seg.top) / seg.origH);
             seg.mesh.scale.y = hScale;
-            seg.mesh.position.y = seg.head + ((origH - seg.head) * hScale) / 2;
+            seg.mesh.position.y = seg.top + (seg.origH * hScale) / 2;
           }
         }
       });
