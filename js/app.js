@@ -24,6 +24,7 @@
   let state = {
     mode: "renovation",       // "renovation" | "electrical"
     view: "2d",               // "2d" | "3d"
+    circuitsView: "panels",   // "panels" | "table"
     level: "main",            // "main" | "basement" | "all"
     phase: "existing",        // "existing" | "proposed" | "both"
     selected: null,           // selected room id
@@ -290,7 +291,20 @@
   /* ---------- render: Breaker Box ---------- */
   function renderBreakerBox() {
     const grid = $("#panelsGrid");
+    const tableWrap = $("#circuitsTableWrap");
     if (!grid) return;
+
+    if (state.circuitsView === "table") {
+      grid.hidden = true;
+      if (tableWrap) {
+        tableWrap.hidden = false;
+        renderCircuitsTable();
+      }
+      return;
+    }
+
+    grid.hidden = false;
+    if (tableWrap) tableWrap.hidden = true;
 
     const subInstalled = H.meta && H.meta.subpanelInstalled;
 
@@ -345,7 +359,10 @@
                   <span class="breaker-num">#${c.breaker || c.id}</span>
                   <span class="breaker-amps ${ampsClass}">${c.amps || 15}A</span>
                   <div class="breaker-info">
-                    <div class="breaker-desc">${c.description || "Circuit " + c.id}</div>
+                    <div class="breaker-desc">
+                      ${c.description || "Circuit " + c.id}
+                      ${c.placeholder ? '<span class="placeholder-badge" style="margin-left:4px;">PLACEHOLDER</span>' : ''}
+                    </div>
                     <div class="breaker-rooms">${roomBadges || '<span style="color:#6A7888;font-size:10px;">Unassigned</span>'}</div>
                   </div>
                   <div style="display:flex;align-items:center;gap:4px;">
@@ -423,6 +440,159 @@
     });
   }
 
+  /* ---------- render: Circuits Table Editor ---------- */
+  function renderCircuitsTable() {
+    const wrap = $("#circuitsTableWrap");
+    if (!wrap) return;
+
+    wrap.innerHTML = `
+      <table class="circuits-table">
+        <thead>
+          <tr>
+            <th style="width:65px;">ID</th>
+            <th style="width:70px;">Breaker #</th>
+            <th style="width:140px;">Panel</th>
+            <th style="width:80px;">Amps</th>
+            <th>Description</th>
+            <th class="table-rooms-cell">Connected Rooms</th>
+            <th style="width:110px;">Status</th>
+            <th style="width:50px;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${H.circuits.map((c) => {
+            const unassignedRooms = H.rooms.filter((rm) => !(c.rooms || []).includes(rm.id));
+            return `
+              <tr data-circuit="${c.id}">
+                <td><span class="circuit-chip" style="margin:0;">${c.id}</span></td>
+                <td>
+                  <input type="number" class="table-input num circuit-field" data-id="${c.id}" data-field="breaker" value="${c.breaker || ""}" min="1" max="60" />
+                </td>
+                <td>
+                  <select class="table-select circuit-field" data-id="${c.id}" data-field="panel">
+                    <option value="main" ${c.panel === "main" ? "selected" : ""}>Main (Panel A - 200A)</option>
+                    <option value="sub" ${c.panel === "sub" ? "selected" : ""}>Subpanel (Panel B - 100A)</option>
+                  </select>
+                </td>
+                <td>
+                  <select class="table-select circuit-field" data-id="${c.id}" data-field="amps">
+                    <option value="15" ${c.amps === 15 ? "selected" : ""}>15A</option>
+                    <option value="20" ${c.amps === 20 ? "selected" : ""}>20A</option>
+                    <option value="30" ${c.amps === 30 ? "selected" : ""}>30A</option>
+                    <option value="50" ${c.amps === 50 ? "selected" : ""}>50A</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="text" class="table-input circuit-field" data-id="${c.id}" data-field="description" value="${c.description || ""}" placeholder="Circuit description" />
+                </td>
+                <td class="table-rooms-cell">
+                  <div class="table-rooms-list">
+                    ${(c.rooms || []).map((rid) => {
+                      const rm = byId(rid);
+                      return `<span class="table-room-chip">${rm ? rm.name : rid} <button class="btn-remove-room" data-cid="${c.id}" data-rid="${rid}" title="Remove room">✕</button></span>`;
+                    }).join("")}
+                  </div>
+                  ${unassignedRooms.length ? `
+                    <select class="table-select btn-add-room-to-circuit" data-cid="${c.id}">
+                      <option value="">+ Add room…</option>
+                      ${unassignedRooms.map((rm) => `<option value="${rm.id}">${rm.name}</option>`).join("")}
+                    </select>
+                  ` : ``}
+                </td>
+                <td>
+                  <label style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;cursor:pointer;">
+                    <input type="checkbox" class="cb-placeholder" data-id="${c.id}" ${c.placeholder ? "checked" : ""} />
+                    <span class="${c.placeholder ? "placeholder-badge" : "verified-badge"}">${c.placeholder ? "Placeholder" : "Verified"}</span>
+                  </label>
+                </td>
+                <td>
+                  <button class="btn-del-circuit" data-id="${c.id}" title="Delete circuit ${c.id}">🗑️</button>
+                </td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    `;
+
+    // Field edit listeners
+    $$(".circuit-field", wrap).forEach((el) => {
+      el.addEventListener("change", (e) => {
+        const cid = el.dataset.id;
+        const field = el.dataset.field;
+        const c = circuitById(cid);
+        if (!c) return;
+        if (field === "breaker" || field === "amps") {
+          c[field] = parseInt(e.target.value, 10) || 0;
+        } else {
+          c[field] = e.target.value;
+        }
+        SS.save(H);
+        flashSaved();
+        refreshAll();
+      });
+    });
+
+    // Placeholder toggle
+    $$(".cb-placeholder", wrap).forEach((cb) => {
+      cb.addEventListener("change", (e) => {
+        const cid = cb.dataset.id;
+        const c = circuitById(cid);
+        if (c) {
+          c.placeholder = e.target.checked;
+          SS.save(H);
+          flashSaved();
+          refreshAll();
+        }
+      });
+    });
+
+    // Remove room from circuit
+    $$(".btn-remove-room", wrap).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const cid = btn.dataset.cid;
+        const rid = btn.dataset.rid;
+        const c = circuitById(cid);
+        if (c && c.rooms) {
+          c.rooms = c.rooms.filter((x) => x !== rid);
+          SS.save(H);
+          flashSaved();
+          refreshAll();
+        }
+      });
+    });
+
+    // Add room to circuit
+    $$(".btn-add-room-to-circuit", wrap).forEach((sel) => {
+      sel.addEventListener("change", (e) => {
+        const cid = sel.dataset.cid;
+        const rid = e.target.value;
+        if (!rid) return;
+        const c = circuitById(cid);
+        if (c) {
+          if (!c.rooms) c.rooms = [];
+          if (!c.rooms.includes(rid)) c.rooms.push(rid);
+          SS.save(H);
+          flashSaved();
+          refreshAll();
+        }
+      });
+    });
+
+    // Delete circuit
+    $$(".btn-del-circuit", wrap).forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const cid = btn.dataset.id;
+        if (confirm(`Delete circuit ${cid}?`)) {
+          H.circuits = H.circuits.filter((c) => c.id !== cid);
+          SS.save(H);
+          flashSaved();
+          refreshAll();
+        }
+      });
+    });
+  }
+
   /* ---------- live update helper ---------- */
   function refreshAll() {
     const rooms = roomsForPhase(state.phase);
@@ -446,7 +616,7 @@
       ? `<ul class="tasks">${r.tasks.map((t, idx) => `
           <li class="task-item ${t.done ? "done" : ""}">
             <input type="checkbox" class="task-checkbox" data-idx="${idx}" ${t.done ? "checked" : ""} aria-label="Mark task done" />
-            <span class="task-label">${t.label}</span>
+            <input type="text" class="task-label-input" data-idx="${idx}" value="${t.label}" aria-label="Task label" />
             <button class="btn-del-task" data-idx="${idx}" title="Delete task" aria-label="Delete task">✕</button>
           </li>`).join("")}</ul>`
       : `<p class="notes" style="color:var(--graphite);margin:4px 0 8px;">No tasks yet.</p>`;
@@ -727,6 +897,27 @@
           SS.save(H);
           flashSaved();
           renderDetail(r);
+          refreshAll();
+        }
+      });
+    });
+
+    // Task rename input
+    $$(".task-label-input", body).forEach((input) => {
+      input.addEventListener("input", (e) => {
+        const idx = parseInt(e.target.dataset.idx, 10);
+        if (r.tasks && r.tasks[idx]) {
+          r.tasks[idx].label = e.target.value;
+          SS.save(H);
+          flashSaved();
+        }
+      });
+      input.addEventListener("change", (e) => {
+        const idx = parseInt(e.target.dataset.idx, 10);
+        if (r.tasks && r.tasks[idx]) {
+          r.tasks[idx].label = e.target.value.trim();
+          SS.save(H);
+          flashSaved();
           refreshAll();
         }
       });
@@ -1243,6 +1434,15 @@
     // Add breaker button
     const btnAddBreaker = $("#btnAddBreaker");
     if (btnAddBreaker) btnAddBreaker.addEventListener("click", showAddBreakerModal);
+
+    // Circuits View toggle (Visual Panels vs Circuits Table)
+    $$("#circuitsViewToggle button").forEach((b) => {
+      b.addEventListener("click", () => {
+        $$("#circuitsViewToggle button").forEach((btn) => btn.classList.toggle("is-active", btn === b));
+        state.circuitsView = b.dataset.cview;
+        renderBreakerBox();
+      });
+    });
 
     // 3D Wall Height Toggle (Cutaway / Full)
     $$("#wallHeightToggle button").forEach((b) => {

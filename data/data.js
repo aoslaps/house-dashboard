@@ -17,6 +17,7 @@ window.HOUSE = {
     //   "budget" -> weight by $ budget (best proxy for effort/cost)
     //   "equal"  -> every room counts the same (easy, but misleading)
     progressWeighting: "area",
+    areaAccuracyNote: "Areas are approximate from architectural model ('somewhat accurate.sh3d'). Verify in the field before ordering materials.",
   },
 
   /* -------------------------------------------------------------------------
@@ -55,12 +56,8 @@ window.HOUSE = {
     {
       id: "livingroom", name: "Living Room", type: "living",
       area: 301.51, floor: "main", countsAsFinished: true, phase: "existing",
-      status: "in-progress", percent: 35, budget: 6000, spent: 2100,
-      tasks: [
-        { label: "Carpet torn out", done: true },
-        { label: "Subfloor replaced", done: false },
-        { label: "Drywall repair", done: false },
-      ],
+      status: "not-started", percent: 0, budget: 0, spent: 0,
+      tasks: [],
       photos: [], circuits: ["A12"],
       notes: "Open to kitchen + dining. The real living hub of the house.",
     },
@@ -83,7 +80,7 @@ window.HOUSE = {
     {
       id: "kitchen", name: "Kitchen", type: "kitchen",
       area: 193.72, floor: "main", countsAsFinished: true, phase: "existing",
-      status: "not-started", percent: 0, budget: 15000, spent: 0,
+      status: "not-started", percent: 0, budget: 0, spent: 0,
       tasks: [{ label: "Scope island + appliances", done: false }],
       photos: [], circuits: ["A14", "A16"],
       notes: "~15' island, dishwasher. Biggest single line item.",
@@ -91,19 +88,19 @@ window.HOUSE = {
     {
       id: "bed4", name: "Bedroom 4", type: "bedroom",
       area: 169.58, floor: "main", countsAsFinished: true, phase: "existing",
-      status: "not-started", percent: 0, budget: 2500, spent: 0,
+      status: "not-started", percent: 0, budget: 0, spent: 0,
       tasks: [], photos: [], circuits: ["B06"], notes: "",
     },
     {
       id: "bed2", name: "Bedroom 2", type: "bedroom",
       area: 145.82, floor: "main", countsAsFinished: true, phase: "existing",
-      status: "not-started", percent: 0, budget: 2500, spent: 0,
+      status: "not-started", percent: 0, budget: 0, spent: 0,
       tasks: [], photos: [], circuits: ["B04"], notes: "",
     },
     {
       id: "bed1", name: "Bedroom 1", type: "bedroom",
       area: 145.37, floor: "main", countsAsFinished: true, phase: "existing",
-      status: "not-started", percent: 0, budget: 2500, spent: 0,
+      status: "not-started", percent: 0, budget: 0, spent: 0,
       tasks: [], photos: [], circuits: ["B04"], notes: "",
     },
     {
@@ -115,20 +112,20 @@ window.HOUSE = {
     {
       id: "bed3", name: "Bedroom 3", type: "bedroom",
       area: 142.65, floor: "main", countsAsFinished: true, phase: "existing",
-      status: "not-started", percent: 0, budget: 2500, spent: 0,
+      status: "not-started", percent: 0, budget: 0, spent: 0,
       tasks: [], photos: [], circuits: ["B06"], notes: "",
     },
     {
       id: "flex1", name: "Flex 1", type: "flex",
       area: 129.72, floor: "main", countsAsFinished: true, phase: "existing",
-      status: "not-started", percent: 0, budget: 1500, spent: 0,
+      status: "not-started", percent: 0, budget: 0, spent: 0,
       tasks: [], photos: [], circuits: ["A12"],
       notes: "Off the front hall, one wall of windows + exterior door. Reads sunroom-ish but only glazed on one side.",
     },
     {
       id: "laundry", name: "Laundry (relocate?)", type: "utility",
       area: 98.95, floor: "main", countsAsFinished: true, phase: "existing",
-      status: "blocked", percent: 0, budget: 1200, spent: 0,
+      status: "blocked", percent: 0, budget: 0, spent: 0,
       tasks: [
         { label: "Price stacked washer/dryer", done: false },
         { label: "Plan relocation off the circulation path", done: false },
@@ -145,7 +142,7 @@ window.HOUSE = {
     {
       id: "ba2", name: "Bathroom 2", type: "bath",
       area: 73.50, floor: "main", countsAsFinished: true, phase: "existing",
-      status: "not-started", percent: 0, budget: 4000, spent: 0,
+      status: "not-started", percent: 0, budget: 0, spent: 0,
       tasks: [], photos: [], circuits: ["B10"], notes: "",
     },
     {
@@ -157,7 +154,7 @@ window.HOUSE = {
     {
       id: "ba1", name: "Bathroom 1", type: "bath",
       area: 59.63, floor: "main", countsAsFinished: true, phase: "existing",
-      status: "not-started", percent: 0, budget: 4000, spent: 0,
+      status: "not-started", percent: 0, budget: 0, spent: 0,
       tasks: [], photos: [], circuits: ["B10"], notes: "",
     },
     {
@@ -234,15 +231,15 @@ window.HOUSE = {
    * Circuits reference rooms by id.
    * ------------------------------------------------------------------------- */
   circuits: [
-    { id: "A02", breaker: 2,  panel: "main", amps: 15, description: "Hall + front lighting",     rooms: ["fronthall", "hall1", "flex1"] },
-    { id: "A08", breaker: 8,  panel: "main", amps: 30, description: "Garage / shop",              rooms: ["garage"] },
-    { id: "A12", breaker: 12, panel: "main", amps: 20, description: "Living room receptacles",     rooms: ["livingroom", "flex1", "office"] },
-    { id: "A14", breaker: 14, panel: "main", amps: 20, description: "Kitchen small appliance",    rooms: ["kitchen"] },
-    { id: "A16", breaker: 16, panel: "main", amps: 20, description: "Kitchen small appliance",    rooms: ["kitchen"] },
-    { id: "B02", breaker: 2,  panel: "sub",  amps: 15, description: "Great room",                 rooms: ["greatroom"] },
-    { id: "B04", breaker: 4,  panel: "sub",  amps: 15, description: "Bedrooms 1 & 2",             rooms: ["bed1", "bed2"] },
-    { id: "B06", breaker: 6,  panel: "sub",  amps: 15, description: "Bedrooms 3 & 4",             rooms: ["bed3", "bed4"] },
-    { id: "B08", breaker: 8,  panel: "sub",  amps: 20, description: "Laundry",                     rooms: ["laundry"] },
-    { id: "B10", breaker: 10, panel: "sub",  amps: 20, description: "Bath GFCI",                   rooms: ["ba1", "ba2"] },
+    { id: "A02", breaker: 2,  panel: "main", amps: 15, description: "Hall + front lighting",     rooms: ["fronthall", "hall1", "flex1"], placeholder: true },
+    { id: "A08", breaker: 8,  panel: "main", amps: 30, description: "Garage / shop",              rooms: ["garage"], placeholder: false },
+    { id: "A12", breaker: 12, panel: "main", amps: 20, description: "Living room receptacles",     rooms: ["livingroom", "flex1", "office"], placeholder: true },
+    { id: "A14", breaker: 14, panel: "main", amps: 20, description: "Kitchen small appliance",    rooms: ["kitchen"], placeholder: true },
+    { id: "A16", breaker: 16, panel: "main", amps: 20, description: "Kitchen small appliance",    rooms: ["kitchen"], placeholder: true },
+    { id: "B02", breaker: 2,  panel: "sub",  amps: 15, description: "Great room",                 rooms: ["greatroom"], placeholder: true },
+    { id: "B04", breaker: 4,  panel: "sub",  amps: 15, description: "Bedrooms 1 & 2",             rooms: ["bed1", "bed2"], placeholder: true },
+    { id: "B06", breaker: 6,  panel: "sub",  amps: 15, description: "Bedrooms 3 & 4",             rooms: ["bed3", "bed4"], placeholder: true },
+    { id: "B08", breaker: 8,  panel: "sub",  amps: 20, description: "Laundry",                     rooms: ["laundry"], placeholder: true },
+    { id: "B10", breaker: 10, panel: "sub",  amps: 20, description: "Bath GFCI",                   rooms: ["ba1", "ba2"], placeholder: true },
   ],
 };

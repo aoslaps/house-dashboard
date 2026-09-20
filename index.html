@@ -3217,9 +3217,18 @@ lFYM/45SC/+ITwv/iE8L/4hPC/8BAAD//3AHFsS4Cd1sAAAAAElFTkSuQmCC"/>
           <h2>⚡ Breaker Box & Circuit Mapper</h2>
           <p>Click any breaker to illuminate its circuit on the floor plan. Toggle breakers to simulate outages.</p>
         </div>
-        <button class="btn-add-breaker" id="btnAddBreaker">+ Add Breaker</button>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="circuits-view-toggle" id="circuitsViewToggle" role="tablist" aria-label="Circuits display mode">
+            <button role="tab" data-cview="panels" class="is-active">Visual Panels</button>
+            <button role="tab" data-cview="table">Circuits Table</button>
+          </div>
+          <button class="btn-add-breaker" id="btnAddBreaker">+ Add Circuit</button>
+        </div>
       </div>
       <div class="panels-grid" id="panelsGrid">
+        <!-- filled by app.js -->
+      </div>
+      <div class="circuits-table-wrap" id="circuitsTableWrap" hidden>
         <!-- filled by app.js -->
       </div>
     </section>
