@@ -243,7 +243,7 @@
     renderer.domElement.addEventListener("click", onClick);
 
     renderer.domElement.addEventListener("contextmenu", (e) => e.preventDefault());
-    renderer.domElement.addEventListener("pointerdown", (e) => { if (e.button === 2) { window.__lastRx = e.clientX; window.__lastRy = e.clientY; } });
+    renderer.domElement.addEventListener("pointerdown", (e) => { if (e.button === 2) { window.__lastRx = e.clientX; window.__lastRy = e.clientY; } }, { capture: true });
     renderer.domElement.addEventListener("pointerup", (e) => {
       if (e.button !== 2) return;
       const dx = Math.abs(e.clientX - (window.__lastRx || e.clientX));
@@ -290,7 +290,7 @@
           }
         }
       }
-    });
+    }, { capture: true });
 
     
     let touchStartX = 0;
