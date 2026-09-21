@@ -1440,6 +1440,57 @@
     }
   }
 
+  // Node Edit Overlay
+  let activeEditNode = null;
+  let activeEditType = null;
+  function openNodeEdit(type, id) {
+    activeEditType = type;
+    activeEditNode = id;
+    const ui = $("#nodeEditOverlay");
+    const title = $("#nodeEditTitle");
+    if (ui && title) {
+      title.textContent = "Edit " + type + " " + id;
+      ui.style.display = "block";
+    }
+  }
+  function closeNodeEdit() {
+    const ui = $("#nodeEditOverlay");
+    if (ui) ui.style.display = "none";
+    activeEditNode = null;
+    activeEditType = null;
+  }
+  const btnCloseNodeEdit = $("#btnCloseNodeEdit");
+  if (btnCloseNodeEdit) btnCloseNodeEdit.addEventListener("click", closeNodeEdit);
+
+  const btnRotateNode = $("#btnRotateNode");
+  if (btnRotateNode) btnRotateNode.addEventListener("click", () => {
+    if (!activeEditNode) return;
+    let arr = null;
+    if (activeEditType === "register") arr = window.HOUSE.registers;
+    if (activeEditType === "fixture") arr = window.HOUSE.fixtures;
+    if (activeEditType === "outlet") arr = window.HOUSE.outlets;
+    if (arr) {
+      const item = arr.find(x => x.id === activeEditNode);
+      if (item) {
+        item.rotation = ((item.rotation || 0) + 90) % 360;
+        SS.save(window.HOUSE);
+        refreshAll();
+      }
+    }
+  });
+
+  const btnDeleteNode = $("#btnDeleteNode");
+  if (btnDeleteNode) btnDeleteNode.addEventListener("click", () => {
+    if (!activeEditNode) return;
+    if (typeof window.pushCaptureState === "function") window.pushCaptureState();
+    if (activeEditType === "register") window.HOUSE.registers = (window.HOUSE.registers || []).filter(x => x.id !== activeEditNode);
+    if (activeEditType === "fixture") window.HOUSE.fixtures = (window.HOUSE.fixtures || []).filter(x => x.id !== activeEditNode);
+    if (activeEditType === "outlet") window.HOUSE.outlets = (window.HOUSE.outlets || []).filter(x => x.id !== activeEditNode);
+    SS.save(window.HOUSE);
+    refreshAll();
+    closeNodeEdit();
+  });
+
   /* ---------- selection ---------- */
   function selectRoom(id, from3D = false) {
     state.selected = id;
@@ -1455,7 +1506,7 @@
       paintPlan();
     }
 
-    $("#roomList li").forEach((li) => li.classList.toggle("is-selected", li.dataset.id === id));
+    $$("#roomList li").forEach((li) => li.classList.toggle("is-selected", li.dataset.id === id));
     if (!from3D && id && window.Model3D && typeof window.Model3D.flyToRoomById === "function") {
       window.Model3D.flyToRoomById(id);
     }
