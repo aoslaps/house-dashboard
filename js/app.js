@@ -1441,7 +1441,7 @@
   }
 
   /* ---------- selection ---------- */
-  function selectRoom(id) {
+  function selectRoom(id, from3D = false) {
     state.selected = id;
     const r = byId(id);
     renderDetail(r);
@@ -1455,7 +1455,10 @@
       paintPlan();
     }
 
-    $$("#roomList li").forEach((li) => li.classList.toggle("is-selected", li.dataset.id === id));
+    $("#roomList li").forEach((li) => li.classList.toggle("is-selected", li.dataset.id === id));
+    if (!from3D && id && window.Model3D && typeof window.Model3D.flyToRoomById === "function") {
+      window.Model3D.flyToRoomById(id);
+    }
   }
 
   /* ---------- mode switcher (Renovation vs Electrical) ---------- */
@@ -2243,7 +2246,7 @@
     flashSaved();
     refreshAll();
     const sec = $("#registersSection");
-    if (sec) sec.scrollIntoView({ behavior: "smooth" });
+    // if (sec) sec.scrollIntoView({ behavior: "smooth" });
   }
 
   function addFixtureFrom3D({ room, type, anchor }) {
@@ -2279,7 +2282,7 @@
     flashSaved();
     refreshAll();
     const sec = $("#fixturesSection");
-    if (sec) sec.scrollIntoView({ behavior: "smooth" });
+    // if (sec) sec.scrollIntoView({ behavior: "smooth" });
   }
 
   function addOutletFrom3D({ room, anchor }) {
@@ -2305,7 +2308,7 @@
     flashSaved();
     refreshAll();
     const sec = $("#outletsSection");
-    if (sec) sec.scrollIntoView({ behavior: "smooth" });
+    // if (sec) sec.scrollIntoView({ behavior: "smooth" });
   }
 
   function selectRegister(regId) {
@@ -2313,7 +2316,7 @@
     if (!reg) return;
     if (reg.room) selectRoom(reg.room);
     const sec = $("#registersSection");
-    if (sec) sec.scrollIntoView({ behavior: "smooth" });
+    // if (sec) sec.scrollIntoView({ behavior: "smooth" });
     const row = $(`tr[data-register="${regId}"]`);
     if (row) {
       row.style.background = "rgba(56, 189, 248, 0.15)";
@@ -2401,6 +2404,7 @@
     checkElectricalSchematic,
     checkHVACSchematic,
     addRegisterFrom3D,
+    openNodeEdit,
     selectRegister
   };
 

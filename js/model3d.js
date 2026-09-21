@@ -1571,7 +1571,7 @@
       mesh.material.emissive.setHex(isSel ? 0x2C6E9B : 0x000000);
       mesh.material.opacity = isSel ? 1.0 : 0.85;
       
-      if (isSel) flyToRoom(mesh);
+      // if (isSel) flyToRoom(mesh);
     });
   }
 
@@ -1693,7 +1693,7 @@
 
     if (hoveredMesh && hoveredMesh.userData.id) {
       if (window.App && typeof window.App.selectRoom === "function") {
-        window.App.selectRoom(hoveredMesh.userData.id);
+        window.App.selectRoom(hoveredMesh.userData.id, true);
       }
     }
   }
@@ -1934,6 +1934,7 @@
           const oMat = out.verified ? verifiedOutletMat : outletMat;
           const outletMesh = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 0.04), oMat);
           outletMesh.position.set(out.anchor.x, out.anchor.y, out.anchor.z);
+          outletMesh.rotation.y = (out.rotation || 0) * Math.PI / 180;
           outletMesh.userData = { isOutlet: true, circuitId: c.id, outletId: out.id };
           electricalLayerGroup.add(outletMesh);
         });
@@ -2159,6 +2160,9 @@
       const gMat = reg.verified ? verifiedRegisterMat : registerMat;
       const grille = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.02, 0.14), gMat);
       grille.position.set(anchor.x, targetY, anchor.z);
+      const rot = (reg.rotation || 0) * Math.PI / 180;
+      grille.rotation.y = rot;
+      boot.rotation.y = rot;
       grille.userData = { registerId: reg.id, isRegister: true, registerData: reg };
       hvacLayerGroup.add(grille);
     });
@@ -2221,6 +2225,7 @@
       const fMat = fix.verified ? verifiedFixtureMat : fixtureMat;
       const fixtureMesh = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.1, 0.2), fMat);
       fixtureMesh.position.set(anchor.x, anchor.y || 0.02, anchor.z);
+      fixtureMesh.rotation.y = (fix.rotation || 0) * Math.PI / 180;
       fixtureMesh.userData = { fixtureId: fix.id, isFixture: true, fixtureData: fix };
       plumbingLayerGroup.add(fixtureMesh);
 
@@ -2511,6 +2516,7 @@
   }
 
   window.Model3D = {
+    flyToRoomById: (id) => { const mesh = roomMeshes.find(m => m.userData.id === id); if (mesh) flyToRoom(mesh); },
     toggleStatusColors: (val) => {
       isShowStatusColors = val !== undefined ? val : !isShowStatusColors;
       updateRoomTints();
