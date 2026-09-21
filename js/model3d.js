@@ -242,7 +242,14 @@
     renderer.domElement.addEventListener("mousemove", onMouseMove);
     renderer.domElement.addEventListener("click", onClick);
 
-    renderer.domElement.addEventListener("contextmenu", (e) => {
+    renderer.domElement.addEventListener("contextmenu", (e) => e.preventDefault());
+    renderer.domElement.addEventListener("pointerdown", (e) => { if (e.button === 2) { window.__lastRx = e.clientX; window.__lastRy = e.clientY; } });
+    renderer.domElement.addEventListener("pointerup", (e) => {
+      if (e.button !== 2) return;
+      const dx = Math.abs(e.clientX - (window.__lastRx || e.clientX));
+      const dy = Math.abs(e.clientY - (window.__lastRy || e.clientY));
+      if (dx > 5 || dy > 5) return; // it was a pan drag
+
       e.preventDefault();
       
       const rect = renderer.domElement.getBoundingClientRect();
@@ -1659,11 +1666,36 @@
     }
   }
 
+  
   function onMouseMove(e) {
-    if (!renderer) return;
+    if (!renderer || !camera) return;
     const rect = renderer.domElement.getBoundingClientRect();
     mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    
+    // Ghost mesh
+    if (isPlaceVentMode || isPlaceFixtureMode || isPlaceOutletMode || isMoveNodeMode) {
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(roomMeshes.filter((m) => m.visible));
+      if (intersects.length > 0) {
+        const hit = intersects[0];
+        const hitX = Math.round(hit.point.x * 100) / 100;
+        const hitY = Math.round(hit.point.y * 100) / 100;
+        const hitZ = Math.round(hit.point.z * 100) / 100;
+        
+        let targetY = hitY;
+        if (isPlaceOutletMode) targetY += 0.3;
+        else if (isPlaceVentMode || isPlaceFixtureMode) targetY += 0.02;
+        else if (isMoveNodeMode) targetY += 0.02; // Roughly height for register/fixture
+        
+        updateGhostMesh(hitX, targetY, hitZ, 'generic');
+      } else {
+        hideGhostMesh();
+      }
+    } else {
+      hideGhostMesh();
+    }
+
 
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(roomMeshes.filter((m) => m.visible));
