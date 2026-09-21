@@ -153,6 +153,18 @@
 
     function onKeyDown(e) {
       if (e.key === "Escape") {
+      if (window.Model3D) {
+        if (typeof window.Model3D.setPlaceVentMode === "function") window.Model3D.setPlaceVentMode(false);
+        if (typeof window.Model3D.setPlaceFixtureMode === "function") window.Model3D.setPlaceFixtureMode(false);
+        if (typeof window.Model3D.setPlaceOutletMode === "function") window.Model3D.setPlaceOutletMode(false);
+        if (typeof window.Model3D.setMoveNodeMode === "function") window.Model3D.setMoveNodeMode(false);
+      }
+      if (window.Model3D) {
+        if (typeof window.Model3D.setPlaceVentMode === "function") window.Model3D.setPlaceVentMode(false);
+        if (typeof window.Model3D.setPlaceFixtureMode === "function") window.Model3D.setPlaceFixtureMode(false);
+        if (typeof window.Model3D.setPlaceOutletMode === "function") window.Model3D.setPlaceOutletMode(false);
+        if (typeof window.Model3D.setMoveNodeMode === "function") window.Model3D.setMoveNodeMode(false);
+      }
         closeModal();
       }
     }
@@ -2353,6 +2365,7 @@
     refreshAll();
     const sec = $("#registersSection");
     // if (sec) sec.scrollIntoView({ behavior: "smooth" });
+    if (window.Model3D && typeof window.Model3D.setPlaceVentMode === "function") window.Model3D.setPlaceVentMode(false);
   }
 
   function addFixtureFrom3D({ room, type, anchor }) {
@@ -2389,6 +2402,7 @@
     refreshAll();
     const sec = $("#fixturesSection");
     // if (sec) sec.scrollIntoView({ behavior: "smooth" });
+    if (window.Model3D && typeof window.Model3D.setPlaceVentMode === "function") window.Model3D.setPlaceVentMode(false);
   }
 
   function addOutletFrom3D({ room, anchor }) {
@@ -2415,6 +2429,7 @@
     refreshAll();
     const sec = $("#outletsSection");
     // if (sec) sec.scrollIntoView({ behavior: "smooth" });
+    if (window.Model3D && typeof window.Model3D.setPlaceVentMode === "function") window.Model3D.setPlaceVentMode(false);
   }
 
   function selectRegister(regId) {

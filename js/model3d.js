@@ -243,11 +243,11 @@
     renderer.domElement.addEventListener("click", onClick);
 
     renderer.domElement.addEventListener("contextmenu", (e) => e.preventDefault());
-    renderer.domElement.addEventListener("pointerdown", (e) => { if (e.button === 2) { window.__lastRx = e.clientX; window.__lastRy = e.clientY; } }, { capture: true });
+    renderer.domElement.addEventListener("pointerdown", (e) => { window.__lastPx = e.clientX; window.__lastPy = e.clientY; }, { capture: true });
     renderer.domElement.addEventListener("pointerup", (e) => {
       if (e.button !== 2) return;
-      const dx = Math.abs(e.clientX - (window.__lastRx || e.clientX));
-      const dy = Math.abs(e.clientY - (window.__lastRy || e.clientY));
+      const dx = Math.abs(e.clientX - (window.__lastPx || e.clientX));
+      const dy = Math.abs(e.clientY - (window.__lastPy || e.clientY));
       if (dx > 5 || dy > 5) return; // it was a pan drag
 
       e.preventDefault();
