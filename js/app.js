@@ -1443,6 +1443,38 @@
   // Node Edit Overlay
   let activeEditNode = null;
   let activeEditType = null;
+  
+  function moveNodeTo3D({ room, anchor }) {
+    if (!activeEditNode || !activeEditType) return;
+    let arr = null;
+    if (activeEditType === "register") arr = window.HOUSE.registers;
+    if (activeEditType === "fixture") arr = window.HOUSE.fixtures;
+    if (activeEditType === "outlet") arr = window.HOUSE.outlets;
+    
+    if (arr) {
+      const item = arr.find(x => x.id === activeEditNode);
+      if (item) {
+        if (typeof window.pushCaptureState === "function") window.pushCaptureState();
+        item.room = room;
+        
+        let adjustedY = anchor.y;
+        if (activeEditType === "outlet") adjustedY += 0.3;
+        else if (activeEditType === "fixture" || activeEditType === "register") adjustedY += 0.02;
+        
+        item.anchor = { x: anchor.x, y: adjustedY, z: anchor.z };
+        SS.save(window.HOUSE);
+        refreshAll();
+      }
+    }
+    
+    // Reset move mode
+    if (window.Model3D && typeof window.Model3D.setMoveNodeMode === "function") {
+      window.Model3D.setMoveNodeMode(false);
+    }
+    activeEditNode = null;
+    activeEditType = null;
+  }
+
   function openNodeEdit(type, id) {
     activeEditType = type;
     activeEditNode = id;
@@ -1461,6 +1493,15 @@
   }
   const btnCloseNodeEdit = $("#btnCloseNodeEdit");
   if (btnCloseNodeEdit) btnCloseNodeEdit.addEventListener("click", closeNodeEdit);
+
+  
+  const btnMoveNode = $("#btnMoveNode");
+  if (btnMoveNode) btnMoveNode.addEventListener("click", () => {
+    if (!activeEditNode || !window.Model3D) return;
+    window.Model3D.setMoveNodeMode(true);
+    const ui = $("#nodeEditOverlay");
+    if (ui) ui.style.display = "none";
+  });
 
   const btnRotateNode = $("#btnRotateNode");
   if (btnRotateNode) btnRotateNode.addEventListener("click", () => {
@@ -2456,6 +2497,7 @@
     checkHVACSchematic,
     addRegisterFrom3D,
     openNodeEdit,
+    moveNodeTo3D,
     selectRegister
   };
 

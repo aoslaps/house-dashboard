@@ -1644,7 +1644,7 @@
   }
 
   function onClick(e) {
-    if (isPlaceVentMode || isPlaceFixtureMode || isPlaceOutletMode) {
+    if (isPlaceVentMode || isPlaceFixtureMode || isPlaceOutletMode || isMoveNodeMode) {
       // Raycast against visible room floors
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(roomMeshes.filter((m) => m.visible));
@@ -1667,6 +1667,11 @@
             room: detectedRoom,
             type: type,
             anchor: { x: hitX, y: hitY + 0.02, z: hitZ }
+          });
+        } else if (isMoveNodeMode && window.App && typeof window.App.moveNodeTo3D === "function") {
+          window.App.moveNodeTo3D({
+            room: detectedRoom,
+            anchor: { x: hitX, y: hitY, z: hitZ }
           });
         } else if (isPlaceOutletMode && window.App && typeof window.App.addOutletFrom3D === "function") {
           window.App.addOutletFrom3D({
@@ -2007,6 +2012,7 @@
   let isPlaceVentMode = false;
   let isPlaceFixtureMode = false;
   let isPlaceOutletMode = false;
+  let isMoveNodeMode = false;
 
   function setPlaceVentMode(active) {
     isPlaceVentMode = !!active;
@@ -2523,6 +2529,7 @@
       return isShowStatusColors;
     },
     loadModelData,
+    setMoveNodeMode: (m) => { isMoveNodeMode = m; },
     init,
     resize,
     setLevel,
