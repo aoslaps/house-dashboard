@@ -1520,6 +1520,20 @@
     }
   });
 
+  
+  const btnToggleFlowNode = $("#btnToggleFlowNode");
+  if (btnToggleFlowNode) btnToggleFlowNode.addEventListener("click", () => {
+    if (!activeEditNode || activeEditType !== "register") return;
+    const item = window.HOUSE.registers.find(x => x.id === activeEditNode);
+    if (item) {
+      if (typeof window.pushCaptureState === "function") window.pushCaptureState();
+      item.kind = item.kind === "return" ? "supply" : "return";
+      SS.save(window.HOUSE);
+      refreshAll();
+      closeNodeEdit();
+    }
+  });
+
   const btnDeleteNode = $("#btnDeleteNode");
   if (btnDeleteNode) btnDeleteNode.addEventListener("click", () => {
     if (!activeEditNode) return;
@@ -2511,5 +2525,6 @@
     }
   });
 
+  document.addEventListener("click", (e) => { const ui = document.getElementById("nodeEditOverlay"); if (ui && ui.style.display === "block" && !ui.contains(e.target)) ui.style.display = "none"; });
   document.addEventListener("DOMContentLoaded", init);
 })();

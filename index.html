@@ -125,12 +125,12 @@
           </select>
         </div>
         <div class="model3d-canvas-container" id="model3dContainer"></div>
-        <div id="nodeEditOverlay" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:12px; z-index:20; box-shadow:var(--shadow); text-align:center;">
-          <div id="nodeEditTitle" style="font-weight:bold;margin-bottom:8px;">Node</div>
-          <button id="btnMoveNode" class="btn-action" style="margin-right:8px;background:var(--accent);color:#fff;border:none;">Move</button>
-          <button id="btnRotateNode" class="btn-action" style="margin-right:8px;">Rotate 90°</button>
-          <button id="btnDeleteNode" class="btn-action" style="background:var(--red);color:#fff;border:none;">Delete</button>
-          <button id="btnCloseNodeEdit" class="btn-action" style="margin-left:8px;background:transparent;border:1px solid var(--line);color:var(--text);">Close</button>
+        <div id="nodeEditOverlay" style="display:none; position:absolute; background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:6px 0; z-index:100; box-shadow:var(--shadow); min-width:140px;">
+          <div id="nodeEditTitle" style="font-weight:bold; margin:0 12px 6px 12px; font-size:12px; color:var(--text-muted); border-bottom:1px solid var(--line); padding-bottom:4px;">Node</div>
+          <button id="btnMoveNode" class="btn-context">Move</button>
+          <button id="btnRotateNode" class="btn-context">Rotate 90°</button>
+          <button id="btnToggleFlowNode" class="btn-context" style="display:none;">Toggle Flow</button>
+          <button id="btnDeleteNode" class="btn-context" style="color:var(--red);">Delete</button>
         </div>
         <div class="model3d-hint">Left drag: Orbit 360° · Right drag: Pan · Scroll: Zoom · Click room to inspect</div>
         <div id="statusLegend3D" style="display:none; position:absolute; bottom:20px; left:20px; background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:8px 12px; font-size:11px; z-index:20; box-shadow:var(--shadow);">

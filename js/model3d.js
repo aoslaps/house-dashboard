@@ -241,6 +241,50 @@
 
     renderer.domElement.addEventListener("mousemove", onMouseMove);
     renderer.domElement.addEventListener("click", onClick);
+
+    renderer.domElement.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      
+      const rect = renderer.domElement.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      
+      raycaster.setFromCamera(mouse, camera);
+      
+      if (hvacLayerGroup && hvacLayerGroup.visible) {
+        const regIntersects = raycaster.intersectObjects(hvacLayerGroup.children.filter((c) => c.userData && c.userData.isRegister));
+        if (regIntersects.length > 0) {
+          const regObj = regIntersects[0].object;
+          if (window.App && typeof window.App.openNodeEdit === 'function') {
+            window.App.openNodeEdit('register', regObj.userData.registerId, e.clientX, e.clientY);
+            return;
+          }
+        }
+      }
+
+      if (plumbingLayerGroup && plumbingLayerGroup.visible) {
+        const fixIntersects = raycaster.intersectObjects(plumbingLayerGroup.children.filter((c) => c.userData && c.userData.isFixture));
+        if (fixIntersects.length > 0) {
+          const fixObj = fixIntersects[0].object;
+          if (window.App && typeof window.App.openNodeEdit === 'function') {
+            window.App.openNodeEdit('fixture', fixObj.userData.fixtureId, e.clientX, e.clientY);
+            return;
+          }
+        }
+      }
+
+      if (electricalLayerGroup && electricalLayerGroup.visible) {
+        const outIntersects = raycaster.intersectObjects(electricalLayerGroup.children.filter((c) => c.userData && c.userData.isOutlet));
+        if (outIntersects.length > 0) {
+          const outObj = outIntersects[0].object;
+          if (window.App && typeof window.App.openNodeEdit === 'function') {
+            window.App.openNodeEdit('outlet', outObj.userData.outletId, e.clientX, e.clientY);
+            return;
+          }
+        }
+      }
+    });
+
     
     let touchStartX = 0;
     let touchStartY = 0;
@@ -2147,7 +2191,7 @@
       const branchLen = Math.abs(dx);
 
       if (branchLen > 0.05) {
-        const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, branchLen, 10), ductMat);
+        const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, branchLen, 10), isReturn ? returnDuctMat : ductMat);
         branch.rotation.z = Math.PI / 2;
         branch.position.set(trunkX + dx / 2, basementCeilingY, anchor.z);
         branch.userData = { registerId: reg.id, isBranch: true };
@@ -2157,7 +2201,7 @@
       // Vertical boot from ceiling up to floor (or register height)
       const targetY = (typeof anchor.y === "number") ? anchor.y : 0.02;
       const bootHeight = Math.max(targetY - basementCeilingY, 0.2);
-      const boot = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, bootHeight, 10), ductMat);
+      const boot = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, bootHeight, 10), isReturn ? returnDuctMat : ductMat);
       boot.position.set(anchor.x, basementCeilingY + bootHeight / 2, anchor.z);
       boot.userData = { registerId: reg.id, isBoot: true };
       hvacLayerGroup.add(boot);
